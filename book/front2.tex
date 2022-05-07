@@ -1,0 +1,63 @@
+\definecolor{FRM}{HTML}{337BA1}
+\definecolor{BGF}{HTML}{EDF1F2}
+\definecolor{BRD}{HTML}{343742}
+
+\newcommand{\boxA}[1]{
+\begin{tcolorbox}[enhanced,sharp corners=uphill,
+    width=10cm,
+    colback=BGF,
+    colframe=FRM,
+    coltext=black,
+    fontupper=\Large\bfseries,
+    arc=6mm,
+    boxrule=8pt,
+    boxsep=2mm,
+    borderline={2pt}{8pt}{BRD}]
+    \centering
+\textbf{#1} \\
+\textbf{notes}
+\end{tcolorbox}
+}
+
+\newcommand{\boxB}[1]{
+\begin{tcolorbox}[enhanced jigsaw,
+                  colback=bgframe,%gray background
+                  colframe=frame,% black frame colour
+                  width=6cm,% Use 5cm total width,
+                  arc=3mm, auto outer arc,
+                  boxrule=3pt,
+                  drop shadow={frame!80}
+                 ]
+                 \centering
+\textbf{#1} \\
+\textbf{notes}
+\end{tcolorbox}
+}
+
+
+
+
+
+\begin{titlepage}
+\begin{picture}(50,50)
+%\put(-15,-185){\hbox{\includegraphics[scale=0.30]{pics/fronts/unisalento.png}}}
+\end{picture}
+%\includegraphics[viewport= -3400 1500 0 0, scale=0.12]{pics/NODE.png}
+
+%width=\paperwidth
+%height=\paperheight
+
+\AddToShipoutPictureBG*{\includegraphics[width=\paperwidth]{pics/fronts/bg3.jpg}}
+
+%\includegraphics[viewport= -100 470 0 0, scale=1]{pics/brainLogo.png}
+\begin{center}
+\scalebox{1.5}{
+\boxA{Applied Data Science}
+      }
+\end{center}
+\vspace{140mm}
+\begin{large}
+    \begin{flushleft}
+    \end{flushleft}
+\end{large}
+\end{titlepage}

@@ -1,0 +1,1466 @@
+\chapter{Mathematics and statistics for Data Science}
+Before to introduce concepts for this chapter, it's important to underline what \textbf{probability} and \textbf{statistic} are, their differences and how they overlap.\\
+Probability is a branch of pure mathematics. Probability questions can be posed and solved using axiomatic reasoning, and therefore there is one correct answer to any probability question.\\
+Statistical questions can be converted to probability questions by the use of probability models. Once we make certain assumptions about the mechanism generating the data, we can answer statistical questions using probability theory.\\ 
+However, the proper formulation and checking of these probability models is just as important, or even more important, than the subsequent analysis of the problem using these models.\\
+One could say that statistics comprises of two parts.\\ The first part is the question of how to formulate and evaluate probabilistic models for the problem; this endeavor lies within the domain of "philosophy of science". The second part is the question of obtaining answers after a certain model has been assumed. This part of statistics is indeed a matter of applied probability theory, and in practice, contains a fair deal of numerical analysis as well \footnote{Source: \href{https://stats.stackexchange.com/questions/665/whats-the-difference-between-probability-and-statistics/8536\#8536}{Stackexchange.com}.}
+
+
+ \begin{adjustwidth}{25mm}{25mm}
+                 \rule[0.1cm]{12cm}{0.6mm}\\
+                 \centering
+                    \textit{\textbf{Statistics} deals with data, \textbf{probability} deals with models.  
+                    %(represented by the sets of k shingles that each signature represent)
+                    }\\
+        \rule[0.1cm]{12cm}{0.6mm}\\
+\end{adjustwidth}
+A common task in applied data sciences is to build models that are capable to approximate/simulate real processes/events. These \textbf{models} are designed and built starting from available \textbf{data}.\\
+It's important to underline that indicators like mean or variance have a slight different meaning in probability and in statistic. In probability, these indicators are \textbf{functions of the probability density function}; in statistic they are \textbf{functions evaluated with data as argument}. Thus, when we refer to an indicator with a function of the random variable $f(X)$, it's \textbf{the probabilistic version}, instead when we use a constant to indicate it we're describing \textbf{the one computed over the set of samples}.\\
+In data sciences, \textbf{bayesian statistics} has a key role. 
+Bayesian statistics is a theory in the field of statistics based on the Bayesian interpretation of probability:
+ \begin{adjustwidth}{25mm}{25mm}
+                 \rule[0.1cm]{12cm}{0.6mm}\\
+                    \textit{\textbf{Classical (or frequentist)} interpretation of probability see probabilities in terms of the frequencies
+                    of random, repeatable events. In \textbf{Bayesian} interpretation of probability, probabilities provide a quantification of uncertainty. 
+                    %(represented by the sets of k shingles that each signature represent)
+                    }\\
+        \rule[0.1cm]{12cm}{0.6mm}\\
+\end{adjustwidth}
+\noindent This uncertainty may be based on prior knowledge about the event, such as the results of previous experiments, or on personal beliefs about the event.
+\textbf{Bayesian statistical} methods use Bayes' theorem to compute and update probabilities after obtaining new data. (Todo approccio bayesiano e statistico nel ml).
+\section{Fundamentals}
+\subsection{Random variables}
+We need to give two different definitions for discrete and for continuous random variable, since they  require different assumptions
+
+\begin{customDef}\textbf{Discrete random variable}\\
+Suppose having a finite discrete \textbf{set of values} that the variable X can assume:\[
+X=\{x_i\}, \; i \in \A,\;\A \subset \N,\;|\A|<\infty
+\]
+if exists  a function $\bs{p(x_i)}$ (shortened version of $p(X=x_i)$) such that:\[
+\begin{aligned}
+&i \not \in \A \implies p(x_i) = 0, \\
+&i \in \A \implies p(x_i) \in [0,1]\\
+&\sum_{i\in \A}p(x_i)=1
+\end{aligned}
+\]
+Then we can define \textbf{X} a \textbf{discrete random variable} and \textbf{p} its (\textbf{discrete) probability density function}.\\
+We can also define 2 other functions realted to the random variable:
+
+\begin{itemize}
+    \item The \textbf{(discrete) cumulative distribution function} : 
+\[
+P(t)=\sum_{\substack{i\leq t,\\ i\in \A}}p(x_i)
+\]
+\item The \textbf{indicator function} :
+\[
+    \bs{1}_p(x)=\
+    \begin{cases}
+        1\;\textrm{if}\;p(x) > 0 \\
+        0\;\textrm{if}\;p(x) = 0 \\
+    \end{cases}
+\]
+\end{itemize}
+
+\end{customDef}
+\begin{customDef}\textbf{continuous random variable}\\
+Suppose having a value $x^* \in \R$ and a function $p(x)$ such that:\[
+\begin{aligned}
+\int_{-\infty}^{\infty} &p(x) \,dx = 1, \\ 
+&p(x) \geq 0 \;\;\forall x \in \R, 
+\end{aligned}
+\]
+If it holds that\[
+\lim_{\delta x\rightarrow 0} p(x^* \in (x,x+\delta x)\;)= p(x)\delta x
+\]
+Then we can state that the probability that $x^*$ will lie in an interval (event) $(a,b)$ is given by\[
+p(x\in (a,b))=\int_{a}^{b}p(x)\,dx
+\] 
+Thus $p(x)$ is the \textbf{(continuous) probability density functions}.  All the possible intervals  lying in $supp(p(x))$ are the events that make up the continuous random variable.
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=350px]{pics/prob_dens_func.png}
+                        \caption{The concept of probability for discrete variables can be extended to that of a probability density $p(x)$ over a continuous variable $x$ and is such that the
+probability of $x$ lying in the interval $(x, x + \delta x)$ is given by $p(x)\delta x$
+for $\delta x \rightarrow 0$. $P(x)$ is the cumulative distribution function}
+\end{figure}
+\noindent We can also define 2 other functions related to the random variable:
+
+\begin{itemize}
+    \item The \textbf{(continuous) cumulative distribution function} : 
+\[
+P(t)=\int_{-\infty}^{t}p(x)\,dx
+\]
+\item The \textbf{indicator function} : (same as the discrete case)
+\end{itemize}
+\end{customDef}
+\subsection{Joint and conditional probability(todo)}
+\subsection{Main rules and theorems}
+The following properties are described for discrete random variables, but they are valid for continouus one too.\
+Suppose having 2 random variables $X$ and $Y$; where 
+\begin{eqwbg}
+\begin{aligned}
+& X=\{x_i\},\; i=1...M\\
+& Y=\{y_j\},\; j=1...L\\
+\end{aligned}
+\end{eqwbg}
+Suppose now taking $N$ \textbf{statistical trials}, where:\begin{itemize}
+    \item  The \textbf{number of trials} such that $Y=y_j$ and $X=x_i$ is $n_{i,j}$
+    \item  The \textbf{number of trials} such that $X=x_i$,  is :
+    \begin{eqwbg}
+    c_i = \sum_{j=1}^Ln_{ij}
+    \end{eqwbg}
+    \item The \textbf{number of trials} such that $Y=y_j$,  is :
+    \begin{eqwbg}
+    r_j = \sum_{i=1}^Mn_{ij}
+    \end{eqwbg}
+\end{itemize} 
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=350px]{pics/prob_theory.png}
+                        \caption{Representation of the random variables introduced so far}
+\end{figure}
+We will use $p(x_i):= p(X=x_i)$ and $p(x_i,y_j):= p(X=x_i,Y=y_j)$ to simplify notation. The function $p(x,y)$ is also called \textbf{joint probability} of $X$ and $Y$ \\\textbf{For} $\bs{N \rightarrow \infty}$, the following properties holds:
+\begin{eqwbg}
+p(x_i,y_j)=\frac{n_{ij}}{N}
+\end{eqwbg}
+\begin{eqwbg}
+p(x_i)=\frac{c_i}{N},\quad p(y_j)=\frac{y_j}{N}
+\end{eqwbg}
+\begin{eqwbg}
+\begin{aligned}
+p(y_j\mid\; x_i)=\frac{p(x_i,y_j)}{p(x_i)}=\frac{n_{ij}}{c_i}\\
+p(x_i \mid \; y_j)=\frac{p(x_i,y_j)}{p(y_j)}=\frac{n_{ij}}{r_j} 
+\end{aligned}
+\end{eqwbg}
+\noindent Thus, we derive the \textbf{Sum rule}, and the \textbf{Product rule}:
+\begin{customTheo}\textbf{Sum rule (marginal probability rule)}\\
+\[ p(x_i)=\sum_{j=1}^Lp(x_i,y_j)\]
+This procedure is also called \textbf{marginalization} of Y over X. 
+\end{customTheo}
+\begin{customTheo}\textbf{Product rule}\\
+\[
+p(x_i,y_j)=p(y_j\mid x_i)p(x_i)
+\]
+\end{customTheo}
+\noindent From the \textbf{Product rule} and the \textbf{Simmetry property} ($p(X,Y)=p(Y,X)$) we derive the \textbf{Bayes' theorem}:
+\begin{customTheo}\textbf{Bayes' theorem}\\
+\label{theo:bayes}
+\[
+p(Y\mid X)=\frac{p(X\mid Y)p(Y)}{p(X)}
+\]
+\end{customTheo}
+Using again the \textbf{Sum rule} and the \textbf{Product rule}, the denominator in (2.16) can be expressed in term of quantities appearning in the numerator:
+\begin{customDef}\textbf{Bayes' theorem (2)}\\
+\[
+p(Y\mid X)=\frac{p(X\mid Y)p(Y)}{\displaystyle \sum_Yp(X\mid Y)p(Y)}
+\]
+\end{customDef}
+From the \textbf{Product rule} we can also derive the \textbf{Chain Rule of Conditional Probabilities}:\begin{customTheo}
+\textbf{Chain Rule of Conditional Probabilities}\\
+ Any joint probability distribution over $n$ random variables may be decomposed
+into conditional distributions over \textbf{only one variable}:\[
+p(X^{(1)},X^{(2)}...X^{(n)})=p(X^{(1)})\prod_{i=2}^np(X^{(i)}\mid X^{(1)},...,X^{(i-1)})
+\]
+\end{customTheo}
+\subsection{Mean and Median}
+As we mentioned in the introductions, indicators such as mean, mode, variance and other moments
+have a slightly different definition depending on whether they refer to probability distributions or datasets:
+\begin{customDef}\textbf{Mean}:\\
+Given a r.v. $X$ and its p.d.f $p(x)$, we define the \textbf{statistic mean} (or \textbf{expectation} or \textbf{expected value}) the function:\[
+\begin{aligned}
+E[X]&=\sum_{i\in A \subset N}x_ip(x_i) \textrm{ (\textbf{discrete})}\\
+&= \int_{-\infty}^\infty xp(x)\,dx \textrm{ (\textbf{continuous})}\\
+\end{aligned}
+\]
+Thus, given a set of samples $Y=\{y_1,y_2...y_N\}$ we define the \textbf{sample mean} $\mu$:\[
+\mu=\frac{1}{N}\sum_{i=1}^{N}y_i
+\]
+\end{customDef}
+The mean is a \textbf{linear operator}, thus, for $k \in \R$ and two r.v. $X$ and $Y$ :
+\begin{eqwbg}
+\begin{aligned}
+&E[k]=k,\\
+&E[kX]=kE[X],\\
+&E[E[X]]=E[X],\\
+&E[X+Y]=E[X]+E[Y],\\
+\end{aligned}
+\end{eqwbg}
+Moreover, \textbf{IFF} $X$ and $Y$ are \textbf{independent}, then:
+\begin{eqwbg}
+E[XY]=E[X]E[Y]
+\end{eqwbg}
+\begin{customDef}\textbf{Median, quartiles and percentiles}:\\
+Given a r.v. $X$ and its cumulative distribution function $P(t)$, we define the \textbf{statistic median} (\textbf{2nd quartile}) $Q_2(X)$: 
+\[
+Q_2(X) := t^*\mid P(t^*) = \frac{1}{2} 
+\]
+This definition is valid both for continuous and discrete.\\
+We can also give the general definition of the \textbf{$\bs{i}$-th quartile} and the \textbf{$\bs{i}$-th percentile} $Q_i$:
+\[
+Q_i(X):=t^* \mid P(t^*)=\frac{i}{4} \quad\textrm{(\textbf{quartile})}
+\]
+\[
+\%_i(X):=t^* \mid P(t^*)=\frac{i}{100} \quad\textrm{(\textbf{percentile})}
+\]
+Thus, given a set of samples $Y=\{y_1,y_2...y_N\}$ we define the \textbf{sample median} $Q_2$ that value $y_m$ such that:\[
+|\{y_1,y_2...y_{m-1}\}| = |\{y_{m+1},y_{m+2}...y_N\}| 
+\]
+If $N$ is even, the median is the mean between the two samples that compete to be the median. \\
+The \textbf{sample median} leaves half of the observations on the left ($y<Q_2$) and one half on the right ($y>Q_2$). Samples $\bs{i}$\textbf{-th quartiles} ( $\bs{i}$\textbf{-th percentiles}) then leave respectively $\frac{i}{4}$ samples to the left and $1-\frac{i}{4}$ to the right ($\frac{i}{100}$ on the left and $1-\frac{i}{100}$ on the right for percentiles).
+\end{customDef}
+%\begin{customDef}\textbf{Mode(todo)}:\\
+%\end{customDef}
+\subsection{Moments}
+The \textbf{moments} of a function are quantitative measures related to the shape of the function's graph. The most general definition of moment is the following:
+\begin{customDef} \textbf{Moment}\\
+The $\bs{n}$\textbf{-th moment}  centered in $c$ of a real-valued continuous function $f(x)$ of a real variable is the integral:
+\begin{eqwbg}
+\sigma_c^n(f)= \int_{-\infty}^\infty(x-c)^nf(x)\,dx
+\end{eqwbg}
+\end{customDef}
+\noindent In probability, our interest is about moments centered in the \textbf{expectation} and where $f(x)$ is a probability density function $p(x)$. Then, the subscript can be omitted and we'll refer to the $n$-th moment centered in the mean as $\sigma^n(X)$. Moments in probability and statistics often require a standardization process after their general formulation. Having a set of observations $X^*=\{x_i\},\;i=1...N$, we can also give the general definition of the \textbf{sample moment of order $\bs{k}$} $\sigma^k$:\[
+\sigma^k=\sum_{i=1}^Nx^k
+\]
+\begin{customDef}\textbf{Variance and standard deviation}\\
+Variance is the \textbf{second} standardized moment.\\
+Given a r.v. $X$ and its p.d.f. $p(x)$, we define it as $\sigma^2(X)$ (or $Var(X))$:\[
+    \begin{aligned}
+    Var(X)&=\int_{-\infty}^{\infty}(x-E[X]\,)^2p(x)\,dx \quad \textrm{\textbf{(continuous)}}\\ 
+    &=\sum_{i \in \A \subset \N}(x_i-E[X]\,)^2p(x_i) \quad\textrm{\textbf{(discrete)}} \\
+    &= E[\,(X-E[X]\,)^2]\\
+    &= E[X^2]-E[X]^2
+    \end{aligned}
+\]
+The third equality can be proved by expanding the second one.\\
+We also define the \textbf{sample variance} $\sigma^2$ of a set of samples $Y=\{y_1,y_2...y_N\}$  as: \[
+\sigma^2=\frac{1}{N}\sum_{i=1}^N(y_i-\mu)^2
+\]
+The variance describe how much a distribution (dataset) is spread around the mean.\\
+Finally, we definde the \textbf{\textbf{standard deviation}} $\sigma$ as:\[
+\sigma = \sqrt{Var(X)}
+\]
+The previous definition is valid both for statistical variance and sample one.
+\end{customDef}
+\begin{customDef}\textbf{Skew}\\
+Skew is the \textbf{third} standardized moment.\\
+Given a r.v. $X$ and its p.d.f. $p(x)$, we define it as $\sigma^3(X)$ (or Skw(X)):\[
+\begin{aligned}
+ Skw(X)&=\int_{-\infty}^{\infty}\left(\frac{x-E[X]}{\sigma}\,\right)^3p(x)\,dx \quad \textrm{\textbf{(continuous)}}\\ 
+    &=\sum_{i \in \A \subset \N}\left(\frac{x_i-E[X]}{\sigma}\,\right)^3p(x_i) \quad\textrm{\textbf{(discrete)}} \\
+    &= E\left[\,\left(\frac{X-E[X]}{\sigma}\,\right)^3\right]\\
+    \end{aligned}
+\]
+In probability theory and statistics, skewness is a measure of the asymmetry of the probability distribution about its mean.
+\end{customDef}
+\begin{customDef}\textbf{Kurtosis}\\
+Kurtosis is the \textbf{fourth} standardized moment.\\
+Given a r.v. $X$ and its p.d.f. $p(x)$, we define it as $\sigma^4(X)$ (of Kur(X):\[
+\begin{aligned}
+ Kur(X)&=\int_{-\infty}^{\infty}\left(\frac{x-E[X]}{\sigma}\,\right)^4p(x)\,dx \quad \textrm{\textbf{(continuous)}}\\ 
+    &=\sum_{i \in \A \subset \N}\left(\frac{x_i-E[X]}{\sigma}\,\right)^4p(x_i) \quad\textrm{\textbf{(discrete)}} \\
+    &= E\left[\,\left(\frac{X-E[X]}{\sigma}\,\right)^4\right]\\
+    \end{aligned}
+\]
+In probability theory and statistics, kurtosis is a measure of the "tailedness" of the probability distribution
+\end{customDef}
+ \subsection{The Gini index and the Lorentz curve}
+It's important to remember that  indicators (mean,variance,covariance etc) only describe some \textbf{specific properties} of distributions or data-sets.\\
+The Gini coefficient measures the \textbf{inequality} among values of a frequency distribution (for example, levels of income). A Gini coefficient of zero expresses perfect equality, where all values are the same (for example, where everyone has the same income). Before to see how to find it, it's required to introduce the \textbf{Lorentz curve}:
+\begin{customDef}\textbf{Lorentz curve}\\
+For a random variable $X$ with probability density function \textbf{p(x)}, we define the \textbf{Lorentz curve} $L(x)$ as:\[
+L(t)=\frac{\displaystyle\int_{-\infty}^txp(x)\,dx}{\displaystyle\int_{-\infty}^\infty xp(x)\,dx}=\frac{\displaystyle\int_{-\infty}^txp(x)\,dx}{E(X)}
+\]
+\end{customDef}
+A concave curve represent an inhomogeneous distribution of X, since the curve represent the ratio between the expected value computed over a partial support (from $-\infty$ to $t$) and the expected value itself. A linear curve means that the distribution is uniform. The Gini index and the Lorentz curve are both used to determine the \textbf{relative degree of inequality} of a distribution. They're commonly used to represent the relative income inequality or wealth inequality within a nation or any other group of people. 
+ \begin{figure}[H]
+                \centering
+                        \includegraphics[width=\textwidth]{pics/Gini.png}
+                        \caption{Derivation of the Lorenz curve and Gini coefficient for global income in 2011}
+\end{figure}
+As shown in figure, the Lorentz curve define the 2 areas \textbf{A} and \textbf{B}. The linear dashed function, represent the Lorenz curve for an hypothetical uniform distribution. We define the \textbf{Gini index} as:
+\begin{eqwbg}
+G=\frac{A}{A+B}
+\end{eqwbg}
+As we can see, $G\in[0,1]$, where $0$ represent the uniform distribution case.
+%\subsection{Operations with random variables}
+\subsection{Central Limit Theorem}
+\begin{customTheo}\textbf{Central Limit Theorem}\\
+Given a sequence of $n$ equidistributed independent random variables $X_i$ with expectation $\mu$ and variance $\sigma^2$, we define $S_n$ as:\[
+\displaystyle S_n=\frac{\sum_{i=1}^nX_i-n\mu}{\sigma\sqrt{n}}
+\]
+The theorem states that $S_n$ \textbf{approaches a normal distribution} $\mathcal{N}(0,1)$ as $n$ approaches infinity:\[
+\lim_{n\rightarrow\infty}S_n = \mathcal{N}(0,1)
+\]
+\end{customTheo}
+\subsection{Random sequence convergence}
+The notion of convergence of a random sequence can have several interpretations, that are interconnected as in the following picture.
+ \begin{figure}[H]
+                \centering
+                        \includegraphics[width=270px]{pics/venn_prob.jpg}
+                        \caption{Venn diagram of different kind of convergence.}
+\end{figure}
+\noindent The most important convergence notions are the \textbf{convergence in Probability} and the \textbf{Almost-sure convergence}.
+\begin{customTheo}\textbf{Convergence in Probability (weak)\\}
+ Given a sequence of random variables $X_n$ and an arbitrary small number $\epsilon$, we can state that it converges \textbf{almost surely} to the distribution $Y$ if:\[
+ \lim_{n \rightarrow\infty}p(\mid X_n-Y|>\epsilon)=0
+ \] 
+ \begin{figure}[H]
+                \centering
+                        \includegraphics[width=270px]{pics/conv_prob.jpg}
+                        \caption{Convergence in probability for the case where the limiting random variable is a constant x}
+\end{figure}
+\end{customTheo}
+\begin{customTheo}\textbf{Almost-sure (strong) convergence\\}
+ Given a sequence of random variables $X_n$, we can state that it converges \textbf{almost surely} to the distribution $Y$ if:\[
+ \lim_{n \rightarrow\infty}p(X_n=Y)=1
+ \]
+  \begin{figure}[H]
+                \centering
+                        \includegraphics[width=270px]{pics/as_conv.jpg}
+                        \caption{Almost sure convergence.}
+\end{figure}
+\end{customTheo}
+\subsection{Sample selection and biases: school ranking example(TODO)}
+\section{Correlation and dependancy}
+\begin{customDef}\textbf{Covariance}\\
+ The \textbf{covariance} $Cov(X,Y)$ of two variables $X,Y$ provides a measure of how much the two are linearly related
+to each other, as well as the scale of these variables:\[
+ \begin{aligned}
+ Cov(X,Y)&=E[(X-E[X])(Y-E[Y])]\\
+ &=E[XY] - E[X]E[Y]
+ \end{aligned}
+ \]
+ The term $E[XY]$ is said \textbf{correlation} term.
+\end{customDef}
+\begin{customDef}\textbf{Uncorrelated random variables}\\
+ If two random variables $X,Y$ have $Cov(X,Y)=0$ then they are said \textbf{uncorrelated}.\[
+ \begin{aligned}
+  X,Y\textrm{ uncorrelated} \quad:=\quad Cov(X,Y)=0 
+ \end{aligned}
+ \]
+ \textbf{Important:}\\ Stating that $Cov(X,Y)=0$ is equivalent to state that $E[XY] =E[X]E[Y]$, where  $E[XY]$ is the \textbf{correlation} term: 
+  \begin{adjustwidth}{25mm}{25mm}
+                 \rule[0.1cm]{12cm}{0.6mm}\\
+                    \textit{ Two \textbf{uncorrelated} random variables have \textbf{zero covariance}, or also \textbf{correlation equals to the product of their means}.
+                    }\\
+        \rule[0.1cm]{12cm}{0.6mm}\\
+\end{adjustwidth}
+ 
+ 
+
+\end{customDef}
+ \noindent For the (2.22) independent variables have covariance$=0$, thus they re \textbf{uncorrelated}:
+ \begin{eqwbg}
+ X,Y \textrm{ independent} \implies X,Y \textrm{ uncorrelated}
+ \end{eqwbg}
+ Converse implication is not always true, that means that there are cases in which random variables are \textbf{uncorrelated} but \textbf{dependent}.
+ Variance can also be seen as a specific case of covariance, $Var(X)=Cov(X,X)$.
+
+ \subsection{Pearson correlation coefficient }
+ It is a measure of linear correlation between two distribution (probability) or two sets of data (statistics).
+\begin{customDef}\textbf{Pearson correlation coefficient(PCC) })\\
+ Given two random variables $X,Y$, we define the \textbf{PCC} as: \[
+ \rho(X,Y)=\frac{Cov(X,Y)}{\sqrt{Var(X)Var(Y)}} \quad\textrm{\textbf{(probability)}}
+ \]
+ If we have 2 sets of data $\overline{X}=\{x_i\}, \overline{Y}=\{y_i\}$ with mean respectively $\mu_X,\: \mu_Y$, we define it as:\[
+\rho = \frac{\sum_i[(x_i-\mu_X)(y_i-\mu_Y)]}{\sqrt{\sum_i[(x_i-\mu_X)^2(y_i-\mu_Y)^2]}}=\frac{\sigma^2_{XY}}{\sqrt{\sigma_X^2\sigma_Y^2}} \quad\textrm{\textbf{(statistics)}}
+ \]
+\end{customDef}
+ This coefficient $\in [-1,1]$. A negative value indicates an \textbf{inverse linearity relationship} between variables/data. If the value is near $0$, then there is no correlation.
+ \subsection{Linear regression}
+ The \textbf{linear regression} is the simplest model fitting problem. Its goal is to find a linear function in the form $y=mx+q$ that \textbf{better approximates} the behavior of 2 sets of data $\overline{X}=\{x_i\}$ and $\overline{Y}=\{y_i\}$. 
+ \begin{figure}[H]
+                \centering
+                        \includegraphics[width=300px]{pics/lin_reg.png}
+                        \caption{Linear regression.}
+\end{figure}
+\noindent Thus, supposing that we have $N$ data points ${p_i}$ such that $p_i=(x_i,y_i)$ we wish to minimize the function 
+\begin{eqwbg}
+E(m,q):=\frac{1}{N}\sum_{i=1}^N(y_i-mx_i+q)^2
+\end{eqwbg}
+Solving the following system:
+\begin{eqwbg}
+\begin{cases}
+\displaystyle
+    \frac{\delta E(m,q)}{\delta m}=0\\
+\\
+\displaystyle
+
+    \frac{\delta E(m,q)}{\delta q}=0
+\end{cases}
+\end{eqwbg}
+we obtain:
+\begin{eqwbg}
+\begin{aligned}
+ &q=\mu_Y-m\mu_X\\
+ &m=\frac{\sigma_{XY}^2}{\sigma_X^2}
+\end{aligned}
+\end{eqwbg}
+Where:\begin{itemize}
+\item $\mu_X,\, \mu_Y$ are the sample means of $\overline{X},\,\overline{Y}$, 
+\item $\sigma^2_{XY}$ is the covariance of $(\overline{X},\overline{Y})$,
+\item $\sigma^2_X$ is the variance of $\overline{X}$
+\end{itemize}
+This method is also called \textbf{Least Squares Method}.
+\subsection{Spurious correlation}
+ A \textbf{spurious correlation} occur when two or more random variables or variables are correlated but not causally related, due to either coincidence or the presence of a certain third,\textbf{ hidden, unobserved or unseen factor} referred to as a \textbf{confounding factor} (or "lurking variable").
+It's always important to remember that: 
+\begin{adjustwidth}{25mm}{25mm}
+                 \rule[0.1cm]{12cm}{0.6mm}
+                 \centering
+                    \textit{ Correlation \textbf{does not} implies causation.
+                    }\\
+        \rule[0.1cm]{12cm}{0.6mm}\\
+\end{adjustwidth}
+ \begin{figure}[H]
+                \centering
+                        \includegraphics[width=300px]{pics/Spurious.png}
+                        \caption{Example of a spurious correlation with a confounding variable.}
+\end{figure}
+\subsection{Bidirectional causation}
+Cause-effect relationship are not always unidirectional and can have very complex models. A good example of a bidiretional causation model are the \textbf{Lotka-Volterra} equations, also known as the \textbf{predator–prey} equations:
+\begin{eqwbg}
+\begin{cases}
+    \displaystyle \frac{dx}{dt}= \alpha x - \beta xy\vspace{3mm}\\
+    \displaystyle \frac{dy}{dt}= \gamma y - \delta xy
+\end{cases}
+\end{eqwbg}
+We can imagine the two variables $x,y$ as the population of a prey and relative predator that vary over time $t$ in an ecosystem.
+ \begin{figure}[H]
+                \centering
+                        \includegraphics[width=300px]{pics/lotka.png}
+                        \caption{A prey-predator system, where prey=$x$ and predator =$y$}
+\end{figure}
+
+%\section{Distributions and densities(TODO)}
+%In this section will be described some of the most common distributions.\\(TODO)
+%(INTRODUCE HERE OPERATIONS BETWEEN R.V., SUM/CONVOLUTION OF RV AND SUM OF VARIANCE/MEAN)
+%\subsection{Gaussian }
+%\subsection{Poisson }
+%\subsection{Binomial and Bernoulli }
+%\subsection{Log-normal}
+%\subsection{Power law}
+%\subsection{Zipfian}
+%\subsection{Pareto}
+
+\section{Random variables generation}
+Methods introduced in this section are Montecarlo-based. \textbf{Montecarlo} methods are a broad class of computational algorithms that rely on repeated random sampling to obtain numerical results, exploiting a known pseudo random generator of numbers in an arbitrary interval interval $[a,b]$. The underlying concept is to use randomness to solve problems that might be deterministic in principle. Monte Carlo methods are also mainly used in other problem classes like optimization and numerical integration. 
+\subsection{Inversion method}
+\textbf{Inversion method} states that if $X$ is a continuous random variable with a \textbf{strictly monotonic} cumulative distribution function $F_X$, then the random variable $F_X(X)$ has a uniform distribution on $[0,\,1]$. \textbf{The inversion method} consist on taking the inverse of this: specifically, if $Y$ has a uniform distribution on $[0,\,1]$ and if $X$ has a cumulative distribution $F_X$, then the random variable $F_X^{-1}(Y)$ has the same distribution as $X$. 
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=260px]{pics/inversion.png}
+                        \caption{Representation of the inversion method}
+\end{figure}
+\subsection{Relation method(TODO)}
+TODO (esempio, lognormale, bernoulli-binomiale etc)
+\subsection{Rejection method}
+It's based on the geometrical interpretation of the probability dentrity function.
+Let $X$ be a random variable such that $supp(p(x))<\infty$. Consider the smallest rectangle that fully contains the p.d.f. with sides parallel to x and y axis. This rectangle has the interval  $B=[min_x(supp(p(x)), max_x(supp(p(x))]$ as base and the interval $H=[0,max(p(x))]$ as height.
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=260px]{pics/rejection.png}
+                        \caption{Representation of the rejection method}
+\end{figure}
+\noindent Now, consider the rejection function $R_f(x,y)$:
+\begin{eqwbg}
+R_f(x,y)=
+\begin{cases}
+    1 \quad \textrm{if the point x,y is under the p.d.f,}\\
+    0 \quad \textrm{otherwise}
+\end{cases}
+\end{eqwbg}
+We can reproduce the behavior our random variable X by computing $R_f(x,y)$ with  $x$ and $y$ generated from two random variables uniform in $B$ and $H$.
+%\section{Numerical methods for approximation (TODO)}
+
+
+\section{Information Theory}
+Consider a random variable $X$. If we suppose that we know in advance the value of an observation of $X$, let's say $x^*$, we can guess that the "information" that we have about  $X$ is bigger as  smaller the probability of the event $x^*$. Thus, we can define the \textbf{information} of that event as:
+\begin{eqwbg}
+h(x^*)=-\log_2p(x^*)
+\end{eqwbg}
+\noindent Thus, we can define the \textbf{average amount of information} of a random variable X as: 
+\begin{customDef}\textbf{Entropy:}\\
+ \[
+H[X]=-\sum_Xp(x)\log_2p(x)
+\]
+\end{customDef}
+This quantity is called \textbf{entropy}. The choice of the basis of the algorithm is arbitrary. While using the base of $b$, we can interpret $H[X]$ as a lower bound for \textbf{the minimum theoric number $B$ of $\bs{b-}$digits}  required to represent the information conveyed by the random variable $X$. If the base is 2, the digits are \textbf{bits}.\\
+We can  extend the definition of entropy for continuous random variables.
+Consider the continuous r.v. $X$ with its probability density function p(x), \textbf{assumed continuous}. Divide the support of p(x) into bins of width $\Delta$. For the \textbf{mean value} theorem we know that must exists an $x_i$ such that: 
+\begin{eqwbg}
+\int_{i\Delta}^{(i+1)\Delta}p(x)\,dx=p(x_i)\Delta
+\end{eqwbg}
+\noindent Now, we can "quantize" the random variable $X$ in this way: \[
+\textrm{if } x\in [i\Delta, (i+1)\Delta] \implies
+x=x_i,\:p(x)=p(x_i)\Delta
+\]
+After this procedure, $X$ become a discrete r.v. with the event set given by ${x_i}$ and $p(x)=p(x_i)\Delta$. Now, we can express the \textbf{entropy} $H_\Delta$ as
+\begin{eqwbg}
+\begin{aligned}
+ H_\Delta&=-\sum_ip(x_i)\Delta\log (p(x_i)\Delta)\\
+        &=-\sum_ip(x_i)\Delta\log(p(x_i))-\log(\Delta)\sum_ip(x_i)\Delta\\
+        &= \underbrace{-\sum_ip(x_i)\Delta\log(p(x_i))}_{\alpha}\:\:\underbrace{-\log(\Delta)\sum_ip(x_i)}_\beta
+\end{aligned}
+\end{eqwbg}
+\noindent Now, consider $\lim \Delta \rightarrow 0$. The term $\alpha$ becomes :
+\begin{customDef}\textbf{Differential entropy}\\
+\[H_\delta[X]= -\int_X p(x) \log p(x)\,dx \]
+\end{customDef}
+The term $\beta$ instead goes to $\infty$. This reflect the fact that while we want to describe a continuous variable, the number of bits required grows as the precision of the quantization increases ($\Delta \rightarrow 0$)
+%Obviously, in practice it holds that $B=\ceil{H[X]}$.
+\subsection{Conditional and relative entropy}
+Suppose having a joint probability density function $p(x,y)$ of two random variables $X$ and $Y$. The information that we obtain if we get the outcome of  $y$ \textbf{conditioned} to the fact that we already know the outcome of $x$, let's say $x_0$, is :\begin{eqwbg}
+h(y\mid x_0)=-\log(\,p(y\mid x_0))
+\end{eqwbg}
+\noindent This quantity can also be seen as the additional information required to specify $y$ while knowing that $x=x_0$.
+Thus, we can say that the \textbf{average} additional information required to specify $y$ given $x$ is:\begin{customDef}\textbf{Conditional entropy}
+\[
+H[Y\mid X]=\int_X\int_Yp(x,y)\log(p(y\mid x))\,dx\,dy
+\]
+That is the conditional entropy of $Y$ given $X$
+\end{customDef} 
+We can see that if $X,Y$ are \textbf{independent}, $H[Y\mid X]=H[Y]$. Generally,
+for the \textbf{product rule}, it holds:
+\begin{eqwbg}
+H[X,Y]=H[Y\mid X]+H[X]
+\end{eqwbg}
+\noindent (consideration, todo)\\
+\\
+Now, consider a random variable $X$ with p.d.f $p(x)$. Suppose that we want to transmit $x$ using an optimal coding scheme built over an approximated model of the true distribution $p(x)$, let's say $q(x)$. The \textbf{average additional information} required to specify  $x$ as a result of usinq $q$ instead of $p$ is:
+\begin{customDef}\textbf{Relative entropy}\\
+\[
+\begin{aligned}
+ \textrm{KL}(p||q)&=-\int_X p(x)\log(q(x))\,dx-\left(-\int_X p(x)\log(p(x))\,dx\right)\\
+            &=-\int_X p(x)\log\left(\frac{q(x)}{p(x)}\right)\,dx
+\end{aligned}
+\]
+\end{customDef}
+Relative entropy is also known as the \textbf{Kullback-Leibler divergence}, and it can be seen as the degree of dissimilarity between $p(x)$ and $q(x)$. It has the following core properties:\begin{itemize}
+    \item \textbf{Asymmetry}: $\textrm{KL}(p||q) \not = \textrm{KL}(q||p)$,
+    \item \textbf{Monotony}: $\textrm{KL}(p||q)\geq 0$, 
+    \item $\textrm{KL}(p||q) =0 $ \textbf{iff} $p(x)=q(x)$ (sure? todo)
+\end{itemize}e
+Now consider two probability density functions $p(x),p(y)$ of two \textbf{dependent} random variables $X,Y$. We can measure their \textbf{degree of dependancy} with the \textbf{mutual information} between $X$ and $Y$:
+\begin{customDef}\textbf{Mutual information}
+\[
+\begin{aligned}
+ M_I(X,Y)&=\textrm{KL}(\,p(x,y)||p(x)p(x))\\
+         &=-\int_X\int_Yp(x,y)\log\left(\frac{p(x)p(y)}{p(x,y)}\right)\,dx\,dy
+\end{aligned}
+\]
+\end{customDef}
+Using sum and product rule, we obtain: 
+\begin{eqwbg}
+M_I(X,Y)=H(X)-H(X\mid Y)=H(Y)-H(Y\mid X)
+\end{eqwbg}
+We can see the \textbf{mutual information} as \textbf{the reduction of uncertainity} about $x$ by virtue of being told the value of $y$ and viceversa. If they are independent, there is no reduction and $M_I(X,Y)=0$.
+\subsection{Probability and geometry in high dimensional spaces}
+Suppose having: \begin{itemize}
+    \item A vector of $n$ i.i.d. random variables: $\overline{X}=(X_i),\,\, i=1..n$,
+    \item The same entropy for each random variable $X_i$, let's say $H$ (trivial, they're i.i.d.)
+    \item Each observation of $\overline{X}$ is a vector :  $\overline{x}=(x_i),\,\, i=1...n$
+\end{itemize}
+It holds the following property:\begin{customDef}\textbf{Asymptotic equipartition property\\}
+Sufficiently long sequences of i.i.d. random variables are jointly uniform
+\[
+\lim_{n \rightarrow \infty}-\frac{1}{n}\log (p(X_1,X_2...X_n))=H
+\]
+Or, we can also write  :\[
+\lim_{n \rightarrow \infty}p(X_1,X_2...X_n)=2^{-nH}
+\]
+Where the base of the exponential is the same used to compute $H$(?).
+\end{customDef}
+As we can see, as $n$ grows, each observation $\overline{x}$ has the same probability to occur, that only depends from $n$ and $H$. 
+Thus, we can now give the following definition: \begin{customDef}\textbf{Typical set}\\
+We define the \textbf{typical set} $A^{(n)}$ as the set of the $m$ $n$-uples  $\{(x_i)_j\}$,\, $j=1...m,\,i=1...n$
+such that
+\[
+2^{-n(H+\varepsilon)}\leq p(x_1,x_2...x_n)\leq2^{-n(H-\varepsilon)}
+\]
+The base of the exponential must be the same of the base used to compute $H$.
+\end{customDef}
+Therefore, the \textbf{asymptotic equipartition property} states that for $ n \rightarrow \infty$ every observation value belong to the typical set (?todo). Remind that the entropy $H$ is defined as the \textbf{average information} conveyed by a random variable.  
+\subsection{Properties of high dimensional spaces}
+In order to introduce some counter-intuitive concept, let's consider the following mathematical construct: \begin{customDef} \textbf{$\bs{n-}$sphere}\\
+An \textbf{$\bs{n-}$sphere} is the set of points in $(n + 1)$-dimensional Euclidean space that are situated at a constant distance $r$ from a fixed point, called \textbf{center}:
+\[
+S^n(r)=\{x\in \R^{n+1}: ||x||=r\}
+\]
+
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=160px]{pics/2sphere.png}
+                        \caption{2-sphere wireframe as an orthogonal projection}
+\end{figure}
+\noindent It is the \textbf{generalization of an ordinary sphere} in the ordinary three-dimensional space.
+\noindent\textbf{The dimension of $\bs{n-}$sphere is n}, and must not be confused with the dimension $(n + 1)$ of the Euclidean space in which it is naturally embedded. An $n-$sphere is the surface or boundary of an $\bs{(n + 1)}$\textbf{-dimensional ball}.
+\end{customDef}
+Let's define $V_r^{(n)}$ as the $n-$dimensional volume of the $\bs{n}$\textbf{-dimensional ball} with radius $r$. Now, let's compute:
+\begin{eqwbg}
+\frac{V_1^{(100)}-V_{0.99}^{(100)}}{V_1^{(100)}} \approx 0.63
+\end{eqwbg}
+\noindent That is, the fraction of the 100-dimensional volume that is located on the most external shell on the 100-dimensional ball. This means that as $n$ grow, the n-dimensional volume tends to be distributed on \textbf{the outer surface}.\\
+Now, let's consider a vector of $N$ samples of a random variable $X$, let's call it $X^*=(x_i)$, i=1...N. 
+From the \textbf{2.38} and the \textbf{Chebychev inequality} we can write:
+\begin{eqwbg}
+p\left(\:\left|\frac{1}{N}\sum_{1=1}^Nx_i-E(X)\right|\geq\varepsilon\right)\leq\frac{Var(X)}{N\varepsilon^2}
+\end{eqwbg}
+\noindent With the following limit we get:
+\begin{eqwbg}
+\lim_{N\rightarrow \infty}p\left(\:\left|\frac{1}{N}\sum_{i=1}^Nx_i-E(X)\right|\geq 0 \right)=0
+\end{eqwbg}
+\noindent Which means that, for high $N$ we can write
+\begin{eqwbg}
+\lim_{N\rightarrow \infty} p\left(\sum_{i=1}^N x_i = NE(X)\right)= 1
+\end{eqwbg}
+\noindent Now, assume $E(X)=0$ for simplicity. We can write
+\begin{eqwbg}
+Var(X)=E(X^2)-E(X)^2=E(X^2)
+\end{eqwbg}
+\noindent Writing the norm of $X^*$using the 2.69 and 2.70, we obtain 
+\begin{eqwbg}
+\begin{aligned}
+    \lim_{N\rightarrow\infty}||X^*||^2&=\sum_{i=1}^Nx_i^2\\
+             &=NE(X^2)\\
+             &=NVar(X^2)
+\end{aligned}
+\end{eqwbg}
+\noindent As the number of components \textbf{increases}, the norm of the vector \textbf{diverges}. \\Now, consider random variable $Y$ independent from X with mean 0 and consider another vector $Y^*=(y_i)$, $i =1...N$ made with samples of $Y$, such that, for $N \rightarrow\infty$, it holds $||X^*||^2=||Y^*||^2= NVar(X)$. We can write:
+\begin{eqwbg}
+\begin{aligned}
+    E((X-Y)^2)&=E(X^2)+E(Y^2)-2E(XY)\\
+    &=2Var(X) - \underbrace{2E(X)E(Y)}_{=0 \textrm{ for assumption}}
+\end{aligned}
+\end{eqwbg}
+\noindent Thus we obtain that:
+\begin{eqwbg}
+\begin{aligned}
+    \lim_{N\rightarrow\infty} ||X^*-Y^*||^2&=2NVar(X)\\
+    &=||X^*||^2+||Y^*||^2
+\end{aligned}
+\end{eqwbg}
+\noindent This means that as $N$ grows, \textbf{every vector tends to be orthogonal}
+\section{Statistical inference}
+In the field of applied data science, there are two basic classes of problems that are solved using inferential statistics::\begin{itemize}
+    \item \textbf{Estimation} problems: that includes prediction, forecasting etc
+    \item \textbf{Decision problems}, that includes classification, regression etc
+\end{itemize}
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=350px]{pics/inference.png}
+                        \caption{Representation of the relationship between statistics and probability}
+\end{figure}
+To solve these problems we often do not have models, only data. Procedures that allow models to be built from data are widely used in data science because they allow information to be inferred that is not explicitly available in the data.\\
+A core concepts while trying to infer models from data is the \textbf{sufficient statistics}:
+
+ \begin{adjustwidth}{25mm}{25mm}
+                 \rule[0.1cm]{12cm}{0.6mm}\\
+                    \textit{A statistic indicator calculated from samples is \textbf{sufficient with respect to a statistical model} and its associated unknown parameter if no other indicator that can be calculated from the same sample provides\textbf{ any additional information} to the model.
+                    }\\
+        \rule[0.1cm]{12cm}{0.6mm}\\
+\end{adjustwidth}
+Suppose having a set of observations $X^*=\{x_i\},\: i=1..N$ that come from the same random variable $X$, where each sample is independent. Assume that the \textbf{distribution family} of the p.d.f. of $X$  is known, let' call it $p(x|\overline{\theta})$, where $\overline{\theta}$ is the set of parameters that are \textbf{sufficient statistics} for that distribution. For example, if we know that $p(x|\overline{\theta})$ belong to the family of the  Normal distributions, then $\overline{\theta}=\{\mu,\sigma^2\}$ is the set of parameters that \textbf{unambiguously define a distribution}.\\
+In general, if $N$ is the dimension of the \textbf{sample set}, we define the \textbf{estimator} for a parameter $\theta$ as a \textbf{real-valued function} $\theta_f$: 
+\begin{eqwbg}
+\theta_f: \R^N\rightarrow \R
+\end{eqwbg}
+\noindent This function \textbf{"estimates"} the true value of the parameter $\theta$ for each possible set of samples. Since the argument of an estimator is \textbf{the outcome of a random variable}, the estimator can be seen itself as a \textbf{random variable}. In the previous example, $\mu_f(X^*)$ and $\sigma^2_f(X^*)$ are two estimators for the \textbf{mean} and the \textbf{variance} for the model of the Normal distribution that we wish to find. \\There are different procedures commonly used to build estimators, but they can be grouped in 2 main families: \begin{itemize}
+    \item \textbf{Deterministic methods}: each parameter $\theta$ is a \textbf{fixed} but \textbf{unknown} value,
+    \item \textbf{Bayesian methods}: each parameter $\theta$ is itself a \textbf{random variable} with its own distribution $p(\theta)$, called \textbf{prior distribution}. This distribution allows to convey in the model an information coming from some \textbf{a-priori assumptions} known \textbf{before} observing the samples. These assuptions are may have supporting arguments that vary according to the use case (e.g. physical reasons).
+\end{itemize}
+\subsection{Bias/Variance trade-off}
+Let's consider an estimator $\theta_f$ for the parameter $\theta$. Since the $\theta_f$ is function of the samples and can be seen as a random variable itself,  we can measure the \textbf{dispersion} of the estimator around the parameter with the \textbf{Mean Square Error:}
+\begin{eqwbg}
+MSE(\theta_f,\theta)=E(\theta_f-\theta)^2
+\end{eqwbg}
+\noindent The \textbf{MSE} can be decomposed in:
+\begin{eqwbg}
+MSE(\theta_f,\theta)=\underbrace{b(\theta_f,\theta)}_{\textrm{Estimation  bias}}+\underbrace{Var(\theta_f)}_{\textrm{Variance}}
+\end{eqwbg}
+\noindent The \textbf{estimation bias} is defined as: 
+\begin{eqwbg}
+b(\theta_f,\theta)=E(\theta_f)-\theta
+\end{eqwbg}
+\noindent If the estimation bias is $= 0$, the estimator $\theta_f$ is said \textbf{unbiased}, otherwise is said \textbf{biased}
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=350px]{pics/bias.png}
+                        \caption{$\hat{\theta}_2$ is a biased estimator, $\hat{\theta}_1$ is not.}
+\end{figure}
+\noindent For unbiased estimators there exists a theoretical lower bound for the variance (\textbf{Cramer-Rao bound)}; however a biased estimator might have, ultimately, a \textbf{smaller MSE} than an unbiased one (and this is what counts in the end)
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=350px]{pics/biasedun.png}
+                        \caption{Biased estimator with small variance may be preferable to unbiased estimator with large variance}
+\end{figure}
+\noindent Having a set of samples $X^*={x_i},\: i=1...N$; an unbiased estimator $\theta_f$ that \textbf{converges in probability (weak)} to the parameter $\theta$ is said \textbf{consistent} 
+\begin{eqwbg}
+\lim_{N\rightarrow\infty}p(|\theta_f(X^*)-\theta|>\varepsilon)=0
+\end{eqwbg}
+\noindent \textbf{(TODO: Vedi definizioni del baldi)vedi cramer rao / informazione fisher)}\\\\
+
+\subsection{Minimum mean squared error/Least squares error}
+Suppose having two random variables $X$ and $Y$, and we want to estimate the outcome of $Y$ while observing $X$. This esteem is given by $\hat{Y}$:
+\begin{eqwbg}
+\hat{Y}=f(X,\theta)
+\end{eqwbg}
+\noindent This assumes that we know the family of the function $f$ but not the value of the specific parameter $\theta$.
+The \textbf{Minimum mean squared error/Least squares error} is the process of finding  the parameter $\theta_{MMSE}$ that minimize the MSE between Y and $\hat{Y}$:
+\begin{eqwbg}
+\begin{aligned}
+\theta_{MMSE}&=\textrm{argmin}_\theta(E(Y-\hat{Y}))^2\\
+             &=\textrm{argmin}_\theta(E(Y-g(X,\theta)))^2
+\end{aligned}
+\end{eqwbg}
+\noindent In real applications, we don't have the analytical expressions that describe $X$ and $Y$, but we usually have samples sets like $X^*=\{x_i\}$ and $Y^*=\{y_i\};\: i=1...N$. In this case, we have to find $\theta_{LSE}$:
+\begin{eqwbg}
+\theta_{LSE} = \textrm{argmin}_\theta\left(\sum_{i=1}^N(y_i-f(x_i,\theta))^2\right)
+\end{eqwbg}
+\noindent This process of finding the parameter $\theta_{LSE}$ that minimizes this sum-squared-error (\textbf{SSE}) is called \textbf{least squared error} (\textbf{LSE}) or\textbf{minimum squared error} (\textbf{MSE}) \textbf{estimator}. We have seen this procedure in subsection (2.2.2). This procedure can be applied to \textbf{any function and any order} (space dimension).
+\subsection{Maximum Likelihood Estimation}
+Suppose having:\begin{itemize}
+    \item An unknown random variable $X$,
+    \item  a \textbf{set of samples} $X^*=\{x_i\},\:i=1...N$;
+    \item a \textbf{probability density function} $p(x|\overline{\theta})$, which is the approximation of the model that is supposed to generate the samples. $\overline{\theta}=\{\theta_j\},\: j=1...K$ is the \textbf{set of parameters}   that we wish to estimate
+\end{itemize} 
+The idea behind the \textbf{Maximum Likelihood Estimation (MLE)} approach is finding the best set of parameters $\overline{\theta}$ that fits the observed data. So we can give the following definition:
+\begin{customDef}\textbf{(joint) Likelihood }\\ 
+We define the \textbf{Likelihood } between the samples $X^*$ and the model $p(x|\overline{\theta})$ as $\mathcal{L}(\overline{\theta},X^*)$: \[
+\mathcal{L}(\overline{\theta},X^*)=\prod_{i=1}^Np(x_i|\overline\theta)
+\]
+Therefore, the \textbf{Log-Likelihood} is :\[
+\log({\mathcal{L}(\overline{\theta},X^*)})=\sum_{i=1}^N\log(p(x_i|\overline\theta))
+\]
+Since the logarithm is a \textbf{strictly monotonic function}, the two function share the same maximum on $\overline{\theta}$
+\end{customDef}
+Thus, let's call $\overline{\theta}_{MLE}$ the set of parameters that we wish to find :
+\begin{eqwbg}
+\overline{\theta}_{MLE}=\textrm{argmax}_\theta(\log({\mathcal{L}(\overline{\theta},X^*)})
+\end{eqwbg}
+\noindent We use the logarithm because it's easier from an analytical perspective.\\
+In general, MLE estimators have some interesting properties, since they are:\begin{itemize}
+    \item \textbf{Consistent}: see 2.79,
+    \item \textbf{Mostly unbiased}: the bias is $\propto \frac{1}{N}$, may need to worry at small $N$
+    \item \textbf{Efficient} for large $N$: you get the smallest possible error,
+    \item \textbf{Invariant}: a transformation of the parameters will not change the answer
+\end{itemize}
+Moreover, it holds the following:\begin{customTheo}\textbf{MLE efficiency theorem}\\
+The \textbf{MLE} will be \textbf{unbiased} and \textbf{efficient} if an unbiased efficient estimator \textbf{exists}.
+\end{customTheo}
+\subsection{Method of moments}
+Start with the same assumptions of the \textbf{MLE} method.
+\noindent The \textbf{Moments method} consist in solving in $\overline{\theta}$ the system of K equations:
+\begin{eqwbg}
+\begin{cases}
+\sigma^j(\,p)=\displaystyle\frac{1}{N}\sum_{i=1}^Nx_i^j\\
+\phantom{A}_{j=1...K}
+\end{cases}
+\end{eqwbg}
+That is, putting in an equality relationship the \textbf{equations of the statistics moments} of the $p(x|\overline{\theta})$ (\textbf{left terms}) and the \textbf{sample moments} computed on $X^*$ (\textbf{right terms}). If we have $P$ parameters, we need $P$ equations.
+We remind that, as shown in \textbf{Definition 2.6}, $\sigma^j(p)$ is in the form:
+\begin{eqwbg}
+\sigma^j(\,p)=\int_{-\infty}^\infty x \,p(x|\overline{\theta})\,dx
+\end{eqwbg}
+The moments are centered in $c=0$ for simplicity.
+\subsection{Maximum A Posteriori (MAP)}
+The \textbf{Maximum A Posteriori} is a Bayesian estimation method, thus each parameter has its own $p_i(\theta_i)$ \textbf{prior distribution}.
+This methods adds the information of the prior distribution over the \textbf{Maximum Likelihood Estimation} method.
+Let's suppose having:\begin{itemize}
+    \item a \textbf{set of samples} $X^*=\{x_i\},\:i=1...N$,
+    \item A \textbf{prior distribution} of the parameter, $p(\theta)$
+    \item a \textbf{probability density function} $p(x|\theta)$, which is the approximation of the model that is supposed to generate the samples. Assume a single prior distribution parameter for simplicity.
+\end{itemize}
+Using the \textbf{Bayes' theorem}, we can define the \textbf{a-Posteriori} distribution as $p(\theta|x)$:
+\begin{eqwbg}
+\begin{aligned}
+&p(\theta|x):=\frac{p(x|\theta)p(\theta)}{p(x)}\\
+&=\frac{\textrm{Likelihood $\times$ Prior dist.}}{\textrm{Standardization}}
+\end{aligned}
+\end{eqwbg}
+We can substitute the \textbf{standardization term} $p(x)$ with $\int_\theta p(x|\theta)\,d\theta$, which is a quantity expressed in terms that \textbf{also appear in the numerator}.
+\\The \textbf{MAP} procedure consist in \textbf{finding} the $\theta_{MAP}$ such that:
+\begin{eqwbg}
+\theta_{MAP}=\textrm{argmax}_\theta p(\theta | x)
+\end{eqwbg}
+As the data set size increases, \textbf{MAP} approaches to \textbf{MLE} solutions. This means that the prior information that we have about $\theta$ weights more if we don't have many samples.\\
+It can be demonstrated that the \textbf{MMSE} method can be interpreted as a bayesian method, since we can obtain $\theta_{MSE}$ (assuming a single parameter) through:
+\begin{eqwbg}
+\theta_{MSE}=E_\theta(p(\theta)|x)
+\end{eqwbg}
+MAP and MMSE then are \textbf{both bayesian approaches}: the MAP aim to finding the \textbf{mode} (max value) of the \textbf{a-posteriori} distribution while the MMSE focus on finding the \textbf{expected value}.
+\subsection{Restricted class estimators: overview(TODO)}
+\subsection{Maximum entropy distribution fitting}
+The principle of maximum entropy is \textbf{ubiquitous} in any science. While dealing with a set of data, if we \textbf{can 't make any assumption on the model} that generates it, we can interpret this principle by stating that the function with \textbf{the highest probability to be the one} that generates them is the one with the \textbf{highest entropy}.
+While searching for this function, we should put as constraint the fact that \textbf{it has to sum to 1} since it is a \textbf{probability distribution}. We can also compute \textbf{sample moments} (or any statistics) from the data and use them as additional constraints. The distribution that we wish to find is then the  \textbf{maximum entropy distribution}, let's call it $p_{ME}$. Let's now discuss the discrete case.\\ Suppose having a set of samples $X^*=\{x_i\},\, i=1..N$ and $M$ constraints (in addition to the fact that $\sum p_i=1$).
+We wish to solve:
+\begin{eqwbg}
+p_{ME}=\textrm{argmax}_pH(p) = \textrm{argmin}_p\left[\sum_{i=1}^Np_i\log(p_i)\underbrace{-\lambda_0\left(\sum_{i=1}^N(p_i-1)\right)}_{\textrm{Sum to 1 constraint}}\underbrace{-\sum_{j=1}^M\lambda_j\Phi(X^*)}_{\textrm{Extra constraints }}\right]
+\end{eqwbg}
+Where $\Phi(X^*)$ is a generic statistics of the data. The constraints are expressed with the \textbf{Lagrange multiplier method}. It can be demonstrated that the solution of the 2.91 is always a \textbf{Boltzman-Gibbs distribution} and it's always a \textbf{known remarkable distribution}. The resulting distribution only depends on the \textbf{statistics} used as constraint in the equation. A list of the maximum entropy distribution for a given constraints is available on \href{https://en.wikipedia.org/wiki/Maximum_entropy_probability_distribution}{here}.
+For example, with the only sum to 1 constraint, the resulting maximum entropy distribution is the \textbf{uniform} one.
+\section{Decision theory}
+Decision theory is a key field for the data science. It is an approach that is useful in different heterogeneous fields. and can be defined as follow:
+ \begin{adjustwidth}{25mm}{25mm}
+                 \rule[0.1cm]{12cm}{0.6mm}\\
+                    \textit{Decision theory is a discipline that studies and describes methods and criteria used to discern \textbf{information-bearing} patterns/signals from \textbf{random} patterns (\textbf{noise}) that distract from information }\\
+        \rule[0.1cm]{12cm}{0.6mm}\\
+\end{adjustwidth}
+Let's consider the simplest case: the \textbf{binary} decision: we have to detect the presence or the of something, let's imagine a \textbf{faulty component} as example. We can have 4 possible outcome while performing a decision:\begin{itemize}
+    \item \textbf{True positive}: the component is defective and it's correctly detected; 
+    \item \textbf{True negative}: the component is eligible and there s no detection;
+    \item \textbf{False positive}: the component is eligible but it is accidentally detected as defective;
+    \item \textbf{False negative}: the component is defective but it's not detected
+\end{itemize}
+We can also define 2 metrics for a given \textbf{decision process} and a \textbf{set of outcomes}:\begin{itemize}
+    \item \textbf{Precision:}
+    \begin{eqwbg}
+    \frac{\textrm{\# True positives}}{\textrm{\# (True positives+False positives)}}
+    \end{eqwbg}
+    \item \textbf{Recall:}
+    \begin{eqwbg}
+    \frac{\textrm{\# True positives}}{\textrm{\# (True positives+False Negatives)}}
+    \end{eqwbg}
+
+\end{itemize}
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=350px]{pics/prec_recall.png}
+                        \caption{Precision and recall. On the left-hand half there are positive values, on the right-hand half negative ones}
+\end{figure}
+The parameter that we monitor to decide the outcome of the decision process rarely provides a linear separation between \textbf{positives} and \textbf{negatives} cases. That's why, in practice it's impossible to reduce to 0 both false positives and false negatives: moreover, these 2 parameters are in a trade-off relationship. This relationship, for a given decision process, is described by its \textbf{ROC} (\textbf{Receiver Operating Characteristic}) curve, that shows how the percentage of true positives (respect to the total positives) and false positives vary while we increase the decision threshold of a parameter. An item is labeled as positive if the parameter exceeds the threshold.
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=\textwidth]{pics/ROCfig.png}
+                        \caption{ROC curve.}
+\end{figure}
+\noindent When the curve is a linear bisector we have the worst case: the decision is taken \textbf{randomly}. \\The scenario in which the decision process is made plays a key role: for examples in radar detection systems usually is preferred the have the lowest false positive rate, while in medical tests it's better to have the lowest false negative rate.
+\\These concepts can also be extended to the \textbf{multiclass} decision problems: suppose having $k$ classes $\{C_j\},\,j=1..k$. Each data point that is analyzed belong to a single class (in the \textbf{binary} case $k=2$). The \textbf{multiclass} decision problem consist in \textbf{predicting} the correct $C_j$  to which the points being analysed belong. The goodness of the prediction is described by a \textbf{confusion matrix}. For $k=2$ the confusion matrix tracks true positives, true negatives etc.
+
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=200px]{pics/confMat.png}
+                        \caption{Example of a confusion matrix for a multiclass decision problem with $k=8$. For a better prediction we observe high percentages on the diagonal}
+\end{figure}
+
+
+\subsection{Misclassification and expected loss}
+Consider a $K$-classes \textbf{classification} problem, in which he have:\begin{itemize}
+    \item An \textbf{input space} $\mathcal{X}$
+    \item An \textbf{input vector} $\ov{x} \in \mathcal{X}$, with an arbitrary dimension,
+    \item A list of $K$ \textbf{classes} $C_k,\,\, k\in\{1,2,3...K\}$ to which each input vector can be associated.
+\end{itemize}
+The probability, for an input vector, to belong to the class $C_k$ given that vector can be expressed with the \textbf{Bayes' Theorem (\ref{theo:bayes})}:
+    \begin{eqwbg}
+p(C_k|\ov{x})=\frac{p(\ov{x}|C_k)p(C_k)}{p(\ov{x})}
+ \end{eqwbg}
+ Observe that any of the quantities appearing in the previous equation can be obtained from
+the joint distribution $p(\ov{x}, C_k)$ by either \textbf{marginalizing} or \textbf{conditioning} with respect to
+the appropriate variables. Above all, we can write the \textbf{denominator} as:
+\begin{eqwbg}
+p(\ov{x})=\sum_{k=1}^Kp(\ov{x},C_k)=\sum_{k=1}^Kp(\ov{x}|C_k)p\left(C_k\right)
+\end{eqwbg}
+We can interpret $p(C_k)$ as the \textbf{prior} probability for the
+class $C_k$, and $p(C_k|\ov{x})$ as the corresponding \textbf{posterior} probability. If our aim is to \textbf{minimize} the \textbf{misclassification rate} (i.e. the probability of assigning $\ov{x}$ to the \textbf{wrong} class), then intuitively we will assign the input vector to the class having the \textbf{higher} \textbf{posterior} probability. 
+Now, assume that is known a \textbf{decision rule} that assigns each value of $\ov{x}$ to one of the $K$ available classes $C_k$:
+\begin{customDef}\textbf{Decision rule}:\\
+For $K$-classes \textbf{classification} problem, a \textbf{decision rule} is a function $\psi(\cdot)$ such that:\[
+\psi:\mathcal{X}\rightarrow \{1,2,3...K\}
+\]
+That is, a function that goes from the \textbf{input} space to the \textbf{classes} space.
+\end{customDef}
+\noindent Such a rule will divide the input space into $K$ regions $R_k$ called \textbf{decision regions}:
+\begin{customDef}\textbf{Decision regions:}\\
+For $K$-classes \textbf{classification} problem, a \textbf{decision rule} $\psi$ defines $K$ decision regions $R_k$:\[
+R_k:=\{\ov{x}|\,\,\ov{x}\in \mathcal{X},\, \psi(\ov{x})=C_k\}
+\]
+\end{customDef}
+Note that each decision region need not be contiguous but could comprise some number of disjoint regions.  The boundaries between
+decision regions are called \textbf{decision boundaries} or \textbf{decision surfaces}.
+In order to find the \textbf{optimal} decision rule $\psi$ (i.e. the one that minimize the \textbf{misclassification}) observe that
+a mistake occurs (for a given $\psi$) when an input $\ov{x}$ belongs to $R_k$  but the \textbf{true} class for that $\ov{x}$ is $C_h,\,h\not = k$. The probability of
+this occurring (given $\psi$) is :
+\begin{eqwbg}
+\begin{aligned}
+\underset{\psi}{p(\text{mistake})}=&\sum_{k=1}^K\sum_{\substack{h=1 \\ h\not=k}}^K p(\ov{x}\in R_k,C_h)\\
+=&\sum_{k=1}^K\sum_{\substack{h=1 \\ h\not=k}}^K\int_{R_k}p(\ov{x},C_h)
+\end{aligned}
+\end{eqwbg}
+In order to simplify notation, consider now a classification task with 2 classes ($K=2$). The mistake probability become:
+\begin{eqwbg}
+\begin{aligned}
+\underset{\psi}{p(\text{mistake})}&=p(\ov{x}\in R_1,C_2)+p(\ov{x}\in R_2,C_1)\\
+&=\int_{R_1}p(\ov{x},C_2) + \int p(\ov{x},C_1)
+\end{aligned}
+\end{eqwbg}
+Applying the product rule, we obtain:
+\begin{eqwbg}
+\label{eqn:pmist}
+p\underset{\psi}{(\text{mistake})}=\int_{R_1}p(C_2|\,\ov{x})p(\ov{x})+\int_{R_2}p(C_1|\,\ov{x})p(\ov{x})=
+\end{eqwbg}
+Thus, to minimize $p(\text{mistake})$ we should arrange that each $\ov{x}$ is assigned to
+whichever $C_k$ has the \textbf{smaller} value of the integrand in (\ref{eqn:pmist}). Thus, if $p(\ov{x}, C_1)$ $>$
+$p(\ov{x}, C_2)$ for a given value of $x$, then the \textbf{best} rule would assign that $x$ to class $C_1$. Hence, the best rule assigns each $\ov{x}$ to the class $C_k$ with the \textbf{highest} probability $p(C_k|\ov{x})$, and this is also reasonable from an intuitive point of view. This fact is more explicit if we write the formula that describe the probability of the \textbf{correct assignment}, that is, for the generic $k$-classification task:
+\begin{eqwbg}
+\begin{aligned}
+p(\text{correct})=&\sum_{k=1}^Kp(\ov{x}\in R_k,C_k)\\=&\sum_{k=1}^K\int_{R_k} p(\ov{x},C_k)
+\end{aligned}
+\end{eqwbg}
+\subsection{Loss and reject region}
+For many tasks, the goal is not simply minimizing the number of \textbf{misclassifications}.
+For example, if we want to label as "\texttt{NOK}" (\textbf{defective}) or "\texttt{OK}" (\textbf{not defective}) parts coming out of an industrial chain, labelling as "\texttt{OK}" a part that belongs to the "\texttt{NOK}" class is \textbf{worse} than the opposite, because it would lead to the marketing of a defective part.
+We can formalize such issues through introducing a \textbf{loss}, (or \textbf{cost}) \textbf{function}, which a \textbf{measure} of loss incurred in taking any of the possible assignments. Our goal is then to \textbf{minimize} the \textbf{total loss} incurred. Note that some authors consider instead a \textbf{utility function}, whose value they aim to maximize. Suppose that, for an input $\ov{x}$, the true class is $C_i$ and that we assign
+$x$ to class $C_j$. In so doing, we incur some
+level of \textbf{loss} that we denote with the \textbf{scalar}  $\ell_{ij}$ , which we can view as the $i,j$ element of a \textbf{loss
+matrix}, let's say $\mathcal{L}$. For instance, in our binary classification example, we might have a loss matrix of the form
+shown in the following table:
+\begin{table}[H] 
+\centering
+\resizebox{9cm}{!} 
+{ 
+\begin{tabular}{ |c |c |c| c| }
+\cline{3-4}
+\multicolumn{2}{c|}{}& \multicolumn{2}{|r|}{Assigned to:}\\
+\cline{3-4}
+ \multicolumn{2}{c|}{} & OK & NOK \\ 
+\cline{3-4}\hline
+ \multirow{2}{*}{\rotatebox[origin=c]{90}{Truth:}} & OK & \cellcolor{green!80!yellow!50} 0 & \cellcolor[HTML]{FF6666} 1 \\
+\cline{2-4}
+   & NOK & \cellcolor[HTML]{FF6666} 1000 & \cellcolor{green!80!yellow!50} 0 \\ 
+\hline
+\end{tabular}}
+%\caption{Versiones a comparar.} 
+\end{table}
+
+\noindent This $\mathcal{L}$ says that there is \textbf{no loss} incurred
+if the \textbf{correct decision} is made, there is a loss of 1 if a good component is detected as
+defective, whereas there is a loss of 1000 if a defective component is labeled as good.
+The optimal solution is the one which \textbf{minimizes} the \textbf{loss function}. However,
+the \textbf{loss function} depends on the \textbf{true} class, which is \textbf{unknown}. For a given input
+vector x, our \textbf{uncertainty} in the true class is expressed through the joint probability
+distribution $p(\ov{x}, C_k)$ and so we seek instead to minimize the \textbf{average loss}, where the
+average is computed with respect to this distribution, which is given by:
+\begin{eqwbg}
+\label{eqn:exploss}
+E\left[\mathcal{L}\right]=\sum_i\sum_j\int_{\mathcal{R}_j}\ell_{ij}p(\ov{x},C_i)\,d\ov{x}
+\end{eqwbg}
+Therefore the goal is to define/choose the decision regions in order to \textbf{minimize the expected loss} (\ref{eqn:exploss}). This means that, when we are going to assign an $\overline{x}$ to a region, the \textbf{optimal} choice is the $\mathcal{R}_{j^*}$ region, where $j^*$ is chosen as : 
+\begin{eqwbg}
+\begin{aligned}
+j^*:=&\underset{j}{\text{min}}\left[ \sum_i\ell_{ij}p(\ov{x},\,C_i) \right]\\
+=&\underset{j}{\text{min}}\left[\sum_i\ell_{ij}p(C_i|\ov{x})\right]
+\end{aligned}
+\end{eqwbg}
+Where the second equality can be obtained by applying the \textbf{ product rule}. Observe that the choice of the optimal class to assign a generic $\ov{x}$ is trivial once that we know the posterior conditional probabilities $p(C_j|\ov{x})$.
+Observe that \textbf{the weight} associated to the region that assigns the $\ov{x}$ to the \textbf{correct} class ($\ell_{ii}$) is the minimum possible (usually 0). We can also define a \textbf{reject condition}, which is satisfied when \textbf{no} a \textbf{posteriori probability} value is bigger than a certain threshold $\theta_{th}$:
+\begin{eqwbg}
+p(C_i|\ov{x})< \theta_{th}\,\forall i
+\end{eqwbg}
+When this condition is satisfied, the value of $\ov{x}$ is not assigned to any class $C_k$. This is called \textbf{reject option}. The \textbf{loss} value associated to the reject option is usually an \textbf{empirical static value}.
+\subsection{Generative and Discriminative models}
+\label{sub:gen_disc}
+We can decompose a standard predictive model into two phases: inference and decision. In inference we use samples from the dataset to build a probable model, e.g. a posterior probabilities $p(C_K|\ov{x})$. In the decision phase, choices are made in accordance with a pre-determined criterion, e.g. the minimisation of a loss function. An alternative method, for a K-class decision problem, is to find a \textbf{discriminant function} $f(\cdot)$ such that:
+\begin{eqwbg}
+f: \mathcal{X}\rightarrow \{C_1,C_2...C_K\}
+\end{eqwbg}
+That is, a function that maps directly an input to the expected class. In this case, no probabilistic models are built.
+probabilitic models describing the input and/or output of an odel are complicated to construct (and it is not always possible to do so), but they do have significant advantages.
+We can distinguish two main categories of predictive models that exploit probabilistic models:\begin{itemize}
+    \item \textbf{Discriminative models}:\\ with this approach, the posterior probability model is built directily in the inference stage. Then, these results are used in the decision stage;
+    \item \textbf{Generative models}:\\ with this approach, the inference stage is used to determine the class-conditional model (e.g. $p(\ov{x}|C_k)$. After that, with the Bayes' Theorem (\ref{theo:bayes}), the posterior class probabilities are determined. Equivalently, it can be modeled directly the joint distribution $p(\ov{x},C_k)$ and then normalize to obtain the posterior probabilities.
+    More generally, all the approaches that builds the distribution of the inputs as well outputs are considered generative models. This kind of model can be used to generate synthetic data points 
+\end{itemize}
+Both methods involve building a model for the posterior distributions. There are several practical reasons for wanting to construct these distributions instead of simply using a \textbf{discriminative function}:\begin{itemize}
+    \item The decision criterion (e.g. loss matrix) can be modified in any moment. With a discriminative function, any change to the criterion require to solve the classification problem afresh;
+    \item Posterior probabilities allows to model an optimal rejection criterion;
+    \item Posterior probabilities allows to compensate for heterogeneous class priors and to use balanced artificial datasets;
+    \item The integration/combination of simpler models with the aim of obtaining more complex models is easier.
+\end{itemize}
+\section{ANOVA: Analysis of Variance}(TODO)
+The \textbf{ANOVA} method (ANalysis Of VAriance) is a collection of statistical models and their associated estimation procedures (such as the "variation" among and between groups) used to analyze the differences among \textbf{means}. The strenght of this method relies on the fact that it doesn't make any \textbf{strong} assumption about the data.\\
+It is usually used when there is a \textbf{comparison factor} for which is required to \textbf{test an hypothetical influence} on another variable (supposed) independent. ANOVA can be considered both a decision and an estimation method (since the true models/parameter are unknown).\\
+Thus, given $K$ groups of samples differing in the \textbf{comparison factor}, let's call them $X^*_j=\{x_i\},\;j=1...K,\,i=1...N_j$, we can start by enunciating the \textbf{null hypothesis} $H_0$:
+\begin{eqwbg}
+\begin{aligned}
+\textrm{\textit{"The g}}&\textrm{\textit{roup means are all equal":}}\\
+&H_0: \mu_1=\mu_2=...\mu_K
+\end{aligned}
+\end{eqwbg}
+Instead, the \textbf{alternative hypothesis} is $H_1$:
+\begin{eqwbg}
+\begin{aligned}
+\textrm{\textit{"The }}&\textrm{\textit{group means are \textbf{not} all equal":}}\\
+&H_1: \mu_p \not = \mu_q \textrm{ for some $p,q$}
+\end{aligned}
+\end{eqwbg}
+The simples method, the \textbf{one-way ANOVA}, depends on the \textbf{statistics} $F_\alpha$:
+\begin{eqwbg}
+F_\alpha:= \frac{\textrm{inter-groups variance}}{\textrm{intra-groups variance}}=todo      
+\end{eqwbg}
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=300px]{pics/anova1.png}
+                        \caption{Plot of $k$ groups differing in the \textbf{comparison factor},  with $k=4$. The groups are labeled with a capital letter.}
+\end{figure}
+\noindent The reliability of the hypotesis $H_0$ is described by a probability density function of the value of $F$.
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=300px]{pics/anova2.png}
+                        \caption{Plot of the probability density function that describe the reliability of the null hypothesis}
+\end{figure}
+
+
+
+\section{Non-parametric methods}
+\textbf{Parametric} approaches
+to density modelling involve probability distributions
+having specific functional forms governed by a \textbf{small} number of parameters whose
+values are to be "\textbf{learned}" observing a data set. There are several pros and cons to this approach, the importance of which depends on the specific use case. For example, an common limitation of this approach is that the chosen
+density might be a \textbf{poor model} of the distribution that generates the data, which can
+result in \textbf{poor predictive} performance. There is also another type of approach to density estimation called \textbf{non-parametric}  that makes few assumptions about the form of the target distribution.
+The two methods (the most famous) that will be described in this section start from the same set of \textbf{initial} assumptions and hypotheses, some of which are \textbf{apparently contradictory}.\\
+Assume having:
+\begin{itemize}
+    \item A \textbf{probability distribution} $p_u(\ov{x})$ whose explicit form is unknown,
+    \item The \textbf{euclidean} \textbf{space} $\mathcal{D}$ such that Dim$(\ov{x})=D$, that is the sample space($\ov{x}\in \mathcal{D}\,\,\forall \ov{x}$),
+    \item A \textbf{set} of  $N$ \textbf{observations} $X_N:=\{\ov{x}_1...\ov{x}_N\}$  drawn from $p_u(\overline{x})$,
+    \item A $D$-dimensional \textbf{region} $\mathcal{R}\subset\mathcal{D}$.
+\end{itemize}
+Our goal is to estimate $p_u(\ov{x})$. \\
+The probability mass $P_r$ associated
+with $\mathcal{R}$ is given by:
+\begin{eqwbg}\label{eqn:pmass:ex}  
+P_r=\int_{\mathcal{R}}p_u(\ov{x})d\ov{x}
+\end{eqwbg}
+As a consequence of that, we can clearly see that, $\forall\, \ov{x}$ it holds: \begin{eqwbg}
+\begin{aligned}
+p_u\left(\ov{x}_i\in \mathcal{R}\right)=P_r
+\end{aligned}
+\end{eqwbg}
+The number of points that \textbf{belong} to $X_N$ that also \textbf{fall in the region} $\mathcal{R}$ is denoted with $K$. This value will be distributed according to this \textbf{binomial distribution}:
+\begin{eqwbg}
+\begin{aligned}
+\text{Bin}(K|N,P_r)&=\binom{N}{K}P_r^K(1-P_r)^{N-K}\\
+&=\frac{N!}{K!(N-K)!}P_r^K(1-P_r)^{N-K}
+\end{aligned}
+\end{eqwbg}
+According to this law, from probability theory we know that the \textbf{mean fraction} of points falling in $\mathcal{R}$ and the \textbf{variance} of this value is:\begin{eqwbg}
+\begin{aligned}
+&\E\left[\frac{K}{N}\right] = P_r,\\
+&\text{var}\left[\frac{K}{N}\right]=\frac{P_r(1-P_r)}{N}
+\end{aligned}
+\end{eqwbg} 
+If we assume $\mathcal{R}$ \textbf{large enough}, at a certain point $K$ will be  \textbf{sufficiently big} to allow us to \textbf{overlook} its fluctuations around the \textbf{mean}, having:
+\begin{eqwbg}
+\label{eqn:c1}
+K  \simeq NP_r
+\end{eqwbg}
+If we also assume that $\mathcal{R}$ is \textbf{small} enough to consider $p(\overline{x})$ constant in the region, we have:\begin{eqwbg}
+\label{eqn:c2}
+P_r\simeq p(\ov{x})V
+\end{eqwbg}
+Where $V$ is the volume of $\mathcal{R}$.\\
+Combining these two last result, we get:\begin{eqwbg}
+p(\ov{x})= \frac{K}{NV}
+\end{eqwbg}
+Observe that this last result relies on \ref{eqn:c1} and \ref{eqn:c2}. These come from two \textbf{contradictory} assumptions, namely that $\mathcal{R}$ is \textbf{large} enough and \textbf{small} enough at the same time.
+We can use this result in two ways:\begin{itemize}
+    \item If we \textbf{fix} $K$ and \textbf{determine} $V$ from the data, we are applying the \textbf{K-Nearest-neighbor} method,
+    \item If we \textbf{fix} $V$ and we \textbf{determine} $K$ from the data, we are applying the \textbf{Kernel density estimation} method
+\end{itemize}
+Both methods converge to the true probability density for $N\longrightarrow\infty$ provided $V$ \textbf{shrinks} and $K$ \textbf{grows} suitably with $N$.
+\subsection{Kernel density estimation}
+In the context described above, assume that the region $\mathcal{R}$ is an \textbf{hypercube} centered in $\overline{x}^*$ with side $h$. In order to count the number of $K$ points falling in this region, we can start by defining the function $\mathcal{K}(\ov{u})$:\begin{eqwbg}[Example of kernel function]
+\mathcal{K}(\ov{u}) = \begin{cases}
+1, \text{\phantom{aa}\textbf{if:}\phantom{aa}} |u_i| \leq \frac{1}{2}\,\,\, \forall i \in \{1...D\}\\
+0, \text{\phantom{aa}\textbf{otherwise}\phantom{aa}}
+\end{cases}
+\end{eqwbg}
+Where $\ov{u}$ is a generic \textbf{vector} belonging to the \textbf{sample space} $\mathcal{D}$.
+The previous function returns 1 if the argument vector lies in a zero-centered unitary hypercube.
+Thus, the following function: \begin{eqwbg}
+\mathcal{K}\left(\frac{\ov{x}^*-\ov{x}_n}{h}\right)
+\end{eqwbg}
+Returns 1 if the argument ($\ov{x}_n$) lies in our region $\mathcal{R}$.\\ 
+Such a function, used as a "window" in our context of kernel density estimation, is defined as a \textbf{parzen-rosenblatt} window or a \textbf{kernel function}.
+Therefore, the number of  $K$ points falling in $\mathcal{R}$ is:\begin{eqwbg}
+K=\sum_{n=1}^N \mathcal{K}\left(\frac{\ov{x}^*-\ov{x}_n}{h}\right), \,\, \ov{x}_n \in X_N
+\end{eqwbg}
+Where $X_N$ is the list of $N$ samples.
+\subsection{K-nearest neighbor}
+\section{Outlier detection}
+\textbf{Outlier} detection is  a \textbf{decision} problem. There is no rigid mathematical definition of what constitutes an \textbf{outlier}; determining whether or not an observation is an outlier is ultimately a subjective exercise. We can describe it as follow:
+ \begin{adjustwidth}{25mm}{25mm}
+                 \rule[0.1cm]{12cm}{0.6mm}\\
+                    \textit{In statistics, an \textbf{outlier} is a data point that differs significantly from other observations. An outlier may be due to variability in the measurement or it may indicate experimental error.}\\
+        \rule[0.1cm]{12cm}{0.6mm}\\
+\end{adjustwidth}
+The \textbf{background scenario} plays a key role as in many \textbf{decision} problems: there are scenarios in which outliers represents anomalies (\textbf{anomaly detection} task) that should be monitored, but there are other scenarios in which outliers represents non-relevant data. The trickiest part of the task is to distinguish  \textbf{ordinary} low probability events/items from \textbf{real outliers}. In the following sections, we'll describe some \textbf{outlier detection methods}, before starting we'll assume that :\begin{itemize}
+    \item We have a set of samples $\overline{X}^*=\{\overline{x}_i\}$;
+    \item $N = \dim(\overline{X}^*)$ is the dimension of the set;
+    \item $D = \dim(\overline{x}_i)$ is the dimension of the samples that belong to $\overline{X}^*$
+\end{itemize}
+The methods that will be described shortly aim to \textbf{decide} whether any $\overline{x}_i$ can be considered an \textbf{outlier} or or not.
+\subsection{Inter Quartile Range detection}
+\textbf{IQR-based} detection is a \textbf{data-driven}, \textbf{component-wise} outlier detection method:  this method is  applied to each one of the D dimension of the samples belonging to our data set. Thus, for each scalar component we compute the \textbf{first quartile} $Q_1$ and the \textbf{third quartile} $Q_3$, then we compute and the difference $IQR=Q_3-Q_1$.
+All values which \textbf{don t} fall in the range $[\,Q_1-k(IQR),\;Q_3+k(IQR)\,]$ are considered \textbf{outliers}. The $k$ is a chosen \textbf{hyperparameter} ($k=1.5$ is common).
+
+\begin{figure}[H]
+\centering
+                        \includegraphics[width=\textwidth]{pics/IQR.png}
+\caption{Graphical representation of the IQR range detection method. Samples that fall in the green range are considered regular, otherwise they are considered outliers}
+\end{figure}
+
+\subsection{Elliptic envelope}
+\textbf{Elliptic envelope} is a \textbf{model based} outlier detection method. This method is applied to the whole observation $\overline{x}_i$ and not \textbf{component-wise}. It starts by assuming a \textbf{multivariate ditribution} model for the $\overline{x}_i$ data points. The methods is valid for any multi variate distribution in any dimension, but for simplicity let's suppose having $D=2$ and consider a \textbf{gaussian} multi variate distribution model. \\We have to define  the \textbf{contamination} hyperparameter, let's call it $\eta\mid\, \frac{1}{10} \leq \eta \leq \frac{1}{2}$. This value represent the \textbf{fraction of the outliers} that are present in the dataset. Not knowing priorly the exact proportion of the outliers in the dataset is the major limitation of using this method. \\
+All the samples falling in the tail volume of the model which enclose the $\eta$ percent of the total volume (N.B. the distributions always integrates to 1) \textbf{are considered outliers}. Thus, in the multivariate gaussian example,  the $\eta$  unambiguously defines \textbf{an ellipse} within which the samples are considered \textbf{regular}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    colormap/viridis,
+  	hide axis
+]
+\addplot3[
+    surf,
+]
+{(exp(-(x^2)/5-(y^2)/9))*1/4};
+\end{axis}
+\end{tikzpicture}
+\centering
+                        \includegraphics[width=200px]{pics/ellenv.png}
+\caption{Representation of an ellipse (right) defined by an hyperplane intersecting the multi variate gaussian (left). Green samples are regular, red ones are outliers}
+\end{figure}
+
+
+
+
+\section{Stochastic processes}
+A \textbf{stochastic process} $X(t)$ is \textbf{noncountable infinity} of random variables: for any given $t=t^*$, $X(t^*)$ is a random variable. It is a random variable which depends by an additional parameter (time, space etc).
+\begin{figure}[H]
+\centering
+                        \includegraphics[width=350px]{pics/stochastic-process.png}
+\caption{A stochastic process is a generalization of the concept of random variable. Each event is a function. If we fix a $t=t_1$, we get a random variable  }
+\end{figure}
+\noindent Thus, we can extend the definition of \textbf{cumulative distribution function} for a stochastic process.
+\begin{customDef}\textbf{First order distribution for a stochastic process}\\
+Given a stochastic process $X(t)=\{x_i(t)\},\, i=1...k$ ($k$ events), we define the \textbf{cumulative density function} $F(x,t)$:\[
+F(x,t)=p(X(t)<x)
+\]
+$F$ is also called \textbf{first order distribution}. \\
+Its derivative respect to $x$ is called \textbf{first order density}:\[
+f(x,t) = \frac{\partial F(x,t)}{\partial\,x}
+\]
+\end{customDef}
+If we fix $t$, the previous definitions are the same of the pdf and cdf for a random variable.
+\\We can also give the definition of the \textbf{n-th order distribution}:
+\begin{customDef}\textbf{N-th order distribution for a stochastic process}\\
+Given a stochastic process $X(t)=\{x_i(t)\},\, i=1...k$ ($k$ events), we define the \textbf{second-order distribution} of $X(t)$ the following \textbf{joint distribution}:\[
+F(x_1,x_2,t_1,t_2)=p(X(t_1)\leq x_1, X(t_2)\leq x_2)
+\]
+Thus, the \textbf{n-th order distribution} is the \textbf{joint distribution}:\[
+F(x_1...x_n,t_1...t_n)
+\]
+The \textbf{n-th order} distribution has $2n$ parameters.
+\end{customDef}
+To \textbf{fully characterize} a stochastic process is required to know the \textbf{n-th order distribution}, that is too over-parameterized to be used in practical applications. So it is common practice to make simplifying assumptions about second-order descriptors.\\
+It's useful to make a remark of the concepts of \textbf{probability models} and the \textbf{statistical realizations}: until now we have characterized the first ones, and this will be also done in following sections. When we deal with \textbf{realizations} of stochastic processes, the \textbf{aleatory} component vanishes and we can plot the realization in function of the time variable. These functions are called \textbf{time series}. A time series will have a  trend that will be visually and statistically typical of the processes from which it comes from.
+
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=300px]{pics/realiz.png}
+                        \caption{Realizations of different stochastic processes}
+\end{figure}
+
+\subsection{Characterization}
+Since a stochastic process is a time-dependent random variable, then its \textbf{mean} will also vary over time:
+\begin{customDef} \textbf{Mean of a stochastic process}\\
+Given a stochastic process $X(t)$ and its \textbf{first order density} $f(x,t)$, we define its \textbf{mean} as $\eta(t)$:\[
+\eta(t)=E[X(t)]=\int_{-\infty}^{\infty} xf(x,t)\,dx
+\]
+The 
+\end{customDef}
+As we said, while dealing with a stochastic process $X(t)$, every time that we fix $t=t^*$ we get the random variable $X(t^*)$: therefore we can define the \textbf{autocorrelation} and the \textbf{autocovariance}, which are nothing else than the \textbf{correlation} and \textbf{convariance} of the two random variables $X(t_1)$ and $X(t_2)$, where $t_1,t_2$ are taken as variables:\begin{customDef}\textbf{Autocorrelation and autocovariance}\\
+For a stochastic process $X(t)$, we define its \textbf{autocovariance} $C(t_1,t_2)$ as the \textbf{covariance} of the two random variables $X(t_1)$ and $X(t_2)$:\[
+C(t_1,t_2) = \underbrace{R(t_1,t_2)}_{\textrm{Autocorrelation}} - \underbrace{\eta(t_1)\eta(t_2)}_{\textrm{Product of the means}}
+\]
+We can also define the \textbf{autocorrelation} $R(t_1,t_2)$ as the \textbf{correlation} between $X(t_1)$ and $X(t_2)$, that is the \textbf{expected value} of the product $X(t_1)X(t_2)$:\[
+R(t_1,t_2) = E[X(t_1)X(t_2)]=\int_{-\infty}^\infty\int_{-\infty}^\infty x_1\,x_2f(x_1,x_2,t_1,t_2)\,dx_1dx_2
+\]
+where $f(x_1,x_2,t_1,t_2)$ is the \textbf{second order density}.
+\end{customDef}
+These definitions can also extended for two different stochastic processes $X(t)$ and $Y(t)$. In this case we'll call them \textbf{cross correlation} $R_{xy}(t_1,t_2)$ and \textbf{cross covariance} $C_{XY}(t_1,t_2)$:
+\begin{eqwbg}
+\begin{aligned}[Cross correlation and Cross coviariance]
+&C_{XY}(t_1,t_2)=R_{XY}(t_1,t_2)-\eta_X(t_1)\eta^*_Y(t_2);\\
+&R_{XY}(t_1,t_2)=E[X(t_1)Y^*(t_2)]=R^*_{yx}(t_2,t_1)
+\end{aligned}
+\end{eqwbg}
+
+\noindent Where the $^*$ stands for the \textbf{conjugate}.
+We will say that two processes X(t) and Y(t) are: 
+\begin{eqwbg}
+\begin{aligned}
+\textrm{\textbf{Mutually orthogonal} if: } &R_{XY}(t_1,t_2)=0 \:\, \forall t_1,t_2\\
+\textrm{\textbf{Uncorrelated} if: } &C_{XY}(t_1,t_2)=0 \,\: \forall t_1,t_2
+\end{aligned}
+\end{eqwbg}
+
+\noindent While considering specific (or set of) realizations of a stochastic process, we can compute their \textbf{time statistics}.  
+\subsection{Stationarity, and correlation}
+  As said in the introductory paragraph of this section, the \textbf{n-th order distribution} is too complex to be used in practical applications. We can make some \textbf{simplifying assumptions} to identify some class of stochastic processes that are both\textbf{ easier to deal }with and \textbf{reasonable models} of real world process.\\
+We can reasonably argue that, given a stochastic process $X(t)$, the dependancy between $X(t_1)$  and $X(t_2)$ decreases as $\mid t_1-t_2|$ increases. This is true for many processes used to describe real contexts. This reasoning leads to the following definition:\begin{customDef}\textbf{a-Dependancy}\\
+A stochastic process $X(t)$ is said \textbf{$\bs{a}$-dependent} if \[
+C(t_1,t_2)=0 \textrm{ for } \mid t_1-t_2| > a
+\]
+That is equivalent to state that\[
+R(t_1,t_2)=\eta(t_1)\eta(t_2) \textrm{ for } \mid t_1-t_2| > a
+\]
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=350px]{pics/autocor1.png}
+                        \caption{Autocovariance of an a-dependent process}
+\end{figure}
+
+%\begin{figure}[H]
+%\centering
+%\begin{tikzpicture}
+%\begin{axis}[
+%    colormap/viridis,
+%    zmin=0,zmax=3,
+%    xlabel=$t_1$,
+%    ylabel=$t_2$
+%]
+%\addplot3[
+%    surf,
+%    shader=faceted interp,
+%	samples=25,
+%	domain=-3:3
+%	]
+%{exp(-(x-y)^2)};
+%\end{axis}
+%\end{tikzpicture}
+%\end{figure}
+\end{customDef}
+Moreover, we can make 2 other classifications based on how stochastic processes vary over time: \textbf{Strict Sense Stationary Processes} and \textbf{Wide Sense Stationary Processes}.
+\begin{customDef}\textbf{Strict Sense Stationary Processes (SSS)}\\
+A stochastic process $X(t)$ is said \textbf{Strict Sense Stationary} if its statistical properties are invariant to a shift  of the origin:\[
+\Phi(X(t))=\Phi(X(t+t_0)) \, \forall t_0
+\]
+Where $\Phi(X(t))$ is a generic statistics of the stochastic process.
+Thus, the random variables $X(t)$ and $X(t+c)$ have the same statistics.
+\end{customDef}
+
+\begin{customDef}\textbf{Wide Sense Stationary Processes (WSS)}\\
+A stochastic process $X(t)$ is said \textbf{Wide Sense Stationary}  if its mean  $\eta(t) $is constant:\[
+\begin{aligned}
+\eta(t)=\eta(t+t_0)=\eta\, \forall t_0
+\end{aligned}
+\]
+and its autocorrelation \textbf{depends only} on $\tau=\mid t_1-t_2|$ and \textbf{not} on the specific $t_1, t_2$:\[
+R(\tau)=E(X(t_1+\tau)X^*(t_1))
+\]
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+	\begin{axis}[
+	    z post scale=0.5,
+		xlabel=$\tau$,
+		ylabel=$R(\tau)$]
+	\addplot+[mark=none,smooth,domain=0:3] 
+		{exp(-abs(x)^3)};
+	\end{axis}
+\end{tikzpicture}
+                \centering
+                        \includegraphics[width=350px]{pics/autocor0.png}
+                        \caption{Autocovariance of a \textbf{WSS} process. As we can see, we can  also plot it on 2 axis (upper). This process is also \textbf{a-dependent}, because it goes to 0 for $\tau$ greater than a given threshold }
+\end{figure}
+\end{customDef}
+Strict sense stationarity \textbf{implies} wide one but not vice-versa.\\
+It's important to underline that the \textbf{a-dependancy} and the \textbf{wide sense stationarity} are two different concepts. A \textbf{WSS} process does not necessarly go to 0 for $\tau$ greater than a certain threshold; but in almost every real case, a \textbf{WSS} process is also \textbf{a-dependent}, like in figure 2.25.\\
+A completely \textbf{uncorrelated} stochastic process is said \textbf{white noise}: the realization of a white-noise process at a specific $t_0$ does not give \textbf{any information} about the outcome of the process \textbf{in any other point in time}.
+\begin{customDef}\textbf{White noise}\\
+A stochastic process $X(t)$ is said \textbf{white noise} if $X(t_1)$ and $X(t_2)$ are uncorrelated for every $t_1 \not = t_2$:\[
+C(t_1,t_2)=0\quad\textrm{ for }t_1\not = t_2 
+\]
+\end{customDef}
+\subsection{Time series, time statistics and ergodicity}
+Given a stocastic process $X(t)$ (\textbf{model}) we can consider a realization of the process (\textbf{sample}) with $x(t)$. These realizations are called \textbf{time series}, and are \textbf{deterministic} functions of time on which we can compute time statistics. Thus, we can define the \textbf{time average} and the \textbf{time correlation function} of a time series:
+\begin{customDef}\textbf{Time average}\\
+Given a \textbf{time series} $x(t)$ coming from a stochastic process $X(t)$, we can define its \textbf{time average} as $\eta_{x}$:\[
+\eta_x=E_t[x(t)]:=\lim_{T\rightarrow\infty}\frac{1}{2T}\int_{-T}^{T}x(t)\,dt
+\]
+Where $T$ is the \textbf{half period of observation}.
+\end{customDef}
+
+\begin{customDef}\textbf{Time correlation function}\\
+Given a \textbf{time series} $x(t)$ coming from a stochastic process $X(t)$, we can define its \textbf{time correlation function} as $R_{x}(\tau)$:\[
+R_{x}(\tau)=E_t[x(t)x(t+\tau)]:=\lim_{T\rightarrow\infty}\frac{1}{2T}\int_{-T}^{T}x(t)x(t-\tau)\,dt
+\]
+Where $T$ is the \textbf{half period of observation}.
+\end{customDef}
+Remind that the \textbf{n-th order characterization} of a stochastic process can be done with a function with $2n$ \textbf{variables} (half are \textbf{time variables} and half are \textbf{random variables}). A statistic indicator of order $n$ is function of "only" $n$ \textbf{time variables} as the aleatory component is lost during the computation: as we saw  $\eta(t)$ depends on $t$ ($n=1$) and the autocorrelation $R(t_1,t_2)$ depends on the \textbf{two time instants} $t_1$ and $t_2$ ($n=2$). When the process in exam is \textbf{Wide Sense Stationary} we also lose a \textbf{time variable}: for example the expected value $\eta$ become a constant and the autocorrelation $R(\tau)$ will only depends on $\tau=\mid t_1-t_2|$. \textbf{Time-statistics} have the same domain of the statistics computed for a \textbf{WSS} process: a time variable \textbf{is lost} during the computation and the \textbf{random components vanishes} since we are evaluating \textbf{a sample} of the stochastic process (that is a deterministic function). \\
+Therefore, given a \textbf{WSS} process, we can compare its statistics with the time statistics of its realizations, in order to define the concept of \textbf{ergodicity}:\begin{customDef}\textbf{Ergodicity}\\
+A \textbf{WSS} stochastic process $X(t)$ is said \textbf{mean ergodic} if, while evaluating a generic time series $x(t)$, the time-mean $\eta_x$ computed over a sufficiently wide period $2T$ \textbf{converges} to the mean of the  process $\eta$:\[
+\eta_x=\lim_{T\rightarrow\infty}\frac{1}{2T}\int_{-T}^Tx(t)\,dt=\eta
+\]
+With the same assumptions, the process is said \textbf{autocorrelation ergodic} if the previous limit is valid for the \textbf{autocorrelation} and the \textbf{time-autocorrelation}:\[
+R_x(\tau)=\lim_{T\rightarrow\infty}\frac{1}{2T}\int_{-T}^{T}x(t)x(t-\tau)\,dt=R(\tau)
+\]
+When bot the equalities are valid, the process is generically said \textbf{ergodic}
+\end{customDef}
+An \textbf{ergodic} process is always \textbf{WSS} for assumption. While studying a stochastic process, the hypotesis of \textbf{ergodicity} allows to \textbf{infer} properties for the entire process while evaluating a \textbf{single time series} without necessarily having instead of studying many ones.
+\section{Markov chains}
+\textbf{Markov chains} are a widely used subclass of stochastic processes since they are the natural mathematical model of many phenomena:
+\begin{customDef} \textbf{(Markov chain):}\\
+A Markov chain is a stochastic process such that:
+\begin{itemize}
+    \item It is \textbf{time discrete}: for the random variables $X(t)$, we have that $t \in \T \subseteq \N$.
+    We will therefore denote a Markov chain by $\{X_n\}_{n\in\T}$
+    \item The $X_n$ all take values in the same \textbf{discrete set} $\mathbf{E}$. The elements of $\mathbf{E}$ are also called the \textbf{states} of the chain
+    \item The \textbf{Markov property} applies.
+\end{itemize}
+\end{customDef}
+\begin{customProp}\textbf{(Markov property):}\\
+\label{eqn:mrk:prp}
+With the same assumption made for the previous definition, the \textbf{Markov property} states that:\[
+\begin{aligned}
+&P\{X_{n+1} = j|\,X_{n} = i, \underbrace{X_{n-1} = i_{n-1},...\,,\,X_1=i_1}_{\textrm{no extra information}}\}=\\
+= &P\{X_{n+1} = j|\,X_{n} = i\}:=p_{ij}(n)
+\end{aligned}
+\]
+where \begin{itemize}
+    \item $n\in \T$,
+    \item $j,i_1,i_2,...,i_n:=i \in \mathbf{E}$ are \textbf{events}, where $\#\bfE= \xi$
+    \item $0\leq p_{ij}(n)\leq1$ is the \textbf{conditional probability of state transition} from $i$ to $j$.
+\end{itemize} 
+\end{customProp}
+The \textbf{Markov property} can be interpreted as follows: the r.v.'s of the \textbf{chain} are in general \textbf{not} independent of each other. Knowing the value of $X_n$ gives us the \textbf{maximum possible} information about $X_{n+1}$: once $X_n$ is known, knowing backwards the values of $X_{n-1}$, $X_{n-2}$ etc does \textbf{not} give us any additional information. Remark that, if we do not know $X_n$, $X_{n-1}$ \textbf{still} gives us information about $X_{n+1}$.
+\subsection{Homogeneous Markov chains: key features}
+An important class of Markov chains is that of \textbf{homogeneous} chains: 
+\begin{customDef}\textbf{(Homogeneous Markov chain):} \\
+A Markov chain is said to be homogeneous when its conditional \textbf{probabilities} $p_{ij}(n)$ does \textbf{not} depend on $n$:\[
+P\{X_{n+1} = j | X_{n} = i \}=p_{ij}(n) := p_{ij}
+\]
+\end{customDef}
+Observe that, given $p_{ij}$ as a function of $j$, it is the (discrete) conditional density of $X_{n+1}$ given $X_n=i$.\\
+In the following definitions, we will always consider \textbf{ homogeneous } markov chains.\\
+For an \textbf{homogeneous} m.c., if the \textbf{state set} $\mathbf{E}$ is \textbf{finite}, we can define the \textbf{transition function} (or \textbf{matrix}) $\mathbf{P}$ as follows:
+\begin{customDef}\textbf{(Transition matrix):}\\
+Assuming $\mathbf{E}$ finite, for an \textbf{homogeneous Markov chain}, we define the \textbf{transition matrix} $\mathbf{P}$ as the \textbf{matrix} consisting of all the $p_{ij}$. It immediately follows that:\begin{itemize}
+    \item $\textrm{Dim}(\mathbf{P})=\xi \times \xi$,
+    \item $\sum_{j\in\bfE} p_{ij}=P\{X_{n+1}\in \bfE | X_n = i\}=1$
+\end{itemize} 
+\end{customDef}
+An important property of the matrix $\bfP$ is its \textbf{recurrency} over the step length. Before introducing it, let us first define the following:
+\begin{customDef}\textbf{(m-Steps transition matrix):}\\
+Given $p_{ij}^{(m)}$ as the \textbf{conditional probability of state transition in $m$ steps} from $i$ to $j$:\[
+p_{ij}^{(m)} = P\{X_{n+m}=j | X_n=i\}
+\]
+we define the \textbf{m-Steps transition matrix} $\bfP_m$  as the matrix composed of all $p_{ij}^{(m)}$.
+\end{customDef}
+\begin{customProp}\textbf{Recurrency over the step lenght:}\\
+For a transition matrix $\bfP$, it holds:\[
+\begin{aligned}
+\bfP_m&=\bfP_{m-1}\bfP\\
+&=\bfP^m=\underbrace{\bfP\cdot \bfP\cdot...\cdot\bfP}_{\textrm{m times}}
+\end{aligned}
+\]
+\textbf{Dim:}\\
+For the definition of \textbf{conditional} probability and for the \textbf{partition property} of the certain event we can write:\[
+\begin{aligned}
+p_{ij}^{(m)}&= P\{X_{m+n}=j|X_n=i\}= \\
+&=\frac{P\{X_{m+n}=j, X_n = i\}}{P\{X_n=i\}}= \\
+&=\sum_{h\in\bfE}\frac{P\{X_{m+n}=j,X_{n+m-1}=h,X_n=i\}}{P\{X_n=i\}}= \\
+&=\sum_{h\in\bfE}\frac{P\{X_{m+n}=j,X_{n+m-1}=h,X_n=i\}}{\blue{P\{X_{n+m-1} = h, X_n=i\}}}\frac{\blue{P\{X_{n+m-1} = h, X_n=i\}}}{P\{X_n=i\}}= \\
+&=\sum_{h\in \bfE}P\{X_{m+n}|X_{n+m-1}=h,\underbrace{X_n=i}_{\substack{\mathclap{\text{vanishes for the Markov property (\ref{eqn:mrk:prp})}}}}\}\cdot P\{X_{n+m-1}=h|X_n=i\}=\\
+&= \sum_{h\in \bfE} p_{hj}p_{jh}^{m-1} = \bfP_{m-1}\bfP
+\end{aligned}
+\]
+\end{customProp}
+Considering that a generic $X_n$ take on values in $\bfE$, we can define:\[
+\begin{aligned}
+\ov{v}^{(n)}&:=\{v_0^{(n)},v_1^{(n)},...,v_\xi^{(n)}\},\\
+&\textrm{\textbf{where:}}\\
+v_k^{(n)}&:=P\{X_n=k\}
+\end{aligned}
+\]
+It's clear that $\ov{v}^{(n)}$ is always a discrete probability vector over $\bfE$, and it holds:\begin{itemize}
+    \item $v_i^{(n)} \geq 0\,\, \forall i \in \bfE,\,\,\forall n \in \T$,
+    \item $\displaystyle\sum_{i \in \bfE}v_i^{(n)} = 1$
+\end{itemize}
+We can therefore state the following property:
+\begin{customProp}\phantom{a}\\
+For the vectors $\ov{v}^{(n)}$ and $\ov{v}^{(n+m)}$, the following relationship applies:\[
+\ov{v}^{(n+m)}=\ov{v}^{(n)}\bfP^m
+\]
+\textrm{\textbf{Dim:}}\\
+\[
+\begin{aligned}
+v_k^{(n+m)}&=P\{X_{n+m}=k\}=\sum_{h\in \bfE}P\{X_{n+m}=k,\,X_n=h\}=\\
+&=\sum_{h\in \bfE}\underbrace{P\{X_{n+m}=k|\,X_n=h\}}_{p_{h,k}^{(m)}}\underbrace{P\{X_n=h\}}_{v_h^{(n)}}=\sum_{h\in \bfE}p_{hk}^{(m)}v_h^{(n)}
+\end{aligned}
+\]
+\end{customProp}
+The discrete density vector $\ov{v}^{(0)}$ associated with the r.v $X_0$ cannot be written as a product between a transition matrix and another discrete density vector: $\ov{v}^{(0)}$ is called \textbf{initial probability distribution} over states. Given $\ov{v}_0$ and P, we can compute any discrete density vector $\ov{v}^{(n)}\, \forall n \in \T$.
+For these reasons, we can state the following:
+\begin{customProp}
+\label{prop:key:markov}
+\textbf{Key parameters for an hom. Markov chain:}\\
+An (\textbf{homogeneous}) Markov chain, to be unambiguously defined, requires only 3 elements:
+\begin{itemize}
+    \item The \textbf{discrete set} $\mathbf{E},\,\#\mathbf{E}=\xi$ in which the $X_n$ takes values. Elements belonging to $\mathbf{E}$ represents the possible states,
+    \item The \textbf{transition probability matrix} $\mathbf{P}$ ,
+    \item  The \textbf{initial probability distribution}  $\ov{v}^{(0)}$.
+\end{itemize}
+\end{customProp}
+
+
+\subsection{Hidden Markov chains}
+A Markov chain is useful when we need to compute a probability for a sequence
+of observable events. In many cases, however, the events we are interested in are
+\textbf{hidden}: we don’t observe them directly, but we can observe some kind of \textbf{effects} generated by these events.
+Hidden Markov chains, or \textbf{hidden Markov models} (\textbf{HMM}), are a useful mathematical model to represent these phenomena.
+In addition to the set of events $\mathbf{E}$ from which values of the various $X_n$ (\textbf{hidden}) are taken, we will also have the set $\mathbf{O}$ representing the set of possible \textbf{observable effects}: the \textbf{observable} random variables that extract values from $\mathbf{O}$ are denoted by $Y_n$.
+Each \textbf{hidden} realisation of $X_n$ therefore corresponds to an observable realisation of $Y_n$.
+\noindent
+The following block describes the extensions required to (\textbf{homogeneous}) Markov chains to make them \textbf{hidden} ones.  We will use \textbf{homogeneous} chains as a starting point to simplify the discussion.
+\begin{customProp}\textbf{Key parameters for an HMM}\\
+\label{prop:key:hidmarkov}
+\noindent
+In addition to the elements previously listed in the \textbf{Property \ref{prop:key:markov}}, an \textbf{hidden} Markov chain includes:\begin{itemize}
+    \item  The \textbf{discrete set} $\mathbf{O}, \#\mathbf{O}=\zeta$ in which the $Y_n$ takes values. Elements belonging to $\mathbf{O}$ represents the possible \textbf{observable effects},
+    \item A set $\mathbf{B}$ of observation probabilities $b(e_i,o_j)$, also called \textbf{emission probabilities}:    \[  
+    \begin{aligned}
+    &\mathbf{B}:=\{b(e_i,o_j)\},\, i\in\{1...\xi\},\, j\in\{1...\zeta\}\\
+    &\text{\phantom{aaaaaaaaaaaaa}\textbf{where}:}\\
+    &b(e_i,o_j):=P\{X_n=e_i|Y_n=o_i\};\\
+    &e_i\in \mathbf{E}, o_j\in\mathbf{O}
+    \end{aligned}
+    \]
+     Namely, $b(e_i,o_j)$ expresses the \textbf{probability} for the observation $o_j$ \textbf{being generated}
+from a state $e_i$
+\end{itemize}
+\end{customProp}
+We can then \textbf{uniquely} define an \textbf{HMM} with the \textbf{triad} of parameters $(\mathbf{P},\mathbf{B}, \ov{v}_0)$, assuming that the \textbf{sets} $\mathbf{O}$ and $\mathbf{E}$ are \textbf{implicitly} defined by $\mathbf{B}$ and $\mathbf{P}$.\\
+In addition to the \textbf{Markov property (\ref{eqn:mrk:prp})}, the \textbf{output independence} property also applies:
+\begin{customProp}\textbf{HMM output independence property} \\
+In an \textbf{hidden Markov chain}, the probability of an output observation $o_j$ depends \textbf{only} on the state that
+produced the observation $e_i$ and not on any other states or any other observations:
+\[
+P\{Y_n=o_i|X_n=e_j,\,X_0=e_0,\,X_1=e_1,\,...,\,Y_0=o_0,\,Y_1=o_1,\,...\,\}=P\{Y_n=o_i|X_n=e_j\}
+\]
+\end{customProp}
+ \fastpic{pics/AI/hmm_model.png}{Hidden markov model realizations flow. For each \textbf{hidden} realization of  $X_n$, there is an \textbf{observable} realization of $Y_n$. Each observable effect depends only on the "parallel" state }{0.8}
+An influential tutorial by Rabiner (1989), based on tutorials by Jack Ferguson in
+the 1960s, introduced the idea that \textbf{hidden Markov models} should be characterized
+by \textbf{three} fundamental problems\cite{slp3J}:
+\begin{itemize}
+    \item \textbf{Likelihood}:\\ Given an \textbf{HMM} $\lambda=(\mathbf{P},\mathbf{B},\ov{v}_0)$ and an \textbf{observation sequence} $\mathbf{S}:=(s_1,s_2...),\, s_i\in \mathbf{O}$, determine the likelihood $P(\mathbf{S}|\lambda)$,
+    \item \textbf{Decoding}:\\ Given an \textbf{observation} \textbf{sequence} $\mathbf{S}$ and an HMM $\lambda$ discover the \textbf{best} \textbf{hidden state sequence $\mathbf{H}:=(h_0,h_1..),\, h_i \in \mathbf{E}$}.
+\item \textbf{Learning}:\\ Given an \textbf{observation sequence} $\mathbf{S}$ and the \textbf{set of states} $\mathbf{H}$
+in the HMM, learn the HMM parameters $(\mathbf{P},\mathbf{B}, \ov{v}_0)$
+\end{itemize}
+\section{Game theory}
+

@@ -1,0 +1,41 @@
+\newcommand{\pyin}[1]{\colorbox{light-gray}{{\texttt{\lstinline[language=Python]{#1}}}}}
+\definecolor{light-gray}{gray}{0.95}
+\definecolor{COMMENT}{HTML}{339966}
+\definecolor{KEY1}{HTML}{993399}
+\definecolor{NUM}{HTML}{ccff33}
+\definecolor{STRING}{HTML}{cc6600}
+\definecolor{KEY2}{HTML}{0000FF}
+\definecolor{KEY3}{HTML}{0066ff}
+
+\lstset{
+  backgroundcolor=\color{light-gray},  % choose the background color
+  basicstyle=\footnotesize,
+  breaklines=true,                % automatic line breaking only at whitespace
+  escapeinside={\%*}{*)},         % if you want to add LaTeX within your code
+}
+
+\lstdefinelanguage{Python}{
+columns=fullflexible,  %Delete this line if you don t want to copy/paste code from pdf
+showstringspaces=false,
+morestring=[b]",
+morestring=[b]',
+morecomment=[l]{\#},
+commentstyle=\color{COMMENT},   
+numberstyle=\tiny\color{NUM},
+stringstyle=\color{STRING},
+basicstyle=\ttfamily\footnotesize,
+breakatwhitespace=false,
+classoffset=1,
+    morekeywords={False,None,True},
+    keywordstyle=\color{KEY2}\bfseries,
+classoffset=2,
+    morekeywords={and,as,assert,break,class,continue,def,del,elif,else,except,finally,for,from,global,if,import,in,is,lambda,nonlocal,not,or,pass,raise,return,try,while,with,yield,this},
+    keywordstyle=\color{KEY1}\bfseries,
+classoffset=3,
+    morekeywords={ArithmeticError, AssertionError, AttributeError, BaseException, BlockingIOError, BrokenPipeError, BufferError, BytesWarning, ChildProcessError, ConnectionAbortedError, ConnectionError, ConnectionRefusedError, ConnectionResetError, DeprecationWarning, EOFError, Ellipsis, EnvironmentError, Exception, False, FileExistsError, FileNotFoundError, FloatingPointError, FutureWarning, GeneratorExit, IOError, ImportError, ImportWarning, IndentationError, IndexError, InterruptedError, IsADirectoryError, KeyError, KeyboardInterrupt, LookupError, MemoryError, ModuleNotFoundError, NameError, None, NotADirectoryError, NotImplemented, NotImplementedError, OSError, OverflowError, PendingDeprecationWarning, PermissionError, ProcessLookupError, RecursionError, ReferenceError, ResourceWarning, RuntimeError, RuntimeWarning, StopAsyncIteration, StopIteration, SyntaxError, SyntaxWarning, SystemError, SystemExit, TabError, TimeoutError, True, TypeError, UnboundLocalError, UnicodeDecodeError, UnicodeEncodeError, UnicodeError, UnicodeTranslateError, UnicodeWarning, UserWarning, ValueError, Warning, ZeroDivisionError, _, __build_class__, __debug__, __doc__, __import__, __loader__, __name__, __package__, __spec__, abs, all, any, ascii, bin, bool, bytearray, bytes, callable, chr, classmethod, compile, complex, copyright, credits, delattr, dict, dir, divmod, enumerate, eval, exec, exit,filter, float, format, frozenset, getattr, globals, hasattr, hash, help, hex, id, input, int, isinstance, issubclass, iter, len, license, list, locals, map, max, memoryview, min, next, object, oct, open, ord, pow, print, property, quit, range, repr, reversed, round, set, setattr, slice, sorted, staticmethod, str, sum, super, tuple, type, vars, zip},
+    keywordstyle=\color{KEY3}\bfseries,
+}
+
+
+
+

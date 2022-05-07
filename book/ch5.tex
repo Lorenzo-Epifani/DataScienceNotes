@@ -1,0 +1,332 @@
+     \chapter{Advanced Deep Learning Architectures}
+            This chapter will be introduced with some considerations on how to handle data. 
+            In the previous chapter, we have used neural networks consisting of \textbf{different} types of \textbf{layers}. All the layers used operate on \textbf{spatial data} (the main example, \textbf{images}). There are neural network architectures that are able to solve tasks that need to handle the \textbf{temporal variable},  such as when dealing with \textbf{time series} or any kind of \textbf{sequential data}.
+            In this case, convolution occurs along the \textbf{time axis} and we speak of \textbf{temporal convolution};the input samples are the different \textbf{realisations} of the data source as time passes (\textbf{time series}).
+            \fastpic{pics/AI/monodim_conv.png}{Representation of a 1-dimensional mono channel convolution with 3 filters. This type of model can also be used to describe the realisations of a stochastic process.}{0.8}
+            \noindent
+            When dealing with \textbf{multidimensional} time series, operations (e.g. \textbf{convolution}) can be performed in different ways depending on the need to capture certain \textbf{local trends} or \textbf{characteristics}. One of the first remarks to be made concerns the \textbf{nature} of the data: samples may present internal \textbf{homogeneities} or \textbf{heterogeneities}. For example, if at each instant of time we acquire the \textbf{spatial dimensions} and the \textbf{temperature} of a physical object, the first three dimensions will be \textbf{homogeneous} with each other, while the third will be \textbf{heterogeneous} with respect to the others. The \textbf{3 channels} of the time series describing the trend of the 3 spatial dimensions can be hypothetically \textbf{convolved} with the same filter, while the \textbf{fourth one} will need another one. In any case, there is nothing to prevent the use of \textbf{different} filters on each channel even when they are \textbf{homogeneous}.
+            \fastpic{pics/AI/monodim_conv_2ch.png}{Representation of a 1-dimensional multi-channel convolution. Since the two input channels are homogeneous, they can be convolved with filters that are equals in pair, but this is not mandatory: as we an see, the third pair of filters are not the same.}{0.8}
+            \noindent The convolution itself  can be carried out in different ways. Suppose that wee have to deal with a time series made by two \textbf{homogenous} channels. We can apply a convolution with a \textbf{pair} of filters (\textbf{independently} to the fact if they re the equals or not) in different ways: \begin{itemize}
+                \item We can convolve each filter composing the pair with a channel of the input time series. In this way we will have a \textbf{dual-channel} result
+                \item We can convolve the time series with the whole pair of filters as if it were a \textbf{matrix}. In this case we have a \textbf{single-channel} result.
+            \end{itemize} 
+            \fastpic{pics/AI/multich_example.png}{Two different ways to perform a convolution having an \textbf{homogeneous} \textbf{dual channel} input time series and a pair of \textbf{heterogeneous} filters.}{0.8}
+            We can create \textbf{sets} of filters (thus having different \textbf{matrices}) as we like, in the way we consider most appropriate to analyse the historical series.
+            We can also choose to \textbf{aggregate} \textbf{heterogeneous} data as we see fit. In this type of task the only \textbf{constraint} is the data \textbf{coherence} between the various layers, which can be modelled as we like.
+            
+            \section{Advanced CNNs}
+\subsection{LeNet AND AlexNet}
+These are the \textbf{convolutional neural} \textbf{networks} that marked a \textbf{break} from the technologies considered state of the art at the time.
+\noindent
+\textbf{LeNet-5}, a 7-level convolutional network by LeCun et al. was developed in 1998. It was used to classify \textbf{digits}, and was applied by several banks to recognize hand-written numbers on checks (British English: cheques) digitized in 32x32 pixel images. The ability to process higher resolution images requires \textbf{larger} and \textbf{more} layers of convolutional neural networks, so this technique was constrained by the availability of \textbf{computing resources}.
+\textbf{AlexNet} has similar architecture but with more layers (it also implements \textbf{ReLu} instead of a \textbf{sigmoid} activation function) due to the availability of physical computing resources.
+\textbf{AlexNet} marked the beginning of the \textbf{collective} interest in neural networks because at the time (2012) it was able to \textbf{outperform} other state-of-the-art approaches (based on feature extraction and \textbf{SVM}) in classifying the \textbf{Imaginet 1000}.
+
+\begin{figure}[H]
+                        \centering
+                                \includegraphics[width=0.4\textwidth]{pics/AI/alex_lenet.png} 
+                                \caption{Comparison: architectures of AlexNet and Lenet-5} 
+            \end{figure}
+\noindent Today AlexNet has been \textbf{surpassed} by much more effective  architectures but it is a key  step from \textbf{shallow} to deep \textbf{networks} that are used nowadays. In addition to the greater number of layers and more complex ones, there were other key techniques that helped to achieve excellent performances like \textbf{dropout}, \textbf{data preprocessing} and \textbf{ReLu}
+\begin{figure}[H]
+                        \centering
+                                \includegraphics[width=0.8\textwidth]{pics/AI/recap_cnn_res.png} 
+                                \caption{Performances of different CNN} 
+            \end{figure}
+
+\subsection{Block networks: VGG and NiN}
+\textbf{Block networks} are a type of network composed of several functional \textbf{blocks} in series and \textbf{ fully connected} terminal layers. There are different kind of blocks.\\
+A \textbf{VGG} block usually consists of a number of standard \textbf{operations}, for example a variable number of \textbf{convolutions}, an \textbf{activation function} and a \textbf{max-pooling} layer.
+\begin{figure}[H]
+                        \centering
+                                \includegraphics[width=0.4\textwidth]{pics/AI/blocknet.png} 
+                                \caption{Diagram of a VGG block and a so-made network} 
+            \end{figure}
+\noindent A \textbf{NiN} (\textbf{Network in Network}) block implements a \textbf{spatial convolution} and a series of $1\times1$ convolutions: as we have seen previously, performing this type of convolution is equivalent to applying a \textbf{fully connected layer} on the data \textbf{depth}. To execute more times this type of convolution is equivalent therefore to apply an \textbf{MLP} on the data depth. For this reason, this architecture has no \textbf{fully connected layers} in output. 
+\begin{figure}[H]
+                        \centering
+                                \includegraphics[width=0.4\textwidth]{pics/AI/Nin.png} 
+                                \caption{Diagram of a NiN block and a so-made network} 
+            \end{figure}
+\subsection{GoogleNet and Inception module}
+\textbf{GoogleNet} (or \textbf{Inception V1}) was proposed by research at Google (with the collaboration of various universities) in 2014 a research paper\footnote{\href{https://arxiv.org/abs/1409.4842}{Going deeper with convolutions}}.
+The central component of this architecture is the \textbf{inception module}, which it can be seen as a kind of \textbf{NiN} block. The idea behind this module is to run \textbf{convolutions} at different \textbf{resolutions} in \textbf{parallel}. The results of each convolution are deliberately kept \textbf{consistent} with each other (at the level of spatial resolution) and are depth-wise concatenated in output to the module.
+\begin{figure}[H]
+                        \centering
+                                \includegraphics[width=0.8\textwidth]{pics/AI/inception_2.png} 
+                                \caption{Na{\"i}ve inception module. You can see how several of these blocks in series easily explode the depth of the output. The excessive number of operations is also difficult to manage } 
+            \end{figure}
+           \noindent Performing the operations just described in a single serially \textbf{replicated} module has two \textbf{drawbacks}: the high number of \textbf{operations} the divergence in \textbf{depth} of the data.\\
+            These two problems can be \textbf{solved} by introducing within the inception module of the layers of \textbf{$1\times 1$ convolutions} that, as we have seen, allow to \textbf{resize} the data in \textbf{depth}: this allows both to keep under control the number of \textbf{channels} of the data that crosses the network and to reduce the number of \textbf{operations} performed by each inception module.
+\begin{figure}[H]
+                        \centering
+                                \includegraphics[width=0.8\textwidth]{pics/AI/inception_1.png} 
+                                \caption{Inception module with some \textbf{data reduction} control layers in purple. Data reduction blocks prevent data depth explosion if several inception modules are placed in series. In addition, they reduce to one-third the operations performed by the individual module} 
+            \end{figure}
+            
+            \begin{figure}[H]
+                        \centering
+                                \includegraphics[height=\remheight-20pt ]{pics/AI/Googlenet.png} 
+                                \caption{GoogleNet architecture} 
+            \end{figure}
+            \noindent The full \textbf{architecture} of the \textbf{GoogleNet} is therefore composed of several \textbf{inception} modules placed in series together with other operations such as normalizations, pooling and convolutions, with  a softmax in output. Another novelty introduced in this architecture are the \textbf{auxiliary outputs}: these outputs are used to handle the problem of \textbf{gradient killing} resulting from the excessive depth of the network. This is done by performing the \textbf{backpropagation} also on these outputs, making the gradient more \textbf{robust}.
+            \subsection{ResNet and residual block}
+            \textbf{ResNet}\footnote{\href{https://arxiv.org/abs/1512.03385}{Deep Residual Learning for Image Recognition}} refers to a family of \textbf{variable} depth architectures (from 34 to 152 layers for \textbf{ImageNet} classification)  that introduce what is known as \textbf{residual block}.
+            The \textbf{residual block} arises from the need to solve the problem of \textbf{vanishing gradient}, which is quite common in medium-high architectures. For the same depth, networks that use blocks have much less of this type of problem.
+            Suppose to have 2 cascaded generic layers (fully connected or convolution ones) each with its own activation function (e.g. ReLu). Let's consider:
+            \begin{itemize}
+                \item   $a^{[l]}$ as the \textbf{input} arriving in the residual block,
+                \item $L_1(\cdot)$, $L_2(\cdot)$ the generic operations performed by the first and the second layer;
+                \item $z^{[l+1]}$, $z^{[l+2]}$ the output produced by these layers,
+                \item $a^{[l+1]}$, $a^{[l+2]}$ the output produced by the 2 ReLu
+            \end{itemize}
+            
+            Therefore we can write:\[
+            \begin{aligned}
+                \textrm{First layer-ReLu pair}=&\begin{cases}
+            z^{[l+1]}=L_1\left(a^{[l]}\right); \\
+            a^{[l+1]}=\text{ReLu}\left(z^{[l+1]}\right) 
+                \end{cases}\\
+                \textrm{Second layer-ReLu pair}=&\begin{cases}
+            z^{[l+2]}=L_1\left(a^{[l+1]}\right); \\
+            a^{[l+2]}=\text{ReLu}\left(z^{[l+1]}+\textcolor{red}{a^{[l]}}\right) 
+                \end{cases}
+            \end{aligned}
+            \]
+The fact that $a^{[l]}$ is propagated to the ReLu at the \textbf{output} of the block allows the gradient to be "\textbf{revived}" and information to flow even in cases where the output neurons at $L_1$ are \textbf{off} or \textbf{inactive}. 
+For the block to work properly, $a^{[l]}$ and $z^{[l+2]}$ must be \textbf{dimensioned} consistently.
+            \begin{figure}[H]
+                        \centering
+                                \includegraphics[height=0.7\textwidth ]{pics/AI/res_block.png} 
+                                \caption{Residual block} 
+            \end{figure}
+            \noindent The resnet marked a leap forward in the \textbf{depth} of architectures, as it introduced an effective way of handling the \textbf{vanishing gradient}  problem.
+            \subsection{Improving ResNet:}
+            TODO ResNext 1.16 - 1:43
+            \subsection{SENet: Squeeze and excitation Networks}
+            TODO (LEZ16 - 1:10)
+            \subsection{DenseNet}
+            TODO (LEZ 17 fino a min 40)
+            \subsection{EfficientNet}
+            TODO (LEZ 17 40:00)
+            \subsection{Siamese Neural Network}
+            TODO (LEZ 17- dopo densenet, integra com materiale su internet)
+            \subsection{Complexity recap}
+            TODO
+            \begin{figure}[H]
+                \centering
+                        \includegraphics[width=0.8\textwidth]{pics/AI/complexity1.png} 
+                \centering
+                        \includegraphics[width=0.8\textwidth]{pics/AI/complexity2.jpg} 
+                        \caption{Performances and complexity of different architectures. Source: "\href{https://arxiv.org/abs/1605.07678}{An Analysis of Deep Neural Network Models for Practical Applications
+}" }
+            \end{figure}
+            \section{Recurrent Neural networks}
+            A \textbf{recurrent neural network} (\textbf{RNN}) is an extension of a conventional feedforward neural network, which is able to handle a \textbf{variable-length} sequence input. Consider a generic input sequence $\ov{I}_x=\{\ov{x}_1,\ov{x}_2...\ov{x}_T\}$.
+            An \textbf{RNN} consists of a recurring hidden state update \textbf{criterion}, $\ov{h}_t$:\[
+            \ov{h}_t:=\begin{cases}
+                0\text{\phantom{AAAAiAA}for \phantom{i}}t=0,\\
+                \phi(\ov{h}_{t-1},\overline{x}_t)\text{\phantom{A}otherwise}
+            \end{cases}
+            \]
+            That is, the recurring hidden state is function of the \textbf{input} and the state \textbf{itself} at the \textbf{previous instant} (iteration).
+            Optionally, the RNN may have a variable length output $\overline{O}_y=\{\ov{y}_1, \ov{y}_2...\ov{y}_T,\}$.
+            The different RNN architectures differ in the way $\phi$ is designed, which also differentiates them in performance and results. The potential of RNNs lies in their ability to be used as \textbf{generative models}, allowing to obtain the estimate:
+            \[
+            \label{est:rnn}
+            \Tilde{p}(\ov{x}_{t+1}|\ov{x}_1,\ov{x}_2,...,\ov{x}_t):=f_p(\ov{h}_t)
+            \]
+            Where $f_p$ is a function that \textbf{transform} an hidden state to a conditional probability for the next element.\\
+            The "vanilla" implementation of $\phi$ consists of: 
+            \[
+            \phi(\ov{h}_{t-1},\ov{x}_t):= g(W\ov{x}_t+U\ov{h}_{t-1})
+            \]
+            Where $g$ is a smooth, bounded function as a logistic sigmoid or an hyperbolic tangent.
+                 \fastpic{pics/AI/VanillaRNN.png}{Vanilla implementation of a recurrent block.}{0.45}
+
+            \subsection{RNN in the feature space}
+            In practical applications, it is important to \textbf{limit} the size of the data processed by the recurrent blocks, so as not to affect the \textbf{performance} of the system. A standard technique to allow RNNs to handle data with an high dimension is to use a \textbf{feature extractor}, for example a classic \textbf{convolutional neural networks} without the last \textbf{softmax} layer. The feature are then fed to the \textbf{recurrent blocks}.
+            In order to describe this technique, let us assume having: \begin{itemize}
+                \item An \textbf{input sequence} $\ov{I}_x=\{\ov{x}_1,\ov{x}_2...\ov{x}_T\}$,
+                \item A feature extractor, let's say $\text{\textbf{Enc}}(\cdot)$ that returns an \textbf{encoded} version of an $\overline{x}_t$, let's say $\overline{e}_t$:\[
+                \begin{aligned}
+                &\text{\textbf{Enc}}[\ov{x}_t]=\ov{e}_t;\\
+                &\text{Dim}[\ov{x}_t]>>\text{Dim}[\ov{e}_t]
+                \end{aligned}
+                \]
+                \item The \textbf{recurrent} block, to which we can formally refer with the function $\mathcal{R}(\cdot)$. We shall denote with $\overline{\Theta}$ all the parameters inside the recurrent block. The output of this block is $\overline{h}_t$. Thus, it holds:
+                \[
+                \label{eqn:prdblk}
+                \begin{aligned}
+                    &\mathcal{R}\left[\overline{e}_t,\overline{h}_{t-1}, \overline{\Theta}\right] = \overline{h}_t;\\
+                    &\text{Dim}[\overline{e}_t]=\text{Dim}[\overline{h}_t]
+                \end{aligned}
+                \]
+                 \item A \textbf{decoder} function $\text{\textbf{Dec}}(\cdot)$ used to obtain an augmented version of $\overline{h}_t$, i.e. $\overline{y}_t$, which lies in the \textbf{same space} of the original input $\overline{x}_t$:\[
+                 \begin{aligned}
+                 &\text{Dec}[\ov{h}_t]=\ov{y}_t;\\
+                 &\text{Dim}[\overline{y}_t]=\text{Dim}[\overline{x}_t]
+                 \end{aligned}
+                 \]
+            \end{itemize}
+                 Observe that if we are using the rnn as a generative model, between the decoder and the output  of the recurrent block $\ov{h}_t$ we will have something like :\[
+                 \underset{e}{\text{\textbf{max}}\left[f_p(\ov{h}_t) \right]}
+                 \]
+                 Where $f_p(\ov{h}_t)$, in this case, gives an esteem over the next encoded item:\[
+             \Tilde{p}(\ov{e}_{t+1}|\ov{e}_1,\ov{e}_2,...,\ov{e}_t):=f_p(\ov{h}_t)
+                 \]
+                 so that the output $\ov{y}_t$ can be interpreted as the prediction of the next incoming input element $\ov{x}_{t+1}$.\\
+            As written in the \ref{eqn:prdblk}, the \textbf{recurrent block} $\mathcal{R}(\cdot)$ generates results as a function of  $\overline{e}_t, \overline{\Theta}$  and $\overline{h}_{t-1}$. These elements are respectively the \textbf{encoded} version of the \textbf{input} (described previously), the set of (\textbf{trainable}) \textbf{parameters} and the \textbf{output} of $\mathcal{}(\cdot)$  itself obtained in the previous time instant (only one for simplicity of notation, in practical cases it may depend on up to \textbf{several} past instants).
+            
+            \fastpic{pics/AI/time_net.png}{Implementation of the feature extractor for a \textbf{RNN}. In the red zone we're working in the \textbf{encoded} feature space, in the yellow one with the \textbf{uncompressed} datapoints (e.g. pictures)}{1}
+            
+            \noindent The \textbf{encoder} and the \textbf{decoder} are the \textbf{same} block but \textbf{reversed}. For example, when dealing with images, they are both classic \textbf{convolutional} networks from which the classification/softmax layer has been removed. In this way, the block can transform the \textbf{input} in a \textbf{feature vector} that has the same dimension of the last remaining layer of standard CNN that has been chosen. Although some operations performed by CNN-based encoders are \textbf{not invertible} (e.g., pooling and some activation functions such as ReLu), there are procedures that still allow decoders to be built with a structure \textbf{almost equal} to that of the inverted encoder.
+            Representing the architecture in its \textbf{time - unrolled} version makes explicit the way in which data flows through the system as time passes.
+            \fastpic{pics/AI/unrolled_time_net.png}{Unrolled representation of a Recurrent Neural Network. As before, in the green zone we're working in the encoded feature space, in the yellow one with the uncompressed datapoints (e.g. pictures)}{1}
+       \noindent From a \textbf{computational} point of view, \textbf{time - unrolling} is also necessary to perform the \textbf{gradient backpropagation} and thus to \textbf{optimise} the \textbf{parameters} $\ov{\Theta}$.
+        Unfortunately, it has been observed it is difficult to train RNNs
+        to capture \textbf{long-term} dependencies because the gradients tend to either \textbf{vanish} (most of the time) or
+\textbf{explode} (rarely, but with severe effects). This makes gradient-based optimization method \textbf{struggle},
+not just because of the variations in gradient magnitudes but because of the effect of long-term
+dependencies is \textbf{hidden} (being \textbf{exponentially} smaller with respect to sequence length) by the effect
+of short-term dependencies. There have been two dominant approaches by which many researchers
+have tried to reduce the negative impacts of this issue. One such approach is to devise a \textbf{better
+learning algorithm} than a simple stochastic gradient descent  for example using the very simple \textbf{clipped gradient}, by
+which the \textbf{norm} of the gradient vector is \textbf{clipped}, or using second-order methods which may be less
+sensitive to the issue if the second derivatives follow the same growth pattern as the first derivatives
+(which is not guaranteed to be the case).
+The other approach, is to design a more sophisticated $\phi(\cdot)$
+activation function than a usual activation function. The earliest attempt in this direction
+resulted in an activation function, or a recurrent unit, called a \textbf{long short-term memory} (\textbf{LSTM}). More recently, another type of recurrent unit, to which
+we refer as a \textbf{gated recurrent unit} (\textbf{GRU}), was proposed. RNNs employing either
+of these recurrent units have been shown to perform well in tasks that require capturing l\textbf{ong-term
+dependencies}. Those tasks include, but are not limited to, \textbf{speech recognition} and \textbf{machine translation}\cite{DBLP:journals/corr/ChungGCB14}.
+        \subsection{Long-Short Term Memory: LSTM}
+        \fastpic{pics/AI/simpLSTM.png}{Simplified schema of an  \textbf{LSTM} cell\cite{DBLP:journals/corr/Graves13}}{0.7}
+        The \textbf{Long Short-Term Memory} (\textbf{LSTM}) unit was initially proposed by Hochreiter and Schmidhuber
+in 1997 . Since then, a number of minor modifications to the original LSTM unit have been made.
+%We follow the implementation of LSTM as used in Graves [2013].
+Let's consider:\begin{itemize}
+    \item $\ov{\sigma}(\cdot)$ and $\ov{\text{tanh}}(\cdot)$ as the \textbf{element-wise} sigmoid function and the \textbf{e.w.} hyperbolic tangent function. For \textbf{e.w.} it's intended that the underlying function (i.e. the sigmoid or the hyperbolic tangent) is applied to each scalar component of the argument vector.
+    \item $\ov{x}_t$ as the \textbf{input vector} at time $t$,
+    \item $\ov{h}_t$ as the \textbf{output vector} at time $t$,
+    \item $\ov{c}_t$ as the \textbf{memory cell} at time $t$,
+    \item $\tilde{c}_t$ as the \textbf{new proposed memory} for the time $t$,
+    \item $\ov{i}_t, \ov{o}_t, \ov{f}_t$ as the \textbf{input}, \textbf{output} and \textbf{forget} \textbf{gates} respectively.
+\end{itemize}
+While inputs arrive, the \textbf{gates} are:\[
+\begin{aligned}
+&\ov{i}_t:= \rnnlcomb{i};\\
+&\ov{o}_t:= \rnnlcomb{o};\\
+&\ov{f}_t:= \rnnlcomb{f};\\
+\end{aligned}
+\]
+Therefore the following quantities can be computed: 
+\[
+\begin{aligned}
+&\tilde{c}_t:=\ov{\text{tanh}}(\ov{W}_c\ov{x}_t+\ov{U}_c\ov{h}_{t-1}+\ov{b}_c); \\
+&\ov{c}_t:= \ov{f}_t \odot \ov{c}_{t-1} + \ov{i}_t \odot \tilde{c} ;\\
+&\ov{h}_t:= \ov{o}_t\odot\ov{\text{tanh}}(\ov{c}_t);\\
+\end{aligned}
+\]
+Where all the $\ov{W},\ov{U},\ov{V},\ov{b}$ represent the \textbf{parameters} of the recurrent unit (letter $\ov{b}$ is the bias):\[
+\begin{aligned}
+\ov{\Theta}=\{ & \ov{W}_i,\ov{W}_o,\ov{W}_f,\ov{W}_c,\\
+&\ov{U}_i,\ov{U}_o,\ov{U}_f,\ov{U}_c,\\
+&\ov{V}_i,\ov{V}_o,\ov{V}_f,\\
+&\ov{b}_i,\ov{b}_o,\ov{b}_f,\ov{b}_c\}\\
+\end{aligned}
+\]
+The \textbf{LSTM} unit stores information that is deemed important in the memory cell whose content at time $t$ is, as said previously, $\overline{c}_t$. The \textbf{input gate} and \textbf{forget gate}  regulate the amount of memory that is learned and removed while the input arrives at time $t$. \textbf{Candidate memory} at time $t$ $\tilde{c}_t$ is calculated with a traditional weighted sum similar to that used in the "vanilla" implementation of RNNs. Lastly, the \textbf{output gate} regulates the amount of memory that is \textbf{exposed} at the output.     \fastpic{pics/AI/LSTM.png}{LSTM complete schema. the red dotted line at the output indicates that the result is sent to the \textbf{next} iteration. For example, while it is coming out from $\ov{h}_t$ it means that the result is sent to the next iteration. When the red dotted line is incoming, it means that the data is from the previous iteration.}{1}
+\subsection{Gated Recurrent Unit: GRU}
+\fastpic{pics/AI/gru_simplified.png}{\textbf{GRU} simplified schema}{0.65}
+
+A \textbf{gated recurrent unit} (\textbf{GRU}) was proposed by Cho et al. [2014] to make each recurrent unit to
+\textbf{adaptively} capture dependencies of different time scales. Similarly to the \textbf{LSTM} unit, the \textbf{GRU} has
+\textbf{gating} units that modulate the flow of information inside the unit, however, \textbf{without} having a separate
+memory cells.
+Let's consider:\begin{itemize}
+    \item $\ov{\sigma}(\cdot)$ and $\ov{\text{tanh}}(\cdot)$ as the \textbf{element-wise} sigmoid function and the \textbf{e.w.} hyperbolic tangent function (as in LSTM),
+    \item $\ov{x}_t$ as the \textbf{input vector} at time $t$,
+    \item $\ov{h}_t$ as the \textbf{output vector} at time $t$,
+        \item $\tilde{h}_t$ as the \textbf{candidate output vector} at time $t$,
+    \item $\ov{z}_t$ and $\ov{r}_t$ as the \textbf{update} and the \textbf{reset} \textbf{gates} respectively.
+\end{itemize}
+While inputs arrive, the \textbf{gates} are:
+\[
+\begin{aligned}
+&\overline{z}_t=\ov{\sigma}\left(\ov{W}_z\ov{x}_t+\ov{U}_z\ov{h}_{t-1}+\ov{b}_z\right)\\
+&\overline{r}_t=\ov{\sigma}\left(\ov{W}_r\ov{x}_t+\ov{U}_r\ov{h}_{t-1}+\ov{b}_r\right)
+\end{aligned}
+\]
+Therefore the following quantities can be computed: \[
+\begin{aligned}
+&\tilde{h}_t:=\ov{\text{tanh}}\left[\ov{W}_h\ov{x}_t+\ov{U}_h\left(\ov{r}_t\odot\ov{h}_{t-1}\right)\right]\\
+&\ov{h}_t:=(1-\ov{z}_t)\odot\ov{h}_{t-1}+\ov{z}_t\odot\tilde{h}_t
+\end{aligned}
+\]
+The GRU, as we can see, has \textbf{no} mechanism to control the degree to which its state is exposed (which the LSTM manages via the output gate), but exposes \textbf{the entire state} every time.
+When the \textbf{reset gate} is off ($\ov{r}_t=\ov{0}$) it effectively makes the unit act as if it is reading the \textbf{first symbol} of an input sequence,
+allowing it to \textbf{forget} the previously computed state.
+     \fastpic{pics/AI/GRU.png}{\textbf{GRU} full schema. The red dotted line has the same meaning as in the LSTM full schema.}{1}
+     \subsection{LSTM and GRU: similarities and differences}
+     \subsection{Mathematical models for recurrent networks}
+        \section{Generative Adversarial Networks}
+        With \textbf{Generative Adversarial Network} (\textbf{GAN}) it's intended a \textbf{macro-architecture} used to train a deep network that tries to solve a \textbf{generative modelling problem} (Section \ref{sub:gen_disc}). \textbf{GANs} share the same \textbf{training} approach, which consists in a \textbf{game theory-based} "\textbf{competition}" (\textbf{adversarial}) between two deep networks. \textbf{GANs} represent the state of the art for a lot of topics which require a generative modelling. Several studies have shown  their ability to generate realistic high resolution images. Before the introduction of the \textbf{GANs}, the classical generative modelling approaches were based on the \textbf{explicit} modelling of the probability density function used to generate samples. This approach worked well for \textbf{traditional statistics}. But when data come from a deep learning model the corresponding density function is usually computationally and mathematically \textbf{intractable}.
+        Traditionally, there have been two dominant approaches
+to confronting this \textbf{intractability} problem: \begin{itemize}
+    \item \textbf{Carefully}
+design the model to have a tractable density function
+(e.g., Frey11),
+\item Design a learning algorithm based on a computationally tractable \textbf{approximation} of an intractable
+density function (e.g., Kingma and Welling15).
+\end{itemize} 
+Both approaches
+have proved difficult, and for many applications, such as generating realistic high resolution images, researchers remain
+unsatisfied with the results so far.
+The usefulness of the distribution we wish to model lies in the \textbf{sample generation process} related with the distribution. The problem of analytical intractability of these distributions can be bypassed by trying to simulate only the \textbf{sample generation process}. Models that succeed in this are called \textbf{implicit generative models}: GANs fall into this category.
+\subsection{GANs architecure}
+Let us denote by $\ov{x}$ the generic sample related to the analysed use case and by $\mathcal{X}$ the data space.
+The two main components of a GAN are the \textbf{discriminator} and the \textbf{generator}, described below:\begin{itemize}
+    \item \textbf{Generator}:\\
+    The generator is a function that is used to sample artificial data. We can define it as: \[
+    \begin{aligned}
+    &\text{\textbf{Generator}} := \mathcal{G}\left[\ov{z},\theta^{(\mathcal{G})}\right],\\
+    &\mathcal{G}: Z \times \Theta^{(\mathcal{G})}:\longrightarrow \mathcal{X}
+    \end{aligned}
+    \]
+    Where $\theta^{(\mathcal{G})}$ is the set of trainable parameters, and $\ov{z}$ is a \textbf{latent variable} serving as input for the generator ($Z$ and $\Theta^{(\mathcal{G})}$ are their associated spaces). The distribution $p(\ov{z})$ is usually a relatively \textbf{unstructured distribution}, such as a multidimensional Gaussian  or an uniform distribution over an hypercube. The role of $\ov{z}$ is similar to that of \textbf{seed} in pseudo-random generators. The set of parameters is optimized during the training process, in order to let $\mathcal{G}$ to be able to transform unstructured noise $\ov{z}$ into realistic samples. 
+    \item \textbf{Discriminator}:\\
+    The discriminator is the function that encloses the information on how realistic samples should be. We can define it as:\[
+    \begin{aligned}
+    &\text{\textbf{Discriminator}}:= \mathcal{D}\left[\overline{x},\theta^{(\mathcal{D})}\right]
+    \end{aligned}
+    \]
+    Where $\ov{x}\in \mathcal{X}$ is a generic sample (real or coming from the generator) and $\theta^{(\mathcal{D})}$ is a set of trainable parameters.
+    The target set is not specified as it depends on the encoding to be used (one hot encoding etc): the discriminator is therefore a binary classifier which will only respond with two possible values. The two values can be interpreted as the class labels "\texttt{REAL}" or "\texttt{FAKE}". At a level of a verbal, intuitive description, the discriminator tries to predicti whether the input is coming from a real dataset or it's an artificial fake.
+\end{itemize} 
+\fastpic{pics/AI/gan_arch.png}{Architecture of  GAN.}{0.8}
+A GAN is based on the competition between the \textbf{Generator} and the \textbf{Discriminator} introduced so far, a game in the sense of the \textbf{game theory}. In this game, each player incurs in a \textbf{cost function}: \[
+\begin{aligned}
+&\text{Generator cost}:=J^{(G)}(\theta^{(G)},\theta^{(D)})\\
+&\text{Discriminator cost}:=J^{(D)}(\theta^{(G)},\theta^{(D)})
+\end{aligned}
+\]
+Each player attempts to minimize its own cost: the Discriminator cost encourages it to \textbf{correctly classify} data ("\texttt{REAL}" or "\texttt{FAKE}" labels) while the Generator cost encourages it to generate samples that the discriminator incorrectly classifies as real. A standard implementation is defining: \[
+J^{(G)}=-J^{(D)}
+\]
+This kind of implementation is called \textbf{Minmax GAN} (\textbf{M-GAN}). Another solution is the \textbf{Non-Saturating GAN} (\textbf{NS-GAN}) for which the generator cost is defined by flipping the labels used by the discriminator.
+The situation is not straightforward to model as an optimization problem because each player's cost is a function of both player's parameters, but each player may control only its own parameters. It is possible to reduce the situation to an optimization problem by searching for a $\theta^{(G)}$ and a $\theta^{(D)}$ that satisfy:\[
+\begin{aligned}
+\underset{\theta^{(G)}}{\text{\textbf{argmin}}}\Bigg\{J^{(G)}\bigg(\theta^{(G)},\underset{\theta^{(D)}}{\text{\textbf{argmin}}}\Big[J^{(D)}\left( \theta^{(G)},\theta^{(D)} \right) \Big]\bigg)\Bigg\}
+\end{aligned}
+\]
+\section{Attention networks}
+\section{Autoencoders}
+\subsection{Variational Autoencoders } 
+\subsection{Vector-quantized Variational Autoencoders}
+
+\section{Restricted Boltzmann Machines}
+\subsection{Deep belief networks (Fully visible*)}
+ \section{Siamese neural network}
+        \section{Spiking neural network}

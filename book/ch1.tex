@@ -1,0 +1,1075 @@
+\chapter{Data Mining}
+
+Today, the collected data is one of the biggest assets of a company. Data are interesting under different points of view (commercial, scientific, social).\\
+The goal of the \textbf{Data mining} discipline is to find inside data, \textbf{patterns} and \textbf{models} that are:
+     \textbf{valid},
+     \textbf{useful},
+     \textbf{unexpected},
+    \textbf{understandable}.
+To extract this kind of knowledge, data needs to be cleaned and analyzed. 
+While dealing with \textbf{big data} (enormous \textbf{size} and \textbf{dimension}), traditional approaches are not exploitable. Big data management techniques are of different kind, for example: \begin{itemize}
+    \item When we don't have the time for a complete analysis, only a \textbf{subset} of data is chosen (\textbf{sub-linear w.r.t. time}),
+    \item When the data are too big to fit in main memory, we can store on disk \textbf{(sub-linear in I/O)} or throw some of them away (\textbf{sub-linear w.r.t. space}),
+    \item When the data are too big to fit in a single machine, if we do not want to throw them away, then we need to store them in multiple machines (\textbf{sublinear w.r.t. communication}),
+    \item When data are represented by a (computational) infinite \textbf{stream}, we can avoid to store them and proceed with a \textbf{real time} processing
+\end{itemize} 
+All these examples shows that we have to face \textbf{physical} limitations while dealing with big data. Moreover, there are \textbf{algorithm scaling} limitations too: while processing  data of an high dimension, we have to choose the right algorithms if we dont want to incur in a computationally infeasible analysis. For example, a generic image \textbf{img} can be represented with a matrix $A$ such that:
+\begin{eqwbg}
+ \text{Dim}(A) = \text{height}(\textbf{img})*\text{width}(\textbf{img})
+\end{eqwbg}
+Algorithms that scale poorly w.r.t. \textbf{datapoint dimension} should be avoided in this case.\\
+Patterns and models discovered with data mining are spent in 2 main families of tasks:\begin{itemize}
+    \item \textbf{Descriptive methods}: find human-interpretable patterns that describe the data (\textit{clustering, ranking, association-rule discovery} and so on),
+    \item \textbf{Predictive methods}: allow to discover a method or a model to predict unknown
+or future behavior of some variables(\textit{recommendation systems, classification, regression and so on})
+\end{itemize} 
+TODO (correlation, bonferroni's principle and culture)
+\section{"Frequent Items" streaming algotithms}
+The \textbf{frequent items} algorithms are a family of algorithms that are be used to estimate the \textbf{frequency (occurrency)} of an item. A \textbf{streaming} algorithm is used when we have a specific kind of data model called \textbf{stream}.
+\subsection{The "stream" data model \label{txt:frq:stream}}
+The \textbf{stream} data model has some main characteristics: \begin{itemize}
+    \item Data are accessed \textbf{sequentially},
+    \item Data are accessed \textbf{only once},
+    \item Data are \textbf{not} stored,
+    \item The sequence of data can be \textbf{infinite},
+\end{itemize}
+A \textbf{streaming algorithm} scan and process data from a \textbf{stream} while building a \textbf{summary (synopsis)}.
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=400px]{pics/streaming.png}
+                        \caption{Streaming algorithm and stream data model}
+\end{figure}
+
+The \textbf{synopsis} has some core characteristics:\begin{itemize}
+    \item It answers to \textbf{queries} about the stream,
+    \item It uses a \textbf{bounded} amount of memory,
+    \item It is updated \textbf{while} items arrive,
+    \item The time required to compute an element of the stream (and then to update the synopsis) is \textbf{limited}.
+
+\end{itemize}
+\subsection{Mathematical models for stream related concepts}
+The mathematical model of a \textbf{stream} is described as follow: \begin{itemize}
+\item Suppose having an \textbf{universe} of possible items, represented by the \textbf{set} $\mathbb{S}^{(m)}$:
+\begin{eqwbg}
+\mathbb{S}^{(m)}:=\{s^{(1)},s^{(2)},...s^{(m)}\}
+\end{eqwbg}
+    \item We can define the \textbf{stream} $\sigma$ as the \textbf{sequence} of $n$ items taken from $\Sm$:
+    \begin{eqwbg}
+    \sigma:=\{s_1,s_2...s_n\|\,s_i\in \Sm\}
+    \end{eqwbg}
+Observes that there are \textbf{no constraints} on either the \textbf{uniqueness} of the stream elements or on the fact that $n$ is \textbf{finite}.\end{itemize} 
+\begin{customDef}{\textbf{(Frequency)}}\\
+Given a \textbf{stream} $\sigma$ of $n$ items, the \textbf{frequency} of an item $s\in\mathbb{S}^{(m)}$ respect to the \textbf{stream} $\sigma$ is defined as $f_\sigma(s)$:\[ 
+f_{\sigma}(s)=|\{s_i|\,s_i\in \sigma,s_i=s\}| 
+\]
+That is, the \textbf{number of occurrencies(!)} of $s$ in $\sigma$
+\end{customDef}
+\begin{customDef}{\textbf{($\phi$-frequent items)}}\\
+Given a \textbf{stream} $\sigma$ of $n$ items, and given \\$\phi \in \R \mid\,0<\phi <1$, we define the \textbf{set} of the $\phi$\textbf{-frequent} \textbf{items} the set $F_\phi$: \[ 
+F_\phi= \{s\in\Sm\mid\,f_{\sigma}(s)\geq n\phi \}  
+\]
+That is, the \textbf{set} of \textbf{items} of the \textbf{stream} $\sigma$ with a \textbf{frequency} greater or equal than $n \phi $ 
+\end{customDef}
+\begin{customDef}{\textbf{(K-majority items)}}\\
+Given a \textbf{stream} $\sigma$ of $n$ items, and given $k\in \N,\,k\geq 2$, we define a \textbf{k-majority} item \textbf{each item} that belongs to the following \textbf{set} :\[ 
+F_k= \{s\in\mathbb{S}^{(m)}|f_{\sigma}(s)\geq \floor*{\frac{n}{k}+1} 
+\]
+A \textbf{k-majority} item is $\phi$-\textbf{frequent} with $\phi=\frac{1}{k}$.
+\end{customDef}
+\begin{customDef}{\textbf{(K-majority Lemma)}}\\
+Given a \textbf{set} $N$ of $n$ items and an \textbf{integer} $k\mid\,2\leq {k} \leq {n}$, there are \textbf{at most} $k-1$ distinct \textbf{k-majority} items.
+\end{customDef}
+\begin{customDef}{\textbf{(Frequency vector)}}\\
+Given a \textbf{stream} $\sigma$ whose \textbf{items} are drawn from $\Sm$ we can define its  \textbf{frequency vector} $\overline{f}$ \[ 
+\overline{f}=(f_1,f_2...f_m)
+\]
+Where $f_i=f_\sigma \left(s^{(i)}\right )$ is the frequency (\textbf{number of occurencies}) of the item $s^{(i)}\in \Sm$
+\end{customDef}
+\begin{customDef}{\textbf{($\bs{\varepsilon}$-approximate frequency estimation)}}\\
+Given a stream $\sigma$ of $n$ items drawn from $\Sm$  and given an \textbf{error bound} $\varepsilon\mid 0 < \varepsilon <1$; the  $\bs{\varepsilon}$\textbf{-approximate problem} consist in finding $\widehat{f}$: \[
+\widehat{f}=(\widehat{f_1},\widehat{f_2}...\widehat{f_n})\quad\textrm{\textbf{such that}}\quad |\widehat{f_i}-f_i| \leq \varepsilon\cdot\|\overline{f}\| \quad \forall s^{(i)}  \in \Sm
+\]
+where $\|\overline{f}\|$ can be either:\[
+    \|\overline{f}\|_1 = \sum_{i=1}^{m}|f_i|\]\[ 
+    \|\overline{f}\|_2 = \sqrt{\sum_{i=1}^{m}{f_i}^2}
+\]
+\end{customDef}
+\begin{customDef}{\textbf{($\bs{\phi}$-frequency for weighted items)}}\\
+Given a \textbf{weighted stream}:\[
+\sigma=\{(s_i,w_i)\}_{i=1..n} 
+\]where, for each \textbf{pair} $(s_i,w_i)$,  $s_i$ represents the \textbf{item} and $w_i$ its \textbf{weight}, we can define the $\phi$\textbf{-frequent items} ($0<\phi<1$) as the \textbf{items} belonging to the set: \[
+\begin{aligned}
+F=\{s\in\Sm:&f_\sigma(s)\geq\phi C\};\quad\,\,\,\textrm{where}\\
+&C=\sum_{i=1}^{m}w_i
+\end{aligned}
+\]
+The \textbf{weighted frequency} of an item $\Dot{s}\in\Sm$ w.r.t a \textbf{stream} $\sigma$ is defined as\[
+\begin{aligned}
+&f_\sigma(\Dot{s})=\sum_{j}w_j \quad\textrm{where} \\
+&w_j \in\{w|(s,w)\in \sigma,\,s=\Dot{s}\}
+\end{aligned}
+\]
+A \textbf{weightless} stream can be interpreted as a \textbf{weighted} stream $\sigma = \{(s_i,w_i)\}_{i=1...n}$ where $w_i=1 \quad \forall i\in\{1,2...n\}$ .
+\end{customDef}
+\subsection{Streaming models and algorithms classification\label{txt:frq:class}}
+We can classify \textbf{weighted streams}\textbf{, streaming algorithms} and \textbf{type of approximation} into different families:\begin{itemize}
+\item\textbf{Weighted streams:}\\
+Weighted streams models are classified according to their \textbf{frequencies} and their \textbf{weights}:
+\begin{itemize}
+    \item \textbf{Turnstyle:} weights $w_i$ and frequencies $f_\sigma(s_i)$ can be negative
+    \item \textbf{Strict turnstyle:} weights $w_i$; frequencies $f_\sigma(s_i)$ \textbf{cannot};
+    \item \textbf{Cash register:} \textbf{both} weights $w_i$ and frequencies $f_\sigma(s_i)$ \textbf{cannot} be negative.
+\end{itemize}
+\item\textbf{Streaming algorithms:}
+There are 2 main categories of streaming algorithms, defined according the \textbf{error bound }$\bs{\varepsilon}$ of an algorithm:\begin{itemize}
+    \item \textbf{Deterministic}: These algorithms always guarantee their $\varepsilon$ as error bound.
+    \item \textbf{Randomized}: These algorithms guarantee an error  $\leq\varepsilon$ with \\an \textbf{uncertainity} of $\delta$.
+
+\end{itemize}
+\item\textbf{Approximation for randomized algorithms:}
+Given a streaming $\sigma$ and an uncertainity of $\delta$, suppose that the algorithm $A(\sigma,\delta)$ produces an output $a(\sigma)$ that is expected to be $f(\sigma)$. Under these assumptions,
+we can distinguish are 2 different types of approximations for \textbf{randomized} algorithms:\begin{itemize}
+    \item \textbf{Additive:} 
+    \begin{eqwbg}
+    \textrm{\textbf{If:}}\quad p(|a(\sigma)-f(\sigma)|>\varepsilon)\leq\delta
+    \end{eqwbg}
+    
+    We can state that $A(\sigma,\delta)$ \textbf{approximates} $f(\sigma)$ with an uncertainity of $\delta.$
+    \item \textbf{Multiplicative:}
+        \begin{eqwbg}
+    \textrm{\textbf{If:}}\quad p\left(\left|\frac{a(\sigma)}{f(\sigma)}-1 \right|> \varepsilon\right ) \leq \delta
+        \end{eqwbg}
+    Then the algorithm $A(\sigma,\delta)$ \textbf{approximates} $f(\sigma)$ with an uncertainity of $\delta$
+\end{itemize}
+\end{itemize}
+
+\subsection{"MJRTY" algorithm for the Majority problem}
+Suppose having a list of $n$ numbers. We wish to decide if there is a \textbf{k-majority number with k=2} ($50\%+1$ of the total) and \textbf{what} number is.\\
+The \textbf{MJRTY algorithm} is a \textbf{deterministic streaming algorithm} that solves this problem. It considers the list of numbers as a \textbf{stream} $\sigma$(properties described in section \ref{txt:frq:stream}). For this algorithm, the \textbf{synopsis} mantained while scanning the stream consist on a \textbf{pair} $(s,\widehat{f})$ where $s$ represent a \textbf{candidate 2-majority item}  and $\widehat{f}$ represent an \textbf{esteem} for $f_\sigma(s)$.\\ The steps of \textbf{MJRTY} are described as follow:\begin{itemize}
+    \item \textbf{Initialization step}: the \textbf{first} item of the \textbf{stream} $\sigma$ is stored as the \textbf{monitored} $s$, and $\widehat{f}$ is set to 1,
+     \item  \textbf{Loop step}: if the \textbf{following} item, let's say $\Dot{s}$,  coincides with the \textbf{monitored} item $s$, we have to increment $\widehat{f}$ by 1. If not, $\widehat{f}$ is decremented by 1. If the $\widehat{f}$ reaches $0$ the new \textbf{monitored} item become $\Dot{s}$.\\ Loop this step until \textbf{the end of the stream}.
+and $f$ is set to 1. 
+\end{itemize}
+%\begin{lstlisting}[language=Python]
+%#Python implementation of MJRTY TODO
+%pass
+%pass
+%pass
+%\end{lstlisting}
+\subsection{"Misra-Gries" and "Frequent" algorithm}
+In 1982, \textbf{Misra and Gries} generalized the \textbf{MJRTY} algorithm to determine \textbf{k-majority items} also for $k>2$. 
+Instead of holding a single pair $(s,\widehat{f})$, the "\textbf{Misra-Gries}" algorithm stores $k-1$ \textbf{pairs} ${\{(s_j,\widehat{f}_j)\}}$, with $j=1...k-1$. The steps of this algorithm are described as follow\\\begin{itemize}
+    \item When an item $\Dot{s}$ arrives, if at least one of the $k-1$ \textbf{slots} is available, then a new \textbf{pair}  $(\Dot{s},1)$ is initialized.
+    \item If there are no free slots, the incoming item $\Dot{s}$ is compared with the items \textbf{stored} in the $k-1$ \textbf{pairs}. The corresponding frequency is \textbf{incremented} by $1$  if it is among them. If it is not among them, all the $k-1$ counters are \textbf{decremented} by $1$
+\item When counters are decremented, if the \textbf{frequency counter} of a pair become 0, then its slot is allocated to the pair $(\Dot{s},1)$.
+\end{itemize}
+%\begin{lstlisting}[language=Python]
+%#MisraGries implementation in python TODO
+%pass
+%%pass
+%pass
+%
+%\end{lstlisting}
+\textbf{"Frequent"} is the name of another algorithm that produces the same results of \textbf{"Misra-Gries"}. It only differs in the \textbf{data structures} used to implement the \textbf{summary}, improving from the overall \textbf{complexity}
+$O(n\log k)$   of the \textbf{Misra-Gries} algorithm to $O
+(n)$. The new data structure remove the $O(k)$ complexity term required to decrement the $k-1$ values.
+These two algorithms \textbf{underestimate} the \textbf{true frequency} $f_i$ of each monitored item, according to the following \textbf{theorem}:
+\begin{customTheo}\textbf{Misra-Gries error bound}\\
+Given a \textbf{stream} $\sigma$ of length $n$ and a \textbf{parameter} $k\mid 2 \leq k \leq n$,  for each \textbf{item} $s_i\in \sigma$ with a \textbf{frequency} $f_\sigma(s_i)=f_i$ the \textbf{algorithm} provides a frequency \textbf{estimate} $\hat{f}_i$ such that
+\[ 
+f_i-\frac{n}{k} \leq \hat{f}_i \leq f_i
+\]
+\end{customTheo}
+\subsection{"Space Saving" algorithm}
+\textbf{Space Saving} is a \textbf{deterministic streaming algorithm}, similar to \textbf{"Frequent"}, that solves the \textbf{k-majority} problem. The steps of this algorithm  differ in the case in which there are \textbf{no free slots} and the incoming item is \textbf{different} to all the monitored ones. \textbf{"Space Saving"} stores $k$ (instead of  $k-1$) \textbf{pairs} $(s_i,\widehat{f}_i)$ and it \textbf{overstimates} the frequencies.\\
+The algorithm may also optionally keeps track of an \textbf{upper bound} of the frequency estimation \textbf{error} made for each monitored item. In this case, each \textbf{counter} is a \textbf{triple} $(s_i,\widehat{f}_i,\widehat{e}_i)$ where $\widehat{e}_i$ is the bound. The steps of the algorithm are described as follow:\begin{itemize}
+    \item When an item $\Dot{s}$ arrives, if \textbf{at least} one of the $k$ slots is available, then a new \textbf{triple}(pair) $(s,1,0)$ is initialized. 
+    \item If there are \textbf{no} free slots, the incoming item $\Dot{s}$ is \textbf{compared} with the items of the \textbf{triples}(pairs) stored in the \textbf{summary}, and (if it is among them)
+the corresponding \textbf{frequency} is \textbf{incremented} by $1$.
+\item If $\Dot{s}$ is \textbf{not} among them, then the \textbf{triple}(pair) with the \textbf{lowest frequency $f_{low}$}, let's say $(s_{low},\widehat{f}_{low},\widehat{e}_{low})$ it is \textbf{replaced} with $(\Dot{s},\widehat{f}_{low}+1,\widehat{f}_{low})$.
+\end{itemize}
+%\begin{lstlisting}[language=Python]
+%#Space Saving implementation in python TODO
+%pass
+%pass
+%pass
+%
+%\end{lstlisting}
+\textbf{Space Saving} holds the followings properties:
+\begin{customProp}
+Let's assume:\begin{itemize}
+    \item $\sigma$ to be a stream of length $n$,
+    \item $S$ to be the \textbf{summary} with $k$ \textbf{triples}(pairs) produced as output by \textbf{Space Saving} applied over $\sigma$:\[
+    S:=\{(s_i,\widehat{f}_i,\widehat{e}_i)\},\quad i\in \{1,2...k\}
+    \]
+    \item $\Dot{s}$ to be an \textbf{item} and $f_\sigma(\dot{s})$ its \textbf{true} frequency respect to $\sigma$, 
+    \item If $\Dot{s}$ is monitored by the \textbf{summary} $S$,  we can write (with a \textbf{misuse} of notation) that $\Dot{s}\in S$;  where $\hat{f}(\Dot{s})$ will be the esteem of its \textbf{frequency} and $\hat{\Dot{e}}(s)$ the esteem of its \textbf{error},
+    \item $\hat{f}^{min}$ to be the \textbf{minimum} frequency value monitored in the \textbf{summary} $S$,
+\end{itemize}  
+Then the following \textbf{inequalities} hold:
+    \[
+    \begin{aligned}
+        &\sum_{s\in S}\hat{f}(s) = n; \\
+        &\hat{f}^{min} \leq \floor*{\frac{n}{k}}; \\
+        \forall s  \in S;\hphantom{5}0\leq \hat{e}(s) \leq &\hat{f}^{min}
+    \end{aligned}
+    \]
+    \[
+    \begin{aligned}
+                       \hat{f}_\sigma(s)-\hat{f}^{min} \leq &f(s)_\sigma \leq\hat{f}(s) \iff s\in S; \\
+        &f_\sigma(s) \leq \hat{f}^{min} \iff  s\not\in S\\
+    \end{aligned}
+    \]
+\end{customProp}
+\begin{customProp}\textbf{(Monitoring guarantee)}\\
+Any item $s$ with \textbf{true} frequency $f_\sigma(s) > \hat{f}^{min}$ is \textbf{guaranteeed} to be monitored.
+\end{customProp}
+
+\subsection{Algorithms metrics}
+There are different metrics used to measure performances of algorithms:
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=300px]{pics/TPTF.png}
+                        \caption{Actual/result value table}
+\end{figure}
+\begin{itemize}
+    \item \textbf{Precision:} measures the the \textbf{correctness} of the positive outcomes (in \%). 
+    A Precision equal to 1 (or 100\%) means there are \textbf{no false positives} (i.e., precision is a
+quality metric).
+        \begin{eqwbg}
+        \text{Precision}=\frac{TP}{TP+FP}
+        \end{eqwbg}
+    \item \textbf{Recall:} measures the fraction of the \textbf{total real positive} cases detected. Recall of 1 (or 100\%) means that there are \textbf{no undetected positive} (i.e. false negatives) cases 
+            \begin{eqwbg}
+        \text{Recall}=\frac{TP}{TP+FN}
+            \end{eqwbg}
+
+\end{itemize}  
+    \textbf{Misra-Gries} and \textbf{Space Saving} both have a $\text{recall}=1$, but \textbf{Space Saving} has a better $\text{precision}$.
+\section{Frequency estimation algorithms}
+In this section are described algorithms that solves the $\bs{\varepsilon}$\textbf{-approximate frequency estimation} problem (Definition 1.6)
+\subsection{The Count-Sketch basic algorithm}
+\textbf{Count-Sketch} is a \textbf{randomic streaming algorithm} for the \textbf{frequency estimation}. It is designed to work with a \textbf{weighted turnstile} stream model (section \ref{txt:frq:class}), thus, we suppose to deal with a \textbf{stream} $\sigma$  made of $n$ pairs  $(s_i, w_i)$, where $s_i \in \Sm$ is the \textbf{item} and $w_i \in \Z$ is the relative \textbf{weight}.
+The most basic version of this algorithm uses a vector
+of \textbf{counters} $\overline{c} \in \Z^k$ and requires a \textbf{precision parameter}  $\varepsilon>0$ to be specified. The algorithm consist in 3 \textbf{procedures}:
+\begin{itemize}
+    
+    \item \textbf{Initialize}$\bs{(\varepsilon)}$\textbf{:}\\
+    \label{txt:frs:skcin}
+   An array $\overline{c}=[c_1,c_2...c_k]$ with $k$ entries is \textbf{initialized} with $c_i=0,\,\forall i\in\{1,2...k\}$:
+           \begin{eqwbg}
+    \begin{aligned}
+        &\overline{c} \gets \vec{0}\\
+        &\text{where}\\
+        &k:=\ceil*{\frac{e}{\varepsilon^2}}
+    \end{aligned}
+            \end{eqwbg}
+    
+    Then, choose 2 \textbf{pairwise independent} hash functions $h$ and $g$:
+    \begin{eqwbg}
+    \begin{aligned}
+        &h: \Sm \to \{1,2...k\}\\
+        &g: \Sm \to \{1,-1\}
+    \end{aligned}
+        \end{eqwbg}
+    \item \textbf{Process}$\bs{(s',w')} $\textbf{:}\\
+    for each incoming $(s',w')$ we compute $j={h(s')}$, then:
+\begin{eqwbg}
+    \begin{aligned}
+           c_j \gets  c_j + w'\cdot g(s'),
+    \end{aligned}
+\end{eqwbg}
+    \item \textbf{Query(s)}:\\
+    After that we've \textbf{processed} the entire stream, if we wish to \textbf{query} for the frequency of $s$, we compute $j={h(s)}$ then we report $\hat{f}_s$:
+\begin{eqwbg}
+    \hat{f}_s \gets c_j  \cdot g(s) 
+\end{eqwbg}
+\end{itemize}
+\subsection{Count sketch Error estimate}
+Let's fix an arbitrary item $a \in \Sm$.\\
+$\forall b \in \Sm, b\not = a$ colliding with $a$, the error contribution is $g(a)g(b)f_b$, where $f_b$ is the true frequency of item $b$. Note that :
+\begin{eqwbg}
+\begin{aligned}
+&g(a)g(b)\in \{1,-1 \}\textrm{  with}\\
+&p(1)=p(-1)=\frac{1}{2}
+\end{aligned}
+\end{eqwbg}
+Now, for each $b$ previously defined, let $X_b$ be a random variable defined as follows:
+\begin{eqwbg}
+X_b=\begin{cases}
+f_b\hspace{5mm}\textrm{\textbf{if} }h(a) = h(b) \wedge g(a)g(b)=1 \\
+0\hspace{5mm}\textrm{\textbf{if}} h(a) \not = h(b) \\
+-f_b\hspace{5mm}\textrm{\textbf{if }}h(a) = h(b) \wedge g(a)g(b)=-1 \\
+\end{cases}
+\end{eqwbg}
+and note that, for (1.22): 
+\begin{eqwbg}
+\E[X_b]=0
+\end{eqwbg}
+ Now consider the output random variable $X_a$=$\hat{f}_a$, where $\hat{f}_a$ is the output  of \textbf{Query}$\bs{(a)}$, where $a$ was previously defined.\\
+Let us now express $X_a$ in terms of the r.v. $X_b$ : 
+\begin{eqwbg}
+X_a=\hat{f}_a=f_a+ \sum_{b\in\Sm\char`\\\{a\}}X_b
+\end{eqwbg}
+Computing $\E[X_b]$, we obtain:
+\begin{eqwbg}
+\begin{aligned}
+     \E[X_b]&=\E\left[f_a+ \sum_{b\in\Sm\char`\\\{a\}}X_b\right]\\
+            &=\E[f_a] + \E\left[\sum_{b\in\Sm\char`\\\{a\}}X_b\right] \\
+            &=f_a + \sum_{b\in\Sm\char`\\\{a\}}\E[X_b]  \\
+            &=f_a
+\end{aligned}
+\end{eqwbg}
+This means that $X_a=\hat{f}_a$ is an \textbf{unbiased estimator} for the desired frequency $f_a$.\\
+We still need a bound for the error, since $\hat{f}_a-f_a \not=0$ in general.  \\The strategy is to compute the variance of $X_a$, then we will apply the \textbf{Chebyshev’s} inequality to bound the probability of getting a bad estimate:
+\begin{eqwbg}
+    \begin{aligned}
+    Var[\hat{f}_a]&=Var\left[f_a+ \sum_{b\in\Sm\char`\\\{a\}}X_b\right]\\
+                  &=Var\left[\sum_{b\in\Sm\char`\\\{a\}}X_b\right] \hspace{5mm}\\
+                  &=\sum_{b\in\Sm\char`\\\{a\}}Var[X_b]
+    \end{aligned}
+\end{eqwbg}
+Now, $f_a$ can be removed because while computing the variance, the contribution of a sum of any constant is equal to $0$.\\
+In the third line, even if in general we have: 
+\begin{eqwbg}
+Var\left[\sum_{i=1}^nX_i\right]=\sum_{i=1}^nVar[X_i]+\sum_{i\not=j}^nCov[X_i,X_j]
+\end{eqwbg}
+Since we're used \textbf{pairwise independent} hash functions, then all the $X_i, X_j$ variables are still \textbf{pairwise independent}, and independent r.v. are always uncorrelated. It follows that, \textbf{in this case}, the variance of the sum is the sum of the variances.
+Now we need to compute $Var[X_b]$.\\ Using the (1.24) and the fact that, in general, $Var[X]=\E[X^2]-\E[X]^2$, we just need to determine $\E[X_b^2]$. Remembering the (1.23), we can write:
+\begin{eqwbg}
+X_b^2=\begin{cases}
+    f_b^2 \hspace{5mm}\textrm{\textbf{if  }} h(a)=h(b)\\
+    0 \hspace{5mm}\textrm{\textbf{  if  }} h(a)\not = h(b)
+\end{cases}
+\end{eqwbg}
+Thus, for the (1.32), with $B=[k]$, we can write 
+\begin{eqwbg}
+\E[X_b^2]=f_b^2\cdot p[h(a)=h(b)]=\frac{f_b^2}{k}
+\end{eqwbg}
+Let's now to introduce $\vec{f}=[f_1,f_2...f_m]$. For any $j\in \Sm$, let's also define the vector $\vec{f}_{-j}$ as the $m-1-$dimensional vector obtained by dropping the j-th entry of $\vec{f}$.\\ Now, we can go back to the last line of (1.27):
+\begin{eqwbg}
+\begin{aligned}
+        \sum_{b\in\Sm\char`\\\{a\}}Var[X_b]&=\sum_{b\in\Sm\char`\\\{a\}}\frac{f_b^2}{k}\\
+        &=\frac{\|\vec{f}_{-a}\|_2^2}{k}\\
+        &= \frac{\|\vec{f}\|_2^2 -f_a^2}{k} \\ 
+        &\leq \frac{\|\vec{f}\|_2^2}{k}
+\end{aligned}
+\end{eqwbg}
+Therefore:
+\begin{eqwbg}
+Var[\hat{f}_a]=\|f_{-a}\|^2_2 \leq \frac{\|\vec{f}\|^2_2}{k}
+\end{eqwbg}
+Applying \textbf{Chebyshev} inequality (1.37) to $\hat{f}_a$ we obtain:
+\begin{eqwbg}
+p\left[|\hat{f}_a-f_a| \geq \frac{c\|f\|_2}{\sqrt{k}}\right]\leq \frac{1}{c^2}
+\end{eqwbg}
+Choosing then $k=\ceil*{\frac{e}{\varepsilon^2}} $ and $c=\sqrt{e}$ we finally get
+\begin{eqwbg}
+p[|\hat{f}_a-f_a|\geq \varepsilon\|f\|_2] \leq \frac{1}{e}
+\end{eqwbg}
+This means that, by setting $\varepsilon = \sqrt{\frac{e}{k}}$ the \textbf{estimate} is within $\varepsilon\|\vec{f}\|_2$ with \textbf{probability at least} $1-\frac{1}{e}$(confidence$\approx 64\%$). Solving for $k$, we obtain $k=\ceil*{\frac{e}{\varepsilon^2}} $.
+\subsection{Probability error mitigation}
+We would like to choose a $\delta| 0<\delta<1$ that gives us a confidence of at least $1-\delta$ instead of having a fixed $\delta=\frac{1}{e}$.\\  The idea consist in using $t$ independent copies of the sketch and giving as output the \textbf{median} estimate given by the t data structures in order to amplify the probability of success. So we 'll have as output the value that occurs in at least $50\%$ of the data structures.\\
+Let $X_\varepsilon$ be a random variable equal to the  number of data structures that produce an answer \textbf{not within} $\varepsilon\|\vec{f}\|_2$ of the true answer.\\
+Since each independent data structure has failure probability \textbf{at most} $\frac{1}{e}$, we can upper-bound $X$ with
+a $Bin(t, \frac{1}{e})$ variable. We'll use the \textbf{Chernoff bound (1.41)} to evaluate $p\left[X_\varepsilon> \frac{t}{2}\right]$
+\begin{eqwbg}
+p\left[X>\frac{t}{2}\right]<e^{\frac{-t(\frac{1}{2}-\frac{1}{e})^2}{2(\frac{1}{e})}}\approx e^{-O(1)t}
+\end{eqwbg}
+\noindent That means that the probability of having a misprediction on at least half data structures \textbf{decreases exponentially} with the number of data structures $t$.\\
+Choosing $t=O(log(\frac{1}{\delta}))$ ensures that $p\left[X_\varepsilon > \frac{t}{2}\right]\leq \delta$. Therefore, the probability of success is \textbf{at least} $1- \delta$
+\subsection{The Count-Sketch full algorithm}
+The full version of the \textbf{Count Sketch} takes in account the \textbf{error mitigation}. It works on $t=O(log(\frac{1}{\delta}))$ data structures and it gives the median $\hat{f}$ of an item over these $t$ structures while querying for that specific item:\begin{itemize}
+    \item \textbf{Initialize($\bs{\varepsilon,\delta}$)}\\
+    A vector ${C}$ of $t$ vectors of size $k$ (can be seen as a \textbf{matrix of size $t\times k$}) is \textbf{initialized} with all 0:
+\begin{eqwbg}
+    \begin{aligned}
+    &C=\begin{bmatrix}
+c_{11} & c_{12}&...  & c_{1k}\\
+c_{21} & c_{22}&...  & c_{2k}\\
+... & ...&...  &...\\
+c_{t1} & c_{t2}&...  &c_{tk}\\
+\end{bmatrix}\\
+    &\text{where}  \\
+    &k:= \ceil*{\frac{e}{\varepsilon^2}};\\
+    &t=O(log(\frac{1}{\delta}))
+    \end{aligned}
+\end{eqwbg}
+Each one of the $t$ \textbf{row vectors} can be seen as the $\overline{c}$ vector seen in the section \ref{txt:frs:skcin} while implementing the \textbf{basic} count sketch version. Thus, we have to choose $2t$ \textbf{pairwise independent} hash functions $h_i$ and $g_i$:
+\begin{eqwbg}
+    \begin{aligned}
+        &h_1...h_t: \Sm \to \{1,2...k\}\\
+        &g_1...g_t: \Sm \to \{1,-1\}
+    \end{aligned}
+\end{eqwbg}
+    
+    \item \textbf{Process(s',w')}\\
+    for each incoming $(s',w')$ and for each $i=1...k$ we compute $j(i)={h_i(s')}$, then:
+\begin{eqwbg}
+    \begin{aligned}
+           c_{j(i),i} \gets  c_{j(i),i} + w'\cdot g_i(s'),
+    \end{aligned}
+\end{eqwbg}
+    \item \textbf{Query(s)}\\
+    On query $s$, compute $j(i)=h_i(s)$ for each $i=1...k$, then we return $\hat{f}_a$:
+    \begin{eqwbg}
+    \hat{f}_a \gets \underset{1\leq i\leq t}{\text{median}}\left[g_i(s)c_{j(i),i}\right]
+    \end{eqwbg}
+\end{itemize}
+%\subsection{The Count-Min sketch algorithm(TODO)}
+%\subsection{Frequency estimation algorithms comparison(TODO)}
+\section{The "Map-Reduce" model}
+\textbf{Map-Reduce} is a parallel programming model. Unlike others parallel programming models, it focuses more on the \textbf{easiness} of implementation/codewriting instead of maximizing performance. Performances can still be improved exploiting the \textbf{horizontal scaling}.\\
+MapReduce faces 4 main challenges:\begin{itemize}
+    \item \textbf{Distribution of the computation across the cluster(1),}
+    \item \textbf{Coding easiness(2)},
+    \item \textbf{Machine-failure management(3)},
+    \item \textbf{Minimizing the data-traffic across the network of the cluster(4)}
+\end{itemize}
+The model has 2 core components : the \textbf{file system} and the \textbf{programming paradigm}.
+\subsection{The file system}
+Data handled by MapReduce needs to be stored in an ad-hoc  distributed file system. There are 2 implementation \textbf{GFS} (Google File System, proprietary) and \textbf{HDFS} (Hadoop Distributed File System, open source). \\
+HDFS and GFS are designed to work with huge files (100GBs to TBs) and clusters with even millions of nodes.
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=350px]{pics/MapreduceArch.png}
+                        \caption{Example of a possible cluster architecture}
+\end{figure}
+\noindent These file systems operate with 2 assumpions:  data is rarely updated in place and the most commons operations are reads and appends; \\There are 3 core components:\begin{itemize}
+    \item \textbf{Chunk servers:}\\
+    In these servers are stored \textbf{file chunks (16-64MB)}. A chunk is a piece of the file that needs  to be processed and it is usually replicated 2x or 3x on different racks in order to handle \textbf{ data loss on machine failures(3)}. \\Chunk servers are usually compute servers too, since  HDFS focuses on\textbf{ bringing computations to data(4)} minimizing the traffic across the network.
+    \begin{figure}[H]
+                \centering
+                        \includegraphics[width=350px]{pics/chunks.png}
+                        \caption{Schema of chunk servers and data chunks}
+\end{figure}
+    
+    \item \textbf{Master nodes}\\
+    A Master node (\texttt{NAME} node in hdfs) stores metadata about the physical location of the file chunks (that is, which rack/node of the cluster). They re usually replicated too in order to avoid \textbf{points of failures}. \\When a file need to be accessed, for first is required to interrogate a master node. The Master node will answer specifying the location of the file required allowing to access it.
+    \item \textbf{Client libraries for file access}\\
+    This is a software component that offers the necessay API's to work with the file system. It allows to talk to master nodes in order to find the right chunk server and then to connect directly to the chunk servers to access data.
+\end{itemize}
+\subsection{Coding paradigm}
+The name "MapReduce" is both referred to the general model and the programming paradigm/style. \\The progrmming style was designed to make easy parallel programming and to work with very large-scale data managing transparently hardware/software failures. \\
+It has are several implementation including
+Hadoop, Spark (becoming dominant), Flink, and
+the original Google implementation just called
+“MapReduce.”\\
+It works as follow:\begin{enumerate}
+    \item A MapReduce job starts with a collection of input
+elements of a single type: all types are \textbf{key-value pairs}.
+    \item A function called \textbf{mapper} applies an user-written function called \textbf{map function}. This is done to each $(key,value)$ input
+pair, in parallel. \\
+Many mappers grouped in a \textbf{Map task}, that is the \textbf{unit of the paralleism}.
+    \item The output of the Map function is a set of 0, 1, or
+more \textbf{key-value pairs}. The system sorts all the key-value pairs by key ,
+forming ($key,[list\_of\_values]$). This phase is called \textbf{Sort and Shuffle}.
+    \item A function called \textbf{reducer} applies another user-written function called  \textbf{reduce function} to each $(key,[list\_of\_values])$ pair . Many reducers are often grouped into a Reduce task.
+    \item Each reducer produces some output, and the
+output of the entire job is the union of what is
+produced by each reducer.
+\end{enumerate}
+    \begin{figure}[H]
+                \centering
+                        \includegraphics[width=\textwidth]{pics/mapreduceschema.png}
+                        \caption{Schema for MapReduce}
+\end{figure}
+The only thing that the programmer must code are the \textbf{Map} and \textbf{Reduce} functions .
+\subsection{Data-flow}
+Only input and final output are stored on the
+distributed file system;
+intermediate and sort and shuffle results are stored locally
+on Map and Reduce workers.\\
+MapReduce tasks have the \textbf{blocking
+property}: no output is used until the task is
+complete, this means that we can restart a Map task that failed
+without fear that a Reduce task has already
+used some output of the failed Map task.
+
+\subsection{Scheduling}
+Master node takes care of coordination.
+There are 2 core types of tasks: \textbf{map tasks} that groups mappers and \textbf{reduce tasks} that group reducers. A task can be in 3 different status: \textit{idle}, \textit{in-progress} or \textit{completed}.
+\textit{Idle} tasks get scheduled as workers become available.\\
+When a map task completes, it sends the master
+the location and sizes of its R intermediate files,
+one for each reducer; then  the Master pushes this info to reducers. All the $(key,values[])$ pairs with the same $key$ are sent to the same reducer.
+\subsection{Errors and Failures}
+MapReduce is \textbf{fault tolerant}: it is designed to deal with compute
+nodes failing to execute a Map task or Reduce
+task.\\
+The master pings workers periodically to detect
+failures. There are 3 different kind of failures:\begin{itemize}
+    \item \textbf{Map worker failure}:\\ If a map worker fails,  its task is always rescheduled since intermediate output are stored locally on workers (it doesn t matter if the task was completed or in progress). Reduce workers are notified when a map task is rescheduled
+on another worker
+    \item \textbf{Reduce worker failure}:\\
+    In this case, only in-progress tasks are reset to idle, then they're restarted
+    \item \textbf{Master failure}:\\
+    The entire MapReduce task is aborted and client is notified.
+\end{itemize}
+\subsection{Optimizations}
+\subsubsection*{Tasks Balancing}
+If $M$ is the number of Map tasks and $R$ is the number of Reduce tasks, a good practice is to keep $M$ much larger than the number of nodes in the cluster. This improves dynamic load balancing and speeds up
+recovery from worker failures.
+\subsubsection*{Backup tasks}
+Another optimization trick is about \textbf{slow workers:} they significantly lengthen the job
+completion time. A good solution is to spawn backup copies of tasks. Whichever one finishes first “wins”, anf the incomplete task copies are aborted. This dramatically shortens job completion time.
+\subsubsection*{Combiners}
+This optimization works only if the reduce
+function is \textbf{commutative and associative}.
+Often a Map task will produce many pairs of
+the form $(key,value)$ ... for the same $key$. A part of the network time can be saved if the map output (before the sort and shuffle phase) is pre-aggregated in $(key,values[])$ pairs and executed by the \textbf{combiner function}, that usually is the same of the reduce function. Then the output is sent to the reduce functions.
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=\textwidth]{pics/combiners.png}
+                        \caption{Schema of the combiner execution}
+\end{figure}
+\subsubsection*{Partition function}
+Inputs to map tasks are created by contiguous
+splits of input file.
+Reducers needs to ensure that $(key,values[])$ pairs with the
+same  key  end up at the same worker. This is obtained with the \textbf{partition function}. The default one will have the form \[hash(key) mod (R)\] where $R$ is the number of reducers. 
+Sometimes it can be useful to override the hash
+function; for example, an hypotetical partition function in the form \[hash(hostname(URL)) mod R\] ensures that URLs
+from the same host end up in the same output file
+%\subsection{Cost Measure(TODO)}
+\section{Frequent Itemsets and Association rules discovery}
+An \textbf{association rule} is a statement with the syntax: 
+\begin{eqwbg}
+\label{eqn:ard:asr}
+\begin{aligned}
+       &X\implies Y \\
+       \textrm{where } &X=\{x_1...x_n\}; Y=\{y_1...y_m\},\\
+       &n,m\in \N
+\end{aligned}
+\end{eqwbg}
+\noindent The previous association rule can be read like "\textbf{If X, then probably Y}" . More verbosely, it says that :
+ \begin{adjustwidth}{25mm}{25mm}
+                 \rule[0.1cm]{12cm}{0.6mm}\\
+                 \centering
+                    \textit{If a \textbf{set} contains the \textbf{itemset}  \textbf{X} it  also contain the \textbf{itemset} \textbf{Y} with \textbf{high} probability}\\
+        \rule[0.1cm]{12cm}{0.6mm}\\
+\end{adjustwidth}
+In use cases involving the use of \textbf{association rules}, the so-called \textbf{market-basket} model is used. In this model, "container" sets are represented by \textbf{baskets}. The relationship between \textbf{baskets} and "content" objects (simply referred to as \textbf{items}) is $N$-$N$, as the same object is representative of a \textbf{class/category}, and therefore can be present in \textbf{several} baskets. There are different variations of the \textbf{market-basket} model, some implementation examples could be:
+\begin{itemize}
+    \item \textbf{Example 1:}\\\\
+    \textbf{Baskets}: sentences (each basket labeled with a sentence)\\
+    \textbf{Items}: textual documents.\\\\
+    In this model, if an \textbf{item} (document) is in a \textbf{basket} (sentence) this means that the document \textbf{contains} the sentence. If for example, the pair $\{\textrm{doc}_1,\textrm{doc}_2\}$ is common, this means that they \textbf{share} a lot of sentences and we are facing a possible case of \textbf{plagiarism}
+    
+    \item \textbf{Example 2:}\\\\
+    \textbf{Baskets}: Patients,\\
+    \textbf{Items}: drugs and side effects (etherogeneous itemset)\\\\
+    In this case, if an association rule like  $\{\text{drug}_1\} \implies \{\text{side}_1\}$ is valid, this can be interpreted as: \hhhRule{"Users that assume $\text{drug}_1$ are \textbf{likely to have} the $\text{side}_1$ side effect."} This means that an association rule is indicative of a \textbf{possible correlation}  between the \textbf{drug} and the \textbf{side effect}. In this case, the \textbf{absence} of an item should be monitored and analyzed too.
+\end{itemize}
+\subsection{Basket market model metrics}
+In the model described so far, there are different \textbf{metrics} used to describe the element of the model:
+\begin{customDef}\textbf{Support}\\
+Let' s assume:
+\begin{itemize}
+    \item $B$ to be a list of n \textbf{baskets}, $B=\{b_1,b_2,b_3...b_n\}$,
+    \item Each \textbf{basket} to be $b=\{i_1,i_2...i_k\}$ where each $i$ is an \textbf{item},
+    \item $b^*$ to be a generic \textbf{itemset}, $b^*=\{i_1,i_2...i_h\}$ where each $i$ is an \textbf{item},
+\end{itemize}
+We define the \textbf{support of $b$ over $B$} as the \textbf{number} of baskets belonging to $B$ that contains \textbf{all} the items of the \textbf{itemset} $b^*$:\[
+\begin{aligned}
+           \text{supp}_B\left(b^*\right)=\left|\left\{b \in B\mid\,b \supseteq b^* \right\}\right|
+\end{aligned}
+\]
+\end{customDef}
+\begin{customDef}\textbf{Frequent itemset}\\
+With the same assumptions, we define an itemset $b^*$ a \textbf{frequent itemset over $B$} if, given a support \textbf{threshold} $s$, we have that:\[
+\begin{aligned}
+           \text{supp}_B\left(b^*\right) \geq s
+\end{aligned}
+\]
+\end{customDef}
+\begin{customDef}\textbf{Association Rule and support}\\
+As said in \ref{eqn:ard:asr}, an association rule is a statement in the form \[
+\begin{aligned}
+       &X\implies Y \\
+       \textrm{where } &X=\evalat{\{x_i\}}{i=1..n};\\ 
+       &Y=\evalat{\{y_i\}}{i=1..m};
+\end{aligned}
+\]
+Where $X,Y$ are two generic \textbf{itemsets}.\\
+We define the \textbf{support} of an \textbf{association rule} over a \textbf{list of baskets} $B$ as:\[
+\text{supp}\textbf{}(X\implies Y) := \text{supp}(X \cup Y)_B
+\]
+\end{customDef}
+\begin{customDef}\textbf{Confidence}\\
+Given the 2 generics \textbf{itemsets} $X = \{x_1...x_n\}$ and $ Y = \{y_1...y_m\}$, we define the \textbf{confidence} over $B$ of the \textbf{association rule} $X \implies Y$  as:\[
+\label{eqn:ard:conf}
+\begin{aligned}
+        \text{conf}_B(X\implies Y) &:= \frac{\text{supp}_B(X \cup Y)}{\text{supp}_B(Y)}\\
+        &=\frac{\text{supp}_B(X \implies Y)}{\text{supp}_B(Y)}
+\end{aligned}
+\]
+\end{customDef}
+\begin{customDef}\textbf{Interest}\\
+With the same assumptions, we define the \textbf{interest} over $B$ of the \textbf{association rule} $X \implies Y$ as:\[
+\text{inter}_B(X\implies Y)= \text{conf}_B (X \implies Y)- p_B(X)
+\]
+where $p_B (X)$ (\textbf{probability} of $X$ over $B$) can be defined as: \[ 
+p_B(X)=\frac{\text{supp}_B(X)}{|B|}
+\]
+When an association rule $R$ has $|\text{inter}(R)|>k_{int}$ where $k_{int}$ is a chosen \textbf{threshold} (usually $k_{int} \geq \frac{1}{2}$), then $R$ it's said to be an \textbf{interesting rule}, 
+\end{customDef}
+\subsection{Itemsets properties}
+\begin{customProp}\phantom{a}\\
+\label{eqn:ard:atlq}
+For a generic \textbf{itemset} $X$ and a generic \textbf{baskets} list $B$, it holds
+\[
+\text{supp}_B\left(X-\{x\}\right) \geq \text{supp}(X)
+\]
+This means that the \textbf{support} of the \textbf{itemset} $X-\{x\}$  will be \textbf{at least equal} to the \textbf{support} of $X$, where $x$ is a generic \textbf{item} such that $x\in X$. 
+\end{customProp}
+\begin{customProp} \textbf{Confidence anti-monotony\label{txt:ard:antim}}\\
+Let $X,Y,V,W$ be 4 \textbf{itemsets} and let $B$ to be a generic \textbf{baskets} list. It holds the following property:\[
+\begin{aligned}
+           &\text{conf}_B\left(\{X,Y,V\} \implies \{W\}\right) \geq \\
+           &\text{conf}_B\left(\{X,Y\} \implies \{V,W\}\right) \geq \\
+           &\text{conf}_B\left(\{X\} \implies \{Y,V,W\}\right) 
+\end{aligned}
+\]
+This property \textbf{follows} from the \ref{eqn:ard:conf} and the \ref{eqn:ard:atlq}.
+\end{customProp}
+\begin{customDef}\textbf{Immediate superset}\\
+Given an itemset $X$, we we define its \textbf{immediate superset} as any itemset $Y$:\[
+Y=X \cup \{i\}
+\]
+where $i$ is a generic item.
+\end{customDef}
+\begin{customDef}\textbf{Maximal and Closed itemsets}\\
+Given a basket list $B$, an itemset $\{X\}$ is said to be \textbf{closed frequent} if it is a f\textbf{requent itemset} (given a \textbf{threshold} $s$) and there is not any \textbf{immediate superset} $Y$ such that \[
+\text{supp}_B(X)=\text{supp}_B(Y)
+\]
+With the same assumptions, the \textbf{itemset} $X$ is said \textbf{maximal frequent} if (given a \textbf{threshold} $s$) it is a \textbf{frequent itemset} and there are no \textbf{immediate supersets} that are frequent too. \\
+Observe that  a \textbf{maximal frequent} itemset is also a \textbf{closed frequent} one, \textbf{but not vice versa}:\[
+X\textrm{  is maximal frequent} \longrightarrow X\textrm{  is closed frequent}
+\]
+\end{customDef}
+\subsection{Finding interesting associations rules}
+For a \textbf{baskets} list $B$, the standard procedure to find association rules with  high \textbf{interest} and \textbf{confidence} provides 2 main steps:\begin{enumerate}
+    \item Finding all the \textbf{frequent itemsets} (for a given threshold $s$),
+    \item \textbf{Rules generation}.
+\end{enumerate} 
+The first step is the \textbf{challenging} one and it is treated in subsequent sections. Since the second step acts only over the \textbf{frequent itemsets}, that is only a small portion of $B$, it usually does not have any \textbf{computational feasibility} issue. Anyway, there are different ways to \textbf{reduce} further the number of \textbf{frequent itemsaets}, for example choosing only the \textbf{closed} or the \textbf{maximal} ones.\\ In order to describe the \textbf{second step}, suppose having the \textbf{list of frequent itemsets} $I_k$ (given a threshold s) over a basket lists B, lets' call it $I_{B,s}=\evalat{\{I_k\}}{k=1..n}$. \\\\
+\noindent\textbf{Rules generation:}\\
+This procedure \textbf{must} be applied for each $I_k$, we' ll refer to $I_k$ with $I$ to make a \textbf{less verbose} notation .
+\begin{itemize}
+    \item For each \textbf{subset} $A$ of $I$, generate the rule $R_A$ 
+    \begin{eqwbg}
+    \begin{aligned}
+    &R_A:="A\implies I\setminus A";\\
+    &\forall A \subset I
+    \end{aligned}
+    \end{eqwbg}
+Observe that, since $I$ is frequent by \textbf{assumption}, $A$ is also \textbf{frequent} as a consequence of property \ref{eqn:ard:atlq}.
+    \item Compute the \textbf{confidence} over $B$ for each rule generated in the previous step:
+    \begin{eqwbg}
+    \text{conf}_B(R_A)=\frac{\text{supp}_B(A \cup I \setminus A)}{\text{supp}_B(A)}=\frac{\text{supp}_B(I)}{\text{supp}_B(A)}
+    \end{eqwbg}
+    \item If the result is above a chosen \textbf{confidence threshold} $k_c$, \textbf{output the rule} $R_A$
+\end{itemize}
+Note that points 2 and 3 can take big advantage and optimizations by using the \textbf{anti-monotony} property (\ref{txt:ard:antim})
+\subsection{Data model for frequent itemsets}
+Before to introduce algorithms, we need to make some assumptions about the \textbf{model} of the data that we 're going to \textbf{mine}.
+\begin{itemize}
+    \item We have a list of baskets $B=[b_1,b_2...b_n]$.\\We have \textbf{many} baskets ($n$ is \textbf{big}),
+    \item Each basket $b$ is a set of items, $b=\{i_1,i_2...i_k\}$ where each $i$ is an \textbf{item}.\\ \textbf{Baskets are small} (average $k$ is \textbf{small}),
+    \item Items composing \textbf{baskets} are taken from an \textbf{universe} of possible items, let's say $\I=\evalat{\{i_j\}}{j=1...h}$.\\ We have \textbf{many possible items} ($h$ is big)
+    \item Data is kept is \textbf{big flat files} (instead of having a \textbf{database}) that store baskets \textbf{sequentially}.
+\end{itemize}
+In this model, the true \textbf{cost} of mining \textbf{disk-resident} data is usually the number of \textbf{input/output operations} because $n$ (number of baskets) is big for assumpion. For this reason, the cost of any algorithm for the \textbf{mining} of \textbf{frequent itemset} is measured  by evaluating the number of
+\textbf{passes} (sequential readings) an algorithm makes over the data.\\
+As a result of the assumptions made, generating all the \textbf{possible} \textbf{pairs} of items (that are, $h^2$ pairs) in \textbf{main memory} requires a time that is \textbf{ much less} than the time it took to \textbf{read} all the baskets \textbf{from disk}. \\If we want to generate all the \textbf{subsets} of \textbf{size}  $s$ of a basket with $k$ \textbf{items}, the time required goes with $\simeq \frac{k^s}{s!}$.\\ Since we usually need only \textbf{small frequent itemsets} ($s$ never grows beyond 2 or 3) when we do need the itemsets for a large size
+$s$, it is usually possible to eliminate many of the items in
+each basket as not able to participate in a frequent
+itemset, so \textbf{the value of $k$ drops as $s$ increases}.\\
+Finding \textbf{frequent pairs of items} is a core task: the \textbf{probability} for an itemset of being \textbf{frequent}, on \textbf{average}, drops \textbf{exponentially} as the \textbf{size} of the itemset \textbf{increases}.(?rivedi) 
+, therefore we can focus on finding \textbf{frequent pairs}, then extend the method to \textbf{larger itemsets}.\\
+Swapping counter in/outs the main memory/disks \textbf{must be avoided} because we have a lot of I/O operations (we have a lot of baskets \textbf{to read}); this means that  for the main memory must be \textbf{feasible} to store the counters for \textbf{all} the \textbf{monitored pairs}.
+\subsection{Na{\"i}ve algorithm \label{txt:ard:naiv}} 
+This is the simplest algorithm for the \textbf{mining of frequent pairs} for a given baskets list $B$. It has 2 variants, and  they re both built around the assumption of having $\I=\{a_1,a_2...a_n\}$ as \textbf{universe} of the $n$ {possible items} that compose \textbf{baskets}.
+\begin{itemize}
+    \item \textbf{Approach 1: Triangular Matrix}\\
+    We generate a \textbf{triangluar matrix} $A$:
+    \begin{eqwbg}
+    \begin{aligned}
+&\text{\phantom{Where AA =}}A=\begin{bmatrix}
+a_{ij}
+\end{bmatrix}\\
+&\textrm{Where} \quad a_{ij}=
+\begin{cases}
+\textrm{supp}_B\left(\{a_i,a_j\}\right) \textrm{for }i<j ;\\
+0\textrm{ otherwise}
+\end{cases}
+    \end{aligned}
+    \end{eqwbg}
+    Remind that $\textrm{supp}_B\left(\{a_i,a_j\}\right)$ represents the \textbf{number of occurriencies} in $B$ for  the pair $\{a_i,a_j\}$. The matrix $A$ stores the index $a_{ij}$ only for $i>j$ as $a_{ij}$ and $a_{ji}$ represent the \textbf{same pairs} and storing both coefficients would be a \textbf{waste} of space.\\
+    In order to save further space, we can  represent the \textbf{information} conveyed by $A$ exploiting the  \textbf{lexicographic order} of its indices, using a \textbf{vector} as  \textbf{data structure}, let'say $\overline{v}=[v_1,v_2,v_3...v_m]$, where $m=n\frac{(n-1)}{2}$. With this method we know that $\textrm{supp}_B\left(\{a_i,a_j\}\right)$ is \textbf{stored} by $v_k$ where:
+    \begin{eqwbg}
+    k= (i - 1)\left(n - \frac{i}{2}\right) + (j - i)
+    \end{eqwbg}
+    With this method we store the \textbf{support} of \textbf{every possible} pair (even if a pair has count $0$). According with $m$, the \textbf{total number of bytes} required scales with $2n^2$. Each pair requires 4 bytes.
+     \item \textbf{Approach 2: Hash table:}\\
+     With this method we store \textbf{supports} in an \textbf{hash table}.\\ If we have that $\textrm{supp}_B\left(\{a_i,a_j\}\right)=c_{ij}$, we store the $\{\textrm{key},\textrm{value}\}$ \textbf{pair}, where $\textrm{key}=(i,j)$ and $\textrm{value}=c_{ij}$. With this method, we \textbf{only} monitor pairs with a \textbf{positive} \textbf{support}. Each $\{\textrm{key},\textrm{value}\}$ pair requires 12 bytes
+
+\end{itemize}
+It follows that the approach 2 \textbf{beats} approach 1 if \textbf{less} than $\frac{1}{3}$ of
+possible pairs have a \textbf{positive support}. If we have \textbf{too many items} (support counts don't fit into memory) \textbf{both methods fail}.
+\subsection{A-priori algorithm}
+A multi-step approach algorithm
+\textbf{A-Priori} optimize the usage of
+\textbf{main memory}. The idea is to take advantage of the \textbf{monotonicity} of the \textbf{frequency} of an itemset respect to the \textbf{number} of items in that itemset:
+\begin{customProp} \textbf{A-priori principle (Itemsets frequency monotonicity)}\\
+Given a generic \textbf{baskets} list $B$, and an \textbf{itemset} $b$, it holds:\[
+\begin{aligned}
+\textrm{supp}_B(b)=s_b &\implies \forall b_{sub}\mid\,b_{sub} \subseteq b : \textrm{supp}_B(b_{sub})\geq s_b\\
+&\implies \forall b_{sup}\mid\,b_{sup} \supseteq b : \textrm{supp}_B(b_{sup})\leq s_b
+\end{aligned}
+\]
+As a consequence of this property, we can state that if an itemset is \textbf{frequent}, then \textbf{all of its subsets must also be
+frequent}.\\ Vice-versa, if an itemset is \textbf{not frequent}, then \textbf{none of its supersets
+can be frequent}.
+\end{customProp}
+\begin{figure}[H]
+                \centering
+                       \includegraphics[width=300px]{pics/ap1.png} \includegraphics[width=300px]{pics/ap2.png}
+                        \caption{Illustration of the  A-priori principle}
+\end{figure}
+\noindent Therefore, consider having \textbf{list} of \textbf{itemsets}  $\I$, a list of \textbf{baskets} $B$ and a frequency \textbf{threshold} $f_t$ (itemsets with a \textbf{support} over $B$ $\geq f_t$ are considered \textbf{frequent} in $B$), the \textbf{3} steps of the \textbf{A-priori} algorithm are described as follow:\begin{itemize}
+ \item \circled{1}: \textbf{Initialisation}:\\
+ We initialize $\I$ with the \textbf{universe} of all the possible \textbf{items} (i.e. itemsets with \textbf{cardinality} 1).
+    \item \circled{2} \textbf{Filter frequent:}\\Read baskets from $B$ and count in \textbf{main memory} the occurrences of \textbf{each itemset} $\in \I$ in order to find \textbf{frequent} itemsets.
+ This task requires only memory \textbf{proportional} to $|\I|$
+    \item \circled{3} \textbf{Generate $\I^*$:}\\
+    In this step we \textbf{generate} a new \textbf{list} of itemsets $\I^*$ starting from the frequent ones of $\I$ found in the previous phase. Generation \textbf{criteria} are described separately. Go back to \circled{2}  using $\I^*$ as the new $\I$ looping 
+
+\end{itemize}
+\textbf{In the first iteration}, $\I$ contains only \textbf{single} items, and the goal of the step \circled{2} will be to find \textbf{frequent items}. Thus, at the end of the first iteration, $\I^*$ will be: 
+\begin{eqwbg}
+\I^*=\left\{\{a_i,a_j\}\mid\, \text{supp}_B(a_i)\geq f_t,\,\text{supp}_B(a_j)\geq f_t\right\}
+\end{eqwbg}
+That is, the set of all \textbf{possible pairs} made with the \textbf{frequent items}.
+With each \textbf{successive} iteration, the required \textbf{memory} of the algorithm \textbf{drops exponentially}. This means that the memory required by the step \circled{2} of the \textbf{first iteration} has a bigger order of \textbf{magnitude} than the following \textbf{steps} of the following \textbf{iterations}. After the step \circled{2} of the second iteration, we have all the \textbf{frequent pairs}. This result can be achieved with \textbf{A-Priori} without storing the \textbf{support} for each \textbf{possible pair} as we did in the previous algorithm (section \ref{txt:ard:naiv}).
+\begin{figure}[H]
+                \centering
+                       \includegraphics[width=0.75\textwidth]{pics/Apriori.png}
+                        \caption{Schema of the single iteration of the A-priori algorithm. There are different possible criteria to generate $\I^*$ (\textbf{Generate} step ). }
+\end{figure}
+\subsection{Park-Chen-Yu algorithm}
+In the problems discussed so far, the memory \textbf{is always the bottleneck}. Thus, these algorithms tries to optimize memory usage.
+Before to indroduce \textbf{Park-Chen-Yu} algorithm (also said \textbf{PCY}), we need to discuss some observations about \textbf{A-Priori}: \begin{itemize}
+        \item During the first step of the first iteration, we store in memory only the count of each item: \textbf{most memory is idle},
+        \item Can we \textbf{optimize the usage of this idle memory} in order to reduce the memory used in subsequent steps?
+    \end{itemize}
+The idea is to fill all the remaining memory with an \textbf{hash table}. That's how the \textbf{first step of PCY works}:\begin{itemize}
+    \item We fill the idle memory with an \textbf{hash table}. Each bucket-key correspond to the output of an hash function whereas all bucket values are initialized with $0$,
+    \item For each basket of the basket list $B$, we count the occurrency of each item we and store the count, 
+    \item For each basket of the basket list $B$, we find all possible pairs, 
+    \item While we find pairs, we compute the hash of each pair and we increment the count of the corresponding bucket.\\
+\end{itemize} 
+\textbf{N.B.}: For each bucket just keep the count, not the actual
+pairs that hash to the bucket.
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=400px]{pics/pcyInit.png}
+                        \caption{Pseudocode of the teps introduced so far. The new part is highlighted}
+\end{figure}
+\noindent It's important to underline that  if two pairs \textbf{collide} under the chosen hash, they will increment the count of the same bucket. For this reason, we have following properties:
+\begin{itemize}
+    \item A bucket is \textbf{frequent} if its count is \textbf{at least} the support (\#occurrencies) threshold $s$
+    \item If a bucket contains a frequent pair, then
+the bucket \textbf{is surely frequent}.\\However, even without any frequent pair, a bucket can
+still be frequent
+    \item If bucket is \textbf{not} frequent, \textbf{none of its pairs can be frequent}.
+\end{itemize}
+From the last point of the list, we deduce that can\textbf{ eliminate} pairs that hash to non-frequent buckets.
+Now, we can replace the hash table computed so far with a \textbf{bit vector}: each bucket become $1$ if it's frequent, $0$ if it's not. Thus, if we have a pair, \textbf{we can check if it matched a frequent bucket} by calculating its hash. Note that by converting the hash-table to a bit vector, \textbf{we reduced the memory usage} to $\bs{\frac{1}{32}}$.
+Therefore, the \textbf{second step of PCY} consist on \textbf{computing the bitmap}, discovering \textbf{frequent items} (trivial, we got items counts in the first step) and \textbf{counting the candidate pairs}. \\ During the second step, a pair is a \textbf{candidate frequent} if it satisfies 2 conditions:\begin{enumerate}
+    \item The items of the pair are both \textbf{frequent items},
+    \item The pair hashes to a bucket whose bit in
+the bit-vector is 1 (i.e. \textbf{frequent bucket})
+\end{enumerate}
+Being a candidate frequent itemset is a \textbf{necessary but not sufficient condition} to be a frequent itemset. Thus, we count the occurrency of these candidate pairs in the baskets.
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=400px]{pics/PCY2Step.png}
+                        \caption{Memory schema during the first and the second step of the PCY algorithm}
+\end{figure}
+\noindent On second pass, a table of $(item, item, count)$ triples is
+essential, since we cannot use the triangular matrix with the lexicographic-ordered vector
+approach because there is no known
+way of compacting the matrix to avoid leaving space
+for the uncounted pairs.\\
+Thus, the hash table \textbf{must eliminate approximately $\frac{2}{3}$
+of the candidate frequent pairs for PCY to beat A-Priori}
+\subsection{PCY refinement: Multistage}
+\noindent If we want to reduce further the \textbf{counts of candidate pairs} in pass 2, (\textbf{Fig. 1.10)} we can compute another \textbf{bit vector} from the \textbf{hash table} built with only the \textbf{candidate frequent pairss}. What we've just described it's the another step of the PCY algorithm. This is the \textbf{multistage} version of the algorithm: steps that follows the second one are similar, each new onw just introduce a new bit vector that reduce further the number of the candidate frequent pairs. Each new bit vector is computed over the hash table of the candidate frequent pairs of the previous step.
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=400px]{pics/PCYmulti.png}
+                        \caption{Memory schema of the multistage PCY with 3 steps}
+\end{figure}
+\noindent\textbf{N.B.} The two hash functions for the two hash table are different and independent.\\
+In this new version, \textbf{we can generalize} the requirements for an itemset to be a frequent candidate one:\begin{enumerate}
+    \item The items of the pair must be both \textbf{frequent items},
+    \item If we re at the step \textbf{n}, the pair must hashes to 1 for the all the \textbf{n-1} hash function i.e. \textbf{the pair always maps to frequent buckets} in all the n-1 bit vectors
+\end{enumerate}
+\subsection{PCY refinement: Multihash}
+The \textbf{multihash} extension of \textbf{PCY} use several independent hash tables
+on the first pass. In our example we will use 2 hash tables in the same pass.
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=350px]{pics/multih.png}
+                        \caption{Memory schema of the multihash PCY with 2 hash tables}
+\end{figure}
+    \noindent As we can see in the figure, in the second pass we end up like in the third pass of the multistage version. In the basic version of the PCY the hash table fills the memory. In this version, the 2 hash tables do the same but use half as much memory (i.e. number of buckets) as in the basic PCY. The risk is the fact that  halving the number of buckets \textbf{doubles the average count} of each one, since each hash function will have an image set image set whose dimension is halved.
+    We have to be sure that most buckets will still not reach
+ the frequency threshold $s$. If we are confident of this, we can get a benefit like multistage,
+\textbf{but in only 2 passes}.
+\section{Frequent Itemsets algotirhms with $\leq$ 2 passes}
+\subsection{Random Sampling}
+This is the easiest method that allows to find frequent itemsets in less than 2 passes. \textbf{Random sampling} rely on the \textbf{A-priori} algorithm, but before to execute it, it performs a pre-processing of the baskets list.
+\\Suppose that we have a  basket list $B\mid\#(B)=m$ and a frequency threshold $f_t$ : \begin{itemize}
+    \item We choose the \textbf{sampling probability} $p_s$,
+    \item Each basket belonging to $B$ will be \textbf{sampled} with probability $p_s$
+    \item At the end we' ll have a \textbf{sampled version} of $B$, let's say $\overline{B}\mid\#(\overline{B})=p_s\#(B)=p_sm$,
+    \item While reducing the number of baskets we 're reducing the \textbf{average count of each itemset}, so we have to choose a \textbf{new frequency threshold} $\overline{f_t}=kf_tp_s$, where $k$ is usually $0.7<k<0.95$ in order to \textbf{reduce false negative}
+\end{itemize}
+A bigger $k$ will require more space, a smaller one produce more false negatives.
+Since this method reduce the size of the datased, it can be useful to avoid \textbf{memory trashing}. 
+\subsection{SON}
+As in Random Sampling, let's suppose that we have a  basket list $B\mid\#(B)=m$ and a frequency threshold $f_t$. Then we proceed as folows: 
+\begin{itemize}
+    \item We split $B$ in more memory-sized subsets $C_i$. Suppose that each of these chunk is a fraction $q$ of the whole dataset: $\#(C_i)=qm$
+    \item We have to define $\overline{f_t}=kf_tq$ as the chunk threshold, where $k$ has the same goal as in random sampling. If an itemset has a frequency $\geq \overline{f_t}$ in a chunk, then it's said frequent in that chunk.
+    \item An itemset becomes a \textbf{candidate frequent} if it is found to
+be frequent in at least one or more subset chunks of $B$.
+\item Finally, count all the candidate
+itemsets and determine which are frequent in
+the entire set.
+\end{itemize}
+\noindent The \textbf{SON} algorithm focus on splitting the dataset (the file with the basket list) in memory-sized chunks and to process them in parallel. It also rely on the fact that an itemset \textbf{cannot
+be frequent} in the entire set of baskets unless
+it is frequent in \textbf{at least one subset}.\\(TODO: SON MAPREDUCE)
+\subsection{Toivonen}
+Toivonen’s algorithm is based on 2 passes: one over a
+small sample and one over all the data- This algorithm has no false negative or false positive but there is an arbitrarily small but finite probability
+of failure. In case of failure, the algorithm must be restarted with a different sample. Before introducing the algorithm, we require some statements:
+\begin{customDef}\textbf{Negative Border}\\
+Given a basket list $B$ and a frequency threshold $f_t$ we define the \textbf{negative border} as the set of all itemset that are \textbf{not} frequent in  but which all immediate subsets are frequent.
+\end{customDef}
+\begin{customTheo}\textbf{Negative Border theorem}\\
+If there is an itemset that is frequent in the
+full data, but not frequent in a sample, then
+there is a member of the negative border for
+the sample that is frequent in the full data.
+\end{customTheo}
+\noindent Let' s suppose that we have a basket List $B$ and a frequency threshold $f_t$.\begin{itemize}
+    \item The first steps of Toivonen are the same of \textbf{Random Sampling}, so we end up in having a sample $\overline{B}\mid\#(\overline{B})=p_s\#{B}$ and a $\overline{f_t}=kf_tp_s$. 
+    \item Determine the candidate frequent itemsets
+using the sample. We must choose carefully $k$, because if we have false negatives in this phase, the entire algorithm will fail. So even if we waste more memory, it is better to choose a lower $k$ than we would choose in random sampling
+    \item Compute the itemsets of the negative border of the sample
+    \item During the second pass, process $B$ entirely. If no itemset from the negative border turns
+out to be frequent, then the candidates found
+to be frequent in the full data are exactly the
+frequent itemsets: there are no false
+negatives and no false positives. Otherwise, the algorithm has failed and must be repeated
+selecting a new random sample 
+\end{itemize} 
+(TODO)
+\section{Similar items detection}
+Finding similar documents/items is a common task in multi-dimensional data processing. It can be seen as finding the nearest neighbour in an high dimensional space.
+There are a lot of use cases that can be approached of the similar items detection: plagiarism detection for text-documents, scene completion for images, customer who purchase similar products etc...\\
+We can state the problem more formally as follow:\\
+ \begin{adjustwidth}{25mm}{25mm}
+        \centering
+                 \rule[0.1cm]{12cm}{0.6mm}\\
+                    \textit{"Given a set of high-dimensional data points $\evalat{\{\overline{x_k}\}}{k=1....N}$, find pairs $(\overline{x_i},\overline{x_j})\mid d(\overline{x_i},\overline{x_j})\leq s$, where $"s"$ is a distance threshold."}\\
+        \rule[0.1cm]{12cm}{0.6mm}\\
+\end{adjustwidth}
+\vspace{10mm}
+ To achieve this, we need to know an explicit distance function $d(\overline{x_1},\overline{x_j})$. \\If we have $N$ data points, as we said previously, we need $\frac{N(N-1)}{2}$ comparison in order to analyze all the possible pairs. This scales with $O(N^2)$ and it's not computationally feasible with the magnitute of $N$ that we wish to handle. The algorithm that will be described in this section can obtain this result with a complexity of $O(N)$ (despite some false positives/negatives).
+Let' s introduce the distance metric that will be uses in this section:
+\begin{customDef}\textbf{Jaccard Similarity and Distance}\\
+Suppose that we have two sets $C_1$ and $C_2$. We define the \textbf{Jaccard similarity} of the two sets as: \[
+J_s(C_1,C_2)=\frac{|C_1\cap C_2|}{|C_1\cup C_2|}
+\]
+Thus, we define the \textbf{Jaccard distance} (our $d(\overline{x_1},\overline{x_j})$)  as: \[
+\begin{aligned}
+    J_d(C_1,C_2)&=1-J_s(C_1,C_2)\\
+                &=1-\frac{|C_1\cap C_2|}{|C_1\cup C_2|}
+\end{aligned}
+\]
+\end{customDef}
+\noindent
+We can now introduce the 3 steps of the algotithm which allows us to solve the problem previously stated even for \textbf{an huge number $N$ of data points}, since it scales with $O(N)$.
+In the following sections we will describe procedures with the following assumptions:\begin{itemize}
+    \item We have $\evalat{\{\overline{x_k}\}}{k=1....N}$, that is a set of high-dimensional data points (pictures, textual documents etc),
+    \item $N$ is so big that we cannot use functions/algorithms/procedures with a complexity that scales with $O(N^2)$,
+    \item We know $d(\overline{x_i},\overline{x_j})$ that is the distance function
+    \item We know $s$, that is the distance threshold.
+\end{itemize}
+Again, our final goal is to find pairs $(\overline{x_i},\overline{x_j})\mid d(\overline{x_i},\overline{x_j})\leq s$, that we can consider similar pair for the given distance function.
+\subsection{Shingling}
+Before to introduce the shingling, we need to define what a \textbf{k-shingle} is:
+\begin{customDef}\textbf{k-Shingle (or k-Gram)}\\
+A \textbf{k-Shingle} is a sequence of k tokens that appears in a data point.\\For example, if the data poit is a textual document, a 3-shingle could be any set of 3 characters (tokens) that appear sequentially in the document. Tokens can be anything: in the previous example we could have used words instead
+\end{customDef}
+\noindent In this section we can always imagine the datapoints as textual-documents and the k-shingles as the sets of k sequential charachters that appears in a document. 
+\noindent Thus, let's introduce the core goal of this stage:
+ \begin{adjustwidth}{25mm}{25mm}
+                 \rule[0.1cm]{12cm}{0.6mm}\\
+                    \textit{The goal of the \textbf{shingling} stage is to convert each \textbf{data point} in a set (or multiset) of \textbf{k-shingles}
+}\\
+        \rule[0.1cm]{12cm}{0.6mm}\\
+\end{adjustwidth}
+After this transformation it is possible to compute the distance %$d(\overline{x_1},\overline{x_2})$
+between two sets of shingles that represent the data points. The shingle lenght $k$ is a core parameter for this step since it tunes a lot of aspects.\\The following points are all interdependent. \textbf{As $k$ increases}: \begin{itemize}
+    \item For  a given data point, the number of shingles decreases,
+    \item  The possible values that the k-shingles can assume increase exponentially. Indeed, if each token can have \textbf{n} different values (e.g. for token=character  $n=30$, alphabet + grammar) and the lenght of the shingle is $k$, we have $n^k$ possible shingles,
+    \item Consequently, Assuming an uniform probability of appearing for all the possible shingles, the probability of each shingle to appear decreases exponentially,
+    \item The probability to have items in common for two sets of shingles (that represents 2 data points) deacreases. This means that also deacreases the expected (Jaccard) distance between sets of shingle.
+\end{itemize}
+\noindent The parameter $k$ then must be chosen in order to have a small probability for a $k$ shingle to appear in a data point, according with the size of the data points (e.g email $k=5$, book $k=10$). 
+Once that the shingles of each document are computed, in real implementation will be stored the list of the hash values of the shingles that belong to a document., since hashes  make comparison easier and allows to compress long shingles. To argue the compression, we can assume that not all the $n^k$ possible k-shingles are valid (some never occur: think about all the possible shingles that can appear in a given language). This means that, if we store directly the list of shingles, we re wasting some space. Thus, at the end of this step, each data point will be represented  by a bit-vector (usually sparse), where each bit represents the presence of the hash of a shingle. Computing Jaccard similarity now it's a trivial task.
+\subsection{Min-Hashing}
+Now that we have represented each data point with a bit vector, the next step is to compress it, also considering that these vectors are usually very sparse.
+ \begin{adjustwidth}{25mm}{25mm}
+                 \rule[0.1cm]{12cm}{0.6mm}\\
+                    \textit{The goal of the \textbf{min-hash} step is to convert each \textbf{set of k-shingles} in a small \textbf{signature}. \textbf{Distance is preserved}: comparing two signatures allows to determine the distance between the two sets that they represent.}\\
+        \rule[0.1cm]{12cm}{0.6mm}\\
+\end{adjustwidth}
+As a result of the compression, we can put more signature (that bit vectors) in memory in order to make comparison. Distance preservation is the condition that allows us to perform this comparison. Remind that, as we said in the initial condition in \textbf{Section 1.7}, we cannot perform pairwise comparison between signatures since $N$ is too big. This issue is tackled by the next step of the algorithm (LSH). Now, given two bit-vectors $\overline{v_1}$ and $\overline{v_2}$, we wish to find a function $f_s$ that convert a bit vectior in a signature. This function needs the following properties: 
+\begin{eqwbg}
+\begin{aligned}
+    &d(\overline{v_1},\overline{v_2}) \textrm{ is low } \implies p(f_s(\overline{v_1})=f_s(\overline{v_2}))  \textrm{ is high };\\
+    &d(\overline{v_1},\overline{v_2}) \textrm{ is high } \implies p(f_s(\overline{v_1})\neq f_s(\overline{v_2}))  \textrm{ is low }
+\end{aligned}
+\end{eqwbg}
+The $f_s$ must depend by the distance metric that we re using. With the Jaccard distance we can use the \textbf{Min-Hash}. Here's how it works:\begin{itemize}
+    \item Suppose having a matrix $M$, where columns represents the bit-vectors (the datapoints) and each row then represent a shingle (remember that each index of the bit-vector represent a shingle, 1 if it occur, 0 if not),
+    \item Consider a random permutation of rows $\pi$,
+    \item The permuted version of the vector (column) $\overline{v}$ is $\overline{v}^{(\pi)}$ 
+    \item We define the min hash function $h_{\pi}(\overline{v})$ of a bit-vector (column) as the index $j^{(\pi)}$ of the first entry of the permuted vector $\overline{v}^{(\pi)}$ that is $1$
+  :
+  \begin{eqwbg}%[\textbf{Prova}]
+\begin{aligned}
+           &\overline{v}=\{v_0,v_1...v_T\}, v_i \in \{0,1\};\\
+           &h_{\pi}(\overline{v})= j^{(\pi)}=\evalat{min}{i}(v^{(\pi)}_i=1);
+\end{aligned}
+\end{eqwbg}
+\end{itemize}
+Thus, it holds that
+\begin{eqwbg}
+\begin{aligned}
+        & \overline{v}^{(\pi)} \textrm{ at index }  j^{(\pi)} \textrm{ is } 1;\\
+           & v^{(\pi)}_i = 0\textrm{ }\forall i<j^{(\pi)}       
+\end{aligned}
+\end{eqwbg}
+We will use as signature the sequence of the output of $n$ min hash functions defined with $n$ different permutations $\pi$. To give a quantitative measure, a big book has a signature made with about 100 minhash. Supposing 4 byte to store a minhash value, the information of each book is compressed in 400 byte (TODO, dimostrazione- approssimazione di $\pi$ con hash function)
+\subsection{Locally sensitive hashing}
+As we stated in the initial assumptions,\textbf{(Section 1.7)} $N$ is too big to make pairwise comparisons between all the possible datapoints. At this point we have $N$ compressed vectors that preserve the distance information respect the data points they come from. Therefore, even if we can now easily compute the Jaccard distance, we cannot make pairwise comparison between all the possible bit-vectors in order to determine similar datapoints. \textbf{The min-hashing problem}. 
+ \begin{adjustwidth}{25mm}{25mm}
+                 \rule[0.1cm]{12cm}{0.6mm}\\
+                    \textit{The \textbf{Locally Sensitive Hashing} stage uses hash functions over fractions of signatures with the goal of discovering data points that are candidate to be similar, with a complexity O(N). 
+                    %(represented by the sets of k shingles that each signature represent)
+                    }\\
+        \rule[0.1cm]{12cm}{0.6mm}\\
+\end{adjustwidth}
+We can consider two columns (i.e. data points) similar if they share at least a fraction $s$ of their signatures. \textbf{LSH} stage produces a set of  \textbf{candidate similar} pairs of signatures. The idea is to split the signature matrix in $b$ bands, each one made by $r$ rows. Then, we compute the hash for each column band using as many buckets as possible. Columns (i.e. data points, signatures) that hashes at least one band in the same bucket are \textbf{candidate similar}.
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=400px]{pics/partition1.png}
+                        \caption{Representation of a partitioned signature. Remember that the signature matrix is ideal and never built in real cases.}
+\end{figure}
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=400px]{pics/partition2.png}
+                        \caption{Representation of the hashing of signature bands. If two columns (signatures) shares at least one bucket, they're \textbf{candidate similar}. This procedure is repeated for each band.}
+\end{figure}
+(TODO) STIMA ERRORE
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=400px]{pics/minhash.png}
+                        \caption{Schema of the 3-steps algorithm. The steps are: \textit{Shingling, Min-Hashing and Locally Sensitive Hashing (LSH)}}
+\end{figure}
+\section*{Appendix for Data Mining}
+ \addcontentsline{toc}{section}{Appendix 1}
+\subsection*{Hash functions}
+% \addcontentsline{toc}{subsection}{Hash functions}
+\begin{customDef}
+An \textbf{hash function h} projects a value $\bs{a \in  A}$
+to a value $\bs{b \in B}$; where $\#A>>\#B$.
+\[
+    h: A \to B
+\]
+$\#A$ can also be $\infty$.
+\end{customDef}
+\vspace{10mm}\noindent
+There are 3 faimilies of hash functions:
+    \begin{customDef}\textbf{(Uniform hash functions)}\\
+    A family of hash functions  $\mathcal{H} = \{h:A\to B\}$ is \textbf{uniform} if:\[
+    \begin{aligned}
+           &\forall h \in \mathcal{H},\\
+           &\forall a \in A, b \in B,\\
+           &\textrm{we have}\\
+           &p(h(a)=b)=\frac{1}{\#B}
+    \end{aligned}
+    \]
+    \end{customDef}
+    \begin{customDef}\textbf{(2-universal hash functions)}\\
+    A family of hash functions  $\mathcal{H} = \{h:A\to B\}$ is \textbf{2-universal} if:\[
+    \begin{aligned}
+           &\forall h \in \mathcal{H},\\
+           &\forall a_1,a_2 \in A|a_1\neq a_2, \\
+           &\textrm{we have}\\
+           &p[h(a_1)=h(a_2)]=\frac{1}{\#B}
+    \end{aligned}
+    \]
+    
+    \end{customDef}
+    \begin{customDef}\textbf{(Pairwise independent hash functions)}\\
+    A family of hash functions  $\mathcal{H} = \{h:A\to B\}$ is \textbf{pairwise independent} if:\[
+    \begin{aligned}
+           &\forall h \in \mathcal{H},\\
+           &\forall a_1,a_2 \in A|a_1\neq a_2,\\
+           &\forall b_1, b_2 \in B, \\
+           &\textrm{we have}\\
+           &p[h(a_1)=b_1 \wedge h(a_2)=b_2]=\frac{1}{(\#B)^2}
+    \end{aligned}
+    \]
+    \end{customDef}
+    \subsection*{Chebyshev’s inequality}
+    \begin{customTheo}\textbf{(Chebyshev’s inequality):}\\
+    Let $X$ be a random variable with finite expected value $\E[X]$ and finite
+    non-zero variance $Var[X]$. For any real number $c>0$: \[
+    \begin{aligned}
+               p[ | X-\E&[X]|\geq c]\leq \frac{Var[X]}{c^2}\\
+               &\textrm{or equivalently}\\
+            p[ | X-\E[X]&|\geq c\sqrt{Var[X]}]\leq \frac{Var[X]}{c^2}\\
+    \end{aligned}
+    \]
+    \end{customTheo}
+    \subsection*{Markov’s inequality}
+    \begin{customTheo}\textbf{(Markov’s inequality):}\\
+    statement
+    \[
+    \begin{aligned}
+               expression\\
+               expression\\
+               expression
+    \end{aligned}
+    \]
+    \end{customTheo}
+    \subsection*{Chernoff bound}
+    \begin{customTheo}\textbf{(Chernoff bound)}\\
+    Let $X=bin(n_b,p_b)$ be a \textbf{binomial distribution}. It can be proved that if $p_b<\frac{1}{2}$, then\[
+    p\left[X>\frac{n}{2}\right]<e^{\frac{-n(\frac{1}{2}-p)^2}{2p}}
+    \]
+    
+    \end{customTheo}
+
+

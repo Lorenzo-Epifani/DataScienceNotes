@@ -1,0 +1,126 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%% MISC %%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setcounter{tocdepth}{4}
+\tcbuselibrary{theorems}
+\textwidth=5000pt\oddsidemargin=0pt
+\geometry{top=20mm, bottom=20mm, left=20mm, right=20mm}
+\renewcommand{\baselinestretch}{1.1}
+\renewcommand{\chaptermark}[1]{%
+  \markboth{#1}{}}
+\makeatletter \renewcommand{\@citess}[1]{\textsuperscript{\,[#1]}} \makeatother
+
+\hypersetup{
+  urlcolor=green!70!black
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%% FAST PICTURE %%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%   and   %%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%% FAST FILLHEIGHT PICTURE PICTURE  %%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\fastpic}[3]{
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=#3\textwidth]{#1}
+ \caption{#2} 
+\end{figure}
+}
+
+\newcommand\remheight{\dimexpr\pagegoal-\pagetotal-\baselineskip\relax}
+\newtcolorbox{fillfigure}[1][]{height fill, space to=\myspace,#1}
+
+\newcommand{\fastfpic}[2]{
+\begin{fillfigure}[blanker]
+            \centering 
+            \includegraphics[ height=\myspace]{#1}\\
+            \captionof{figure}{#2}
+            \end{fillfigure}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%% OTHER FAST COMMANDS %%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%FAST RNNLCOMB, IN CHAPTER 5 RNN, (JUST A COMPACT NOTATION)
+\newcommand{\rnnlcomb}[1]{\left( \ov{W}_{#1}\ov{x}_t+\ov{U}_{#1}\ov{h}_{t-1}+\ov{V}_{#1}\ov{c}_{t-1} +\ov{b}_{#1} \right)}
+
+%FAST OVERLINE
+\newcommand{\ov}[1]{\overline{#1}}
+
+%math things
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\T}{\mathbb{T}}
+\newcommand{\I}{\mathbb{I}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\A}{\mathbb{A}}
+\newcommand{\bfE}{\mathbf{E}}
+\newcommand{\bfP}{\mathbf{P}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\newcommand{\Lagr}{\mathcal{L}}
+\newcommand{\Sm}{\mathbb{S}^{(m)}}
+\newcommand{\nrm}[1]{\left\Vert{#1}\right\Vert}
+\NewDocumentCommand{\evalat}{sO{\big}mm}{%
+  \IfBooleanTF{#1}
+   {\mleft. #3 \mright|_{#4}}
+   {#3#2|_{#4}}%
+}
+
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+
+%Partial derivate shortcommand
+\newcommand{\deinde}[2]{\frac{\partial #1}{\partial #2}}
+
+%centered italic highlighted text, with/without rules
+\newcommand{\hhhRule}[1]{
+ \begin{adjustwidth}{25mm}{25mm}
+                 \rule[0.1cm]{12cm}{0.6mm}\\
+                 \centering
+                    \textit{#1}\\
+        \rule[0.1cm]{12cm}{0.6mm}\\
+\end{adjustwidth}
+}
+\newcommand{\hhhNoRule}[1]{
+ \begin{adjustwidth}{25mm}{25mm}
+                 \centering
+                    \textit{#1}\\
+\end{adjustwidth}
+}
+
+%For circled numbers, require tikz
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+            
+\title{More than one Author with different Affiliations}
+\author{Lorenzo Epifani}
+
+
+
+%for equation emum
+\newcommand{\myequation}{\begin{equation}}
+\newcommand{\myendequation}{\end{equation}}
+\let\[\myequation
+\let\]\myendequation
+
+
+%bg equation env
+\newtcolorbox{eqbox}[1][]
+{
+colback=gray!10,
+arc=0pt,
+boxrule=-1pt,
+title=#1 % I would like to make this (one of these in general) assignment optional depending on #1, #2...
+}
+
+ \newenvironment{eqwbg}[1][]{
+    \begin{eqbox}[#1]
+    \[
+ }{
+   \]
+   \end{eqbox}\vspace{-17pt} \phantom{a}\\\noindent}

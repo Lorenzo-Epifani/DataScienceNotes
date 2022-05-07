@@ -1,0 +1,60 @@
+\documentclass[12pt,a4paper]{report}
+%\documentclass[12pt,a4paper]{book}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage[superscript,biblabel]{cite}
+\usepackage{newlfont}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{xpatch}
+\usepackage{dirtree}
+%\usepackage{listings, xcolor}
+\usepackage[hyphenbreaks]{breakurl}
+\usepackage[hyphens]{url}
+\usepackage{geometry} 
+\usepackage[footnotesize,bf]{caption2}
+\usepackage{afterpage}
+\usepackage{lipsum}
+\usepackage{changepage}
+\usepackage{caption2}
+\usepackage[table]{xcolor}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{lettrine}
+\usepackage{hyperref}
+\usepackage{amsbsy}
+\usepackage{amsmath}
+\usepackage{fancyhdr}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{mathrsfs}
+\usepackage{mdframed}
+\usepackage{tocloft}
+\usepackage[most]{tcolorbox}%se hai problemi con immagini, rimuovi most e rivedi fillfigure
+\usepackage{pgfplots}
+\usepackage{eso-pic}
+\usepackage{tikz}
+\usepackage{physics}
+\usepackage{blkarray, bigstrut} %
+\usepackage[explicit]{titlesec}
+
+
+\input{config/cmd.tex} %MACRO, COMANDI E CONFIG VARIE
+
+\begin{document}
+\input{config/pyTypewrite.tex} %PYTHON STYLE LANG
+\input{book/front2}  %FRONTESPIZIO
+\input{book/preamble.tex} %PREAMBOLO
+\input{config/style.tex}   %IMPOSTAZIONI GRAFICHE
+\tableofcontents %TOC
+\input{book/ch1.tex}  %CAPITOLI
+\input{book/ch2.tex}
+\input{book/ch3.tex}
+\input{book/ch4.tex}
+\input{book/ch5.tex}
+\nocite{*}
+\bibliographystyle{IEEEtran} % BIBLIOGRAFIA
+\bibliography{biblio/reference} % Entries are in the reference.bib file
+\end{document}
