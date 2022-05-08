@@ -15,22 +15,20 @@
     borderline={2pt}{8pt}{BRD}]
     \centering
 \textbf{#1} \\
-\textbf{notes}
 \end{tcolorbox}
 }
 
 \newcommand{\boxB}[1]{
 \begin{tcolorbox}[enhanced jigsaw,
-                  colback=bgframe,%gray background
-                  colframe=frame,% black frame colour
+                  colback=BGF,%gray background
+                  colframe=FRM,% black frame colour
                   width=6cm,% Use 5cm total width,
                   arc=3mm, auto outer arc,
                   boxrule=3pt,
-                  drop shadow={frame!80}
+                  drop shadow={FRM!80}
                  ]
                  \centering
 \textbf{#1} \\
-\textbf{notes}
 \end{tcolorbox}
 }
 
@@ -52,7 +50,7 @@
 %\includegraphics[viewport= -100 470 0 0, scale=1]{pics/brainLogo.png}
 \begin{center}
 \scalebox{1.5}{
-\boxA{Applied Data Science}
+\boxA{Machine Learning Notes}
       }
 \end{center}
 \vspace{140mm}

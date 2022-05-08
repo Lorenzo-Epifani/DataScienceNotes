@@ -1088,53 +1088,6 @@ K=\sum_{n=1}^N \mathcal{K}\left(\frac{\ov{x}^*-\ov{x}_n}{h}\right), \,\, \ov{x}_
 \end{eqwbg}
 Where $X_N$ is the list of $N$ samples.
 \subsection{K-nearest neighbor}
-\section{Outlier detection}
-\textbf{Outlier} detection is  a \textbf{decision} problem. There is no rigid mathematical definition of what constitutes an \textbf{outlier}; determining whether or not an observation is an outlier is ultimately a subjective exercise. We can describe it as follow:
- \begin{adjustwidth}{25mm}{25mm}
-                 \rule[0.1cm]{12cm}{0.6mm}\\
-                    \textit{In statistics, an \textbf{outlier} is a data point that differs significantly from other observations. An outlier may be due to variability in the measurement or it may indicate experimental error.}\\
-        \rule[0.1cm]{12cm}{0.6mm}\\
-\end{adjustwidth}
-The \textbf{background scenario} plays a key role as in many \textbf{decision} problems: there are scenarios in which outliers represents anomalies (\textbf{anomaly detection} task) that should be monitored, but there are other scenarios in which outliers represents non-relevant data. The trickiest part of the task is to distinguish  \textbf{ordinary} low probability events/items from \textbf{real outliers}. In the following sections, we'll describe some \textbf{outlier detection methods}, before starting we'll assume that :\begin{itemize}
-    \item We have a set of samples $\overline{X}^*=\{\overline{x}_i\}$;
-    \item $N = \dim(\overline{X}^*)$ is the dimension of the set;
-    \item $D = \dim(\overline{x}_i)$ is the dimension of the samples that belong to $\overline{X}^*$
-\end{itemize}
-The methods that will be described shortly aim to \textbf{decide} whether any $\overline{x}_i$ can be considered an \textbf{outlier} or or not.
-\subsection{Inter Quartile Range detection}
-\textbf{IQR-based} detection is a \textbf{data-driven}, \textbf{component-wise} outlier detection method:  this method is  applied to each one of the D dimension of the samples belonging to our data set. Thus, for each scalar component we compute the \textbf{first quartile} $Q_1$ and the \textbf{third quartile} $Q_3$, then we compute and the difference $IQR=Q_3-Q_1$.
-All values which \textbf{don t} fall in the range $[\,Q_1-k(IQR),\;Q_3+k(IQR)\,]$ are considered \textbf{outliers}. The $k$ is a chosen \textbf{hyperparameter} ($k=1.5$ is common).
-
-\begin{figure}[H]
-\centering
-                        \includegraphics[width=\textwidth]{pics/IQR.png}
-\caption{Graphical representation of the IQR range detection method. Samples that fall in the green range are considered regular, otherwise they are considered outliers}
-\end{figure}
-
-\subsection{Elliptic envelope}
-\textbf{Elliptic envelope} is a \textbf{model based} outlier detection method. This method is applied to the whole observation $\overline{x}_i$ and not \textbf{component-wise}. It starts by assuming a \textbf{multivariate ditribution} model for the $\overline{x}_i$ data points. The methods is valid for any multi variate distribution in any dimension, but for simplicity let's suppose having $D=2$ and consider a \textbf{gaussian} multi variate distribution model. \\We have to define  the \textbf{contamination} hyperparameter, let's call it $\eta\mid\, \frac{1}{10} \leq \eta \leq \frac{1}{2}$. This value represent the \textbf{fraction of the outliers} that are present in the dataset. Not knowing priorly the exact proportion of the outliers in the dataset is the major limitation of using this method. \\
-All the samples falling in the tail volume of the model which enclose the $\eta$ percent of the total volume (N.B. the distributions always integrates to 1) \textbf{are considered outliers}. Thus, in the multivariate gaussian example,  the $\eta$  unambiguously defines \textbf{an ellipse} within which the samples are considered \textbf{regular}
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    colormap/viridis,
-  	hide axis
-]
-\addplot3[
-    surf,
-]
-{(exp(-(x^2)/5-(y^2)/9))*1/4};
-\end{axis}
-\end{tikzpicture}
-\centering
-                        \includegraphics[width=200px]{pics/ellenv.png}
-\caption{Representation of an ellipse (right) defined by an hyperplane intersecting the multi variate gaussian (left). Green samples are regular, red ones are outliers}
-\end{figure}
-
-
-
 
 \section{Stochastic processes}
 A \textbf{stochastic process} $X(t)$ is \textbf{noncountable infinity} of random variables: for any given $t=t^*$, $X(t^*)$ is a random variable. It is a random variable which depends by an additional parameter (time, space etc).
