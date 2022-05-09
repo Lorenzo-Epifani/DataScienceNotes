@@ -460,9 +460,9 @@ Where:\begin{itemize}
         \item $\alpha$ is the \textbf{difference hyparameter}, that regulate the weights of the values in the previous iterations. This parameter is \textbf{not} mandatory(i.e. it can be $0$).
 
 \end{itemize}
-\section{Convolutional Neural networks} 
-Artificial neural networks (ANNs), usually simply called neural networks (NNs), are computing systems inspired by the biological neural networks that constitute animal brains.
-It is based on a collection of connected units or nodes, which loosely model the neurons in a biological brain. Each connection, like the synapses in a biological brain, can transmit a signal to other neurons. An artificial neuron that receives a signal then processes it and can signal neurons connected to it.
+\section{Introduction to Deep Learning} 
+Artificial neural networks (ANNs), usually simply called neural networks (NNs), are computing systems inspired by the biological neural networks that constitute animal brains.\textbf{Deep learning} is the discipline that studies different neural network architectures. 
+A generic NN is based on a collection of \textbf{connected units} or nodes, which loosely model the \textbf{neurons} in a biological brain. Each connection, like the synapses in a biological brain, can transmit a signal to other neurons. An artificial neuron that receives a signal then processes it and can signal neurons connected to it.
 \begin{figure}[H]
                 \centering
                         \includegraphics[width=0.75\textwidth]{pics/AI/Neuron3.png} 
@@ -470,7 +470,10 @@ It is based on a collection of connected units or nodes, which loosely model the
 \end{figure}
 \noindent 
 A neural network usually has $\approx10^5$ connection per processing unit (neuron), that are $\approx 10^{10}$, resulting in a total of $10^{15}-10^{18}$ connections. This kind o architecture grants \textbf{noise-failure robustness} while distributing computation/memory and allowing parallel processing. 
-The model of the processing unit is the \textbf{Rosenblatt's perceptron}. 
+There are many architectures and models of neural networks, which are used to solve the a lot of different tasks. Research in this field is quite fervent and new architectures are being designed all the time. The family of models that has historically had the most importance is that of the \textbf{Convolutional Neural Networks} (CNN), contextualised to the \textbf{image classification} task (recent studies have documented the possibility of adapting them also to solve other tasks).
+\subsection{Perceptron}
+The smallest processing unit used in many neural networks (including CNNs) is the \textbf{Rosenblatt's perceptron}.
+This unit is capable of solving \textbf{linearly separable problems}.
 In order to describe it, consider:\begin{itemize}
     \item $\overline{x}_{IN}={[x_1,x_2...x_N]^\top}$ as the \textbf{input vector},
     \item The constant $x_0=1$, useful to introduce the \textbf{bias term}. Note that $x_0$ \textbf{is not} part of the input vector, it's just introduced in order to simplify notation.
@@ -489,6 +492,8 @@ In order to describe it, consider:\begin{itemize}
                         \caption{Rosenblatt's perceptron} 
 \end{figure}
 There are different functions that can be used as activation function. Usually, the activation function is satutrated between 2 values that indicated whether the perceptron is sending signal or not.
+\fastpic{pics/AI/actvfunct.png}{Different activation functions. The nonlinearity introduced by these functions is fundamental to the final behaviour of the entire architecture}{1}
+\begin{comment}
 \begin{figure}[H]
     \begin{tikzpicture}
 	\begin{axis}[
@@ -539,8 +544,11 @@ There are different functions that can be used as activation function. Usually, 
     \end{tikzpicture}    
     \caption{Different activation functions. On the y axis, the name of the function} 
 \end{figure}
+\end{comment}
+
+
 \noindent The perceptron can be used to solve \textbf{both} simple linear regression and classification for linearly separable problems with 2 classes.
-\subsection{Perceptron}
+
 For regression problems, suppose having:\begin{itemize}
     \item A dataset $\mathcal{D}=\{(\overline{x}^{(t)}_i,r^{(t)}_i)\}$, $i=1...D$ where each pair is made by an input vector $\overline{x}^{(t)}_i$ and real value $r^{(t)}_i\in \R$ as output. The $(t)$ stands for \textbf{training}
     \item Without loss of generality, assume having a \textbf{ReLu} as activation function, thus\[
@@ -724,6 +732,7 @@ It should be noted that since the two activation functions have no linearity con
 \end{figure}
 \noindent The architecture presented in this paragraph, in which we have in cascade \textbf{input} layer - \textbf{hidden} layer - \textbf{output} layer is only a possible implementation of a MLP schema: there is \textbf{no universal rule} that defines the \textbf{number} and \textbf{size} of the \textbf{hidden} layers interspersed \textbf{between} the \textbf{input} and the \textbf{output} layer, usually the design of the layers is done \textbf{empirically} and specific to the case study. When hidden layers tend to generate outputs that are dimensionally \textbf{smaller} than the input they receive they are called \textbf{embdedding} layers. Vice versa, they're called \textbf{expansion} layers.
 \subsection{Convolution layer}
+This layer is typical (but not only) of \textbf{CNN}s. In \textbf{image-classssification}, it plays a fundamental role in that it makes it possible to recognise \textbf{patterns} and \textbf{structures} typical of certain \textbf{classes} that one wishes to identify (for example, the presence of a certain animal species).
 The \textbf{convolution layer} is so called because it performs \textbf{convolution} between the \textbf{input} and one or more \textbf{filters}. Let's start by defining the \textbf{Hadamard product}:
 \begin{customTheo}\textbf{Hadamard product}:\\
 The \textbf{Hadamard product} $\odot$ is an operation between two matrices having the \textbf{same dimension},. If assume $A^{n\times m}$ and $B^{n\times m}$, $A \odot B$ can be defined as:\[
@@ -950,7 +959,7 @@ Therefore, the \textbf{iterative update rule} for the generic component of $\ove
 w_{nh}^{(m+1)}=w_{nh}^{(m)}+\eta_w\deinde{J}{w_{nh}}
 \]
 When the information propagates forward, (generating the various \textbf{activity levels} and \textbf{output} in the different layers) from the input layers to the output layers we are performing the so-called \textbf{feed forward}. Once $J$ has been calculated, it is necessary to go \textbf{backwards} in order to obtain the partial derivatives with respect to all the parameters (which are the components of the \textbf{weight matrices}) and to obtain the \textbf{iterative rules} for the various layers, which will allow us to optimize the network step by step. From the \ref{eqn:bp:rulew} it's clear that to obtain the iterative rule for a given layer it is necessary to take into account \textbf{all the parameters} (and activation functions) that appear in the \textbf{subsequent layers}: in the calculation of the rules, we therefore proceed backwards starting from the layers\textbf{ closest to the output}, hence the name \textbf{backpropagation}.
-\subsection{Behind backpropagation: Computational Graphs}
+\subsection{Computational Graphs}
 The various state-of-the-art frameworks used to deign deep learning systems (such as \textbf{Pytorch} or \textbf{Pensorflow}) implement backpropagation \textbf{transparently} to the end user. For this reason, once the \textbf{model} and the various \textbf{hyperparameters} are defined, training can be performed \textbf{end-to-end} presenting a dataset for different \textbf{epochs}.
 The \textbf{transparency} of backpropagation is obtained, at the lowest level, by applying the \textbf{chain} \textbf{rule} \textbf{recursively} on the various nodes of the so-called \textbf{computational graphs}. A computational graph formally describes, step by step, the various functions that are applied in transforming an \textbf{input} into a given \textbf{output}. In the context of \textbf{backpropagation}, the input is the \textbf{datapoint} (e.g. an image) while the output is the \textbf{loss function} $L$. Through the computational graphs one can easily obtain $\nabla[L]$with respect to the various parameters of the network, thus obtaining the \textbf{iterative rule} used to discover the \textbf{optimal} weights.
 \\For each functional node of the computational graph, we can consider 3 different gradients:
@@ -974,7 +983,7 @@ It can be seen that, for each node, these three gradients are linked by the \tex
                         \caption{\label{fig:cmp:first2}Representation of the first 2 iterations.} 
 \end{figure}
 \noindent These operations are performed after \textbf{feed-forwarding} the network  with inputs, so the \textbf{activity levels} at the various layers of the network (in  fig. \ref{fig:cmp:first2}, $x_0, y_0, z_0$) are \textbf{known}. These calculations have to be carried out for the activity levels of \textbf{each functional unit} and for \textbf{each input} it receives: for this reason, even for a fairly \textbf{simple} neural network there are many calculations to be carried out in the optimisation of weights. The specific hardware (\textbf{GPU}) that is used to train the networks is optimised for this type of calculation.
-\subsection{Summary for layer and data size}
+%\subsection{Summary for layers and data size (TODO)}
 \section{Best practices for training and modelling}
 Although neural networks are systems that learn in a \textbf{data-driven} way, there are some \textbf{best practices} and some details to monitor in order for the system to be able to adapt to the problem exposed to it through the training/test \textbf{dataset}.
 In addition to practices that optimise the training phase, it is very important to know the various types and sizes of models in order to choose the most suitable one for the resources available to tackle the problem.

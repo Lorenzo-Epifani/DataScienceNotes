@@ -1,5 +1,5 @@
-     \chapter{Advanced Deep Learning Architectures}
-            This chapter will be introduced with some considerations on how to handle data. 
+     \chapter{Advanced Deep Architectures}
+            As networks become deeper and deeper, their mathematical characterisation becomes \textbf{impractical}, and the choice of one architecture over another is often based on \textbf{intuitive} choices and \textbf{empirical} results. Some of the architectures in this section have yielded results considered to be \textbf{state-of-the-art} on specific problems. However, with appropriate modifications and caution, the same architecture / framework can be adapted to different contexts and approaches. A notable example is \textbf{CNNs}: historically they have been used to solve \textbf{supervised} problems, but with due consideration they can also be used to solve \textbf{unsupervised} problems, as demonstrated by their use in \textbf{convolutional autoencoders}.
             In the previous chapter, we have used neural networks consisting of \textbf{different} types of \textbf{layers}. All the layers used operate on \textbf{spatial data} (the main example, \textbf{images}). There are neural network architectures that are able to solve tasks that need to handle the \textbf{temporal variable},  such as when dealing with \textbf{time series} or any kind of \textbf{sequential data}.
             In this case, convolution occurs along the \textbf{time axis} and we speak of \textbf{temporal convolution};the input samples are the different \textbf{realisations} of the data source as time passes (\textbf{time series}).
             \fastpic{pics/AI/monodim_conv.png}{Representation of a 1-dimensional mono channel convolution with 3 filters. This type of model can also be used to describe the realisations of a stochastic process.}{0.8}
@@ -14,10 +14,8 @@
             We can create \textbf{sets} of filters (thus having different \textbf{matrices}) as we like, in the way we consider most appropriate to analyse the historical series.
             We can also choose to \textbf{aggregate} \textbf{heterogeneous} data as we see fit. In this type of task the only \textbf{constraint} is the data \textbf{coherence} between the various layers, which can be modelled as we like.
             
-            \section{Advanced CNNs}
-\subsection{LeNet AND AlexNet}
-These are the \textbf{convolutional neural} \textbf{networks} that marked a \textbf{break} from the technologies considered state of the art at the time.
-\noindent
+            \section{Convolutional Neural Networks}
+\textbf{Convolutional neural networks} marked a \textbf{break} from the technologies considered state of the art at the time for many tasks. The incredible results provided by CNNs in image classification have driven research into new NN architectures. The turning point came with the presentation of the LeNet and AlexNet networks.
 \textbf{LeNet-5}, a 7-level convolutional network by LeCun et al. was developed in 1998. It was used to classify \textbf{digits}, and was applied by several banks to recognize hand-written numbers on checks (British English: cheques) digitized in 32x32 pixel images. The ability to process higher resolution images requires \textbf{larger} and \textbf{more} layers of convolutional neural networks, so this technique was constrained by the availability of \textbf{computing resources}.
 \textbf{AlexNet} has similar architecture but with more layers (it also implements \textbf{ReLu} instead of a \textbf{sigmoid} activation function) due to the availability of physical computing resources.
 \textbf{AlexNet} marked the beginning of the \textbf{collective} interest in neural networks because at the time (2012) it was able to \textbf{outperform} other state-of-the-art approaches (based on feature extraction and \textbf{SVM}) in classifying the \textbf{Imaginet 1000}.

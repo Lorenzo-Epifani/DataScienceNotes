@@ -1,9 +1,9 @@
 \chapter{Mathematics and statistics for Data Science}
 Before to introduce concepts for this chapter, it's important to underline what \textbf{probability} and \textbf{statistic} are, their differences and how they overlap.\\
-Probability is a branch of pure mathematics. Probability questions can be posed and solved using axiomatic reasoning, and therefore there is one correct answer to any probability question.\\
-Statistical questions can be converted to probability questions by the use of probability models. Once we make certain assumptions about the mechanism generating the data, we can answer statistical questions using probability theory.\\ 
+Probability is a branch of \textbf{pure mathematics}. Probability questions can be posed and solved using \textbf{axiomatic reasoning}, and therefore there is \textbf{one} correct answer to any probability question.\\
+Statistical questions can be \textbf{converted} to probability questions by the use of probability models. Once we make certain assumptions about the mechanism generating the data, we can answer statistical questions using probability theory.\\ 
 However, the proper formulation and checking of these probability models is just as important, or even more important, than the subsequent analysis of the problem using these models.\\
-One could say that statistics comprises of two parts.\\ The first part is the question of how to formulate and evaluate probabilistic models for the problem; this endeavor lies within the domain of "philosophy of science". The second part is the question of obtaining answers after a certain model has been assumed. This part of statistics is indeed a matter of applied probability theory, and in practice, contains a fair deal of numerical analysis as well \footnote{Source: \href{https://stats.stackexchange.com/questions/665/whats-the-difference-between-probability-and-statistics/8536\#8536}{Stackexchange.com}.}
+One could say that statistics comprises of two parts.\\ The first part is the question of how to formulate and evaluate probabilistic models for the problem; this endeavor lies within the domain of "\textbf{philosophy of science}". The second part is the question of obtaining answers after a certain model has been assumed. This part of statistics is indeed a matter of applied probability theory, and in practice, contains a fair deal of numerical analysis as well \footnote{Source: \href{https://stats.stackexchange.com/questions/665/whats-the-difference-between-probability-and-statistics/8536\#8536}{Stackexchange.com}.}
 
 
  \begin{adjustwidth}{25mm}{25mm}
@@ -16,7 +16,7 @@ One could say that statistics comprises of two parts.\\ The first part is the qu
 \end{adjustwidth}
 A common task in applied data sciences is to build models that are capable to approximate/simulate real processes/events. These \textbf{models} are designed and built starting from available \textbf{data}.\\
 It's important to underline that indicators like mean or variance have a slight different meaning in probability and in statistic. In probability, these indicators are \textbf{functions of the probability density function}; in statistic they are \textbf{functions evaluated with data as argument}. Thus, when we refer to an indicator with a function of the random variable $f(X)$, it's \textbf{the probabilistic version}, instead when we use a constant to indicate it we're describing \textbf{the one computed over the set of samples}.\\
-In data sciences, \textbf{bayesian statistics} has a key role. 
+In data sciences, \textbf{bayesian statistics} plays a key role. 
 Bayesian statistics is a theory in the field of statistics based on the Bayesian interpretation of probability:
  \begin{adjustwidth}{25mm}{25mm}
                  \rule[0.1cm]{12cm}{0.6mm}\\
@@ -27,11 +27,9 @@ Bayesian statistics is a theory in the field of statistics based on the Bayesian
         \rule[0.1cm]{12cm}{0.6mm}\\
 \end{adjustwidth}
 \noindent This uncertainty may be based on prior knowledge about the event, such as the results of previous experiments, or on personal beliefs about the event.
-\textbf{Bayesian statistical} methods use Bayes' theorem to compute and update probabilities after obtaining new data. (Todo approccio bayesiano e statistico nel ml).
-\section{Fundamentals}
-\subsection{Random variables}
-We need to give two different definitions for discrete and for continuous random variable, since they  require different assumptions
-
+\textbf{Bayesian statistical} methods use Bayes' theorem to compute and update probabilities after obtaining new data.
+\section{Random variables}
+Discrete and continuous random variables  require  different assumptions:
 \begin{customDef}\textbf{Discrete random variable}\\
 Suppose having a finite discrete \textbf{set of values} that the variable X can assume:\[
 X=\{x_i\}, \; i \in \A,\;\A \subset \N,\;|\A|<\infty
@@ -62,7 +60,7 @@ P(t)=\sum_{\substack{i\leq t,\\ i\in \A}}p(x_i)
 \end{itemize}
 
 \end{customDef}
-\begin{customDef}\textbf{continuous random variable}\\
+\begin{customDef}\textbf{Continuous random variable}\\
 Suppose having a value $x^* \in \R$ and a function $p(x)$ such that:\[
 \begin{aligned}
 \int_{-\infty}^{\infty} &p(x) \,dx = 1, \\ 
@@ -93,7 +91,7 @@ P(t)=\int_{-\infty}^{t}p(x)\,dx
 \item The \textbf{indicator function} : (same as the discrete case)
 \end{itemize}
 \end{customDef}
-\subsection{Joint and conditional probability(todo)}
+TODO - Joint and conditional probability
 \subsection{Main rules and theorems}
 The following properties are described for discrete random variables, but they are valid for continouus one too.\
 Suppose having 2 random variables $X$ and $Y$; where 
@@ -119,7 +117,7 @@ Suppose now taking $N$ \textbf{statistical trials}, where:\begin{itemize}
                         \includegraphics[width=350px]{pics/prob_theory.png}
                         \caption{Representation of the random variables introduced so far}
 \end{figure}
-We will use $p(x_i):= p(X=x_i)$ and $p(x_i,y_j):= p(X=x_i,Y=y_j)$ to simplify notation. The function $p(x,y)$ is also called \textbf{joint probability} of $X$ and $Y$ \\\textbf{For} $\bs{N \rightarrow \infty}$, the following properties holds:
+We will use $p(x_i):= p(X=x_i)$ and $p(x_i,y_j):= p(X=x_i,Y=y_j)$ to simplify notation. The function $p(x,y)$ is also called \textbf{joint probability} of $X$ and $Y$. \textbf{For} $\bs{N \rightarrow \infty}$, the following properties holds:
 \begin{eqwbg}
 p(x_i,y_j)=\frac{n_{ij}}{N}
 \end{eqwbg}
@@ -163,8 +161,8 @@ p(X^{(1)},X^{(2)}...X^{(n)})=p(X^{(1)})\prod_{i=2}^np(X^{(i)}\mid X^{(1)},...,X^
 \]
 \end{customTheo}
 \subsection{Mean and Median}
-As we mentioned in the introductions, indicators such as mean, mode, variance and other moments
-have a slightly different definition depending on whether they refer to probability distributions or datasets:
+As we mentioned in the introduction, \textbf{indicators} such as mean, mode, variance and other moments
+have a slightly different definition depending on whether they refer to \textbf{probability} distributions or \textbf{samples}:
 \begin{customDef}\textbf{Mean}:\\
 Given a r.v. $X$ and its p.d.f $p(x)$, we define the \textbf{statistic mean} (or \textbf{expectation} or \textbf{expected value}) the function:\[
 \begin{aligned}
@@ -211,14 +209,14 @@ The \textbf{sample median} leaves half of the observations on the left ($y<Q_2$)
 %\begin{customDef}\textbf{Mode(todo)}:\\
 %\end{customDef}
 \subsection{Moments}
-The \textbf{moments} of a function are quantitative measures related to the shape of the function's graph. The most general definition of moment is the following:
+The \textbf{moments} of a generic \textbf{function} are quantitative measures related to the shape of the function's graph. The most general definition of moment is the following:
 \begin{customDef} \textbf{Moment}\\
 The $\bs{n}$\textbf{-th moment}  centered in $c$ of a real-valued continuous function $f(x)$ of a real variable is the integral:
-\begin{eqwbg}
+\[
 \sigma_c^n(f)= \int_{-\infty}^\infty(x-c)^nf(x)\,dx
-\end{eqwbg}
+\]
 \end{customDef}
-\noindent In probability, our interest is about moments centered in the \textbf{expectation} and where $f(x)$ is a probability density function $p(x)$. Then, the subscript can be omitted and we'll refer to the $n$-th moment centered in the mean as $\sigma^n(X)$. Moments in probability and statistics often require a standardization process after their general formulation. Having a set of observations $X^*=\{x_i\},\;i=1...N$, we can also give the general definition of the \textbf{sample moment of order $\bs{k}$} $\sigma^k$:\[
+\noindent In probability, our interest is about moments centered in the \textbf{expectation} and where $f(x)$ is a probability density function $p(x)$. Then, the subscript can be omitted and we'll refer to the $n$-th moment centered in the mean as $\sigma^n(X)$. Moments in probability and statistics often require a \textbf{standardization} process after their general formulation. Having a set of observations $X^*=\{x_i\},\;i=1...N$, we can also give the general definition of the \textbf{sample moment of order $\bs{k}$} $\sigma^k$:\[
 \sigma^k=\sum_{i=1}^Nx^k
 \]
 \begin{customDef}\textbf{Variance and standard deviation}\\
@@ -320,7 +318,6 @@ The notion of convergence of a random sequence can have several interpretations,
                         \caption{Almost sure convergence.}
 \end{figure}
 \end{customTheo}
-\subsection{Sample selection and biases: school ranking example(TODO)}
 \section{Correlation and dependancy}
 \begin{customDef}\textbf{Covariance}\\
  The \textbf{covariance} $Cov(X,Y)$ of two variables $X,Y$ provides a measure of how much the two are linearly related
@@ -349,7 +346,7 @@ to each other, as well as the scale of these variables:\[
  
 
 \end{customDef}
- \noindent For the (2.22) independent variables have covariance$=0$, thus they re \textbf{uncorrelated}:
+ \noindent For the (2.22) independent variables have covariance $=0$, thus they re \textbf{uncorrelated}:
  \begin{eqwbg}
  X,Y \textrm{ independent} \implies X,Y \textrm{ uncorrelated}
  \end{eqwbg}
@@ -402,22 +399,7 @@ Where:\begin{itemize}
 \item $\sigma^2_X$ is the variance of $\overline{X}$
 \end{itemize}
 This method is also called \textbf{Least Squares Method}.
-\subsection{Spurious correlation}
- A \textbf{spurious correlation} occur when two or more random variables or variables are correlated but not causally related, due to either coincidence or the presence of a certain third,\textbf{ hidden, unobserved or unseen factor} referred to as a \textbf{confounding factor} (or "lurking variable").
-It's always important to remember that: 
-\begin{adjustwidth}{25mm}{25mm}
-                 \rule[0.1cm]{12cm}{0.6mm}
-                 \centering
-                    \textit{ Correlation \textbf{does not} implies causation.
-                    }\\
-        \rule[0.1cm]{12cm}{0.6mm}\\
-\end{adjustwidth}
- \begin{figure}[H]
-                \centering
-                        \includegraphics[width=300px]{pics/Spurious.png}
-                        \caption{Example of a spurious correlation with a confounding variable.}
-\end{figure}
-\subsection{Bidirectional causation}
+\subsection{Cause-effect models}
 Cause-effect relationship are not always unidirectional and can have very complex models. A good example of a bidiretional causation model are the \textbf{Lotka-Volterra} equations, also known as the \textbf{predator–prey} equations:
 \begin{eqwbg}
 \begin{cases}
@@ -442,7 +424,27 @@ We can imagine the two variables $x,y$ as the population of a prey and relative 
 %\subsection{Power law}
 %\subsection{Zipfian}
 %\subsection{Pareto}
+\noindent In real cases, observable events do not always provide us with sufficient information to build a reliable model. A good example is the \textbf{spurious correlation}: it occurs when two or more random variables or variables are correlated but not causally related, due to either coincidence or the presence of a certain third,\textbf{ hidden, unobserved or unseen factor} referred to as a \textbf{confounding factor} (or "lurking variable").
+It's always important to remember that: 
+\begin{adjustwidth}{25mm}{25mm}
+                 \rule[0.1cm]{12cm}{0.6mm}
+                 \centering
+                    \textit{ Correlation \textbf{does not} implies causation.
+                    }\\
+        \rule[0.1cm]{12cm}{0.6mm}\\
+\end{adjustwidth}
+ \begin{figure}[H]
+                \centering
+                        \includegraphics[width=200px]{pics/Spurious.png}
+                        \caption{Example of a spurious correlation with a confounding variable.}
+\end{figure}
 
+\begin{comment}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% REMOVED SECTION
 \section{Random variables generation}
 Methods introduced in this section are Montecarlo-based. \textbf{Montecarlo} methods are a broad class of computational algorithms that rely on repeated random sampling to obtain numerical results, exploiting a known pseudo random generator of numbers in an arbitrary interval interval $[a,b]$. The underlying concept is to use randomness to solve problems that might be deterministic in principle. Monte Carlo methods are also mainly used in other problem classes like optimization and numerical integration. 
 \subsection{Inversion method}
@@ -472,6 +474,11 @@ R_f(x,y)=
 \end{eqwbg}
 We can reproduce the behavior our random variable X by computing $R_f(x,y)$ with  $x$ and $y$ generated from two random variables uniform in $B$ and $H$.
 %\section{Numerical methods for approximation (TODO)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{comment}
 
 
 \section{Information Theory}
@@ -540,7 +547,7 @@ Relative entropy is also known as the \textbf{Kullback-Leibler divergence}, and 
     \item \textbf{Asymmetry}: $\textrm{KL}(p||q) \not = \textrm{KL}(q||p)$,
     \item \textbf{Monotony}: $\textrm{KL}(p||q)\geq 0$, 
     \item $\textrm{KL}(p||q) =0 $ \textbf{iff} $p(x)=q(x)$ (sure? todo)
-\end{itemize}e
+\end{itemize}
 Now consider two probability density functions $p(x),p(y)$ of two \textbf{dependent} random variables $X,Y$. We can measure their \textbf{degree of dependancy} with the \textbf{mutual information} between $X$ and $Y$:
 \begin{customDef}\textbf{Mutual information}
 \[
@@ -789,7 +796,8 @@ It can be demonstrated that the \textbf{MMSE} method can be interpreted as a bay
 \theta_{MSE}=E_\theta(p(\theta)|x)
 \end{eqwbg}
 MAP and MMSE then are \textbf{both bayesian approaches}: the MAP aim to finding the \textbf{mode} (max value) of the \textbf{a-posteriori} distribution while the MMSE focus on finding the \textbf{expected value}.
-\subsection{Restricted class estimators: overview(TODO)}
+%\subsection{Restricted class estimators: overview(TODO)}
+%REMOVED SUBSECTION
 \subsection{Maximum entropy distribution fitting}
 The principle of maximum entropy is \textbf{ubiquitous} in any science. While dealing with a set of data, if we \textbf{can 't make any assumption on the model} that generates it, we can interpret this principle by stating that the function with \textbf{the highest probability to be the one} that generates them is the one with the \textbf{highest entropy}.
 While searching for this function, we should put as constraint the fact that \textbf{it has to sum to 1} since it is a \textbf{probability distribution}. We can also compute \textbf{sample moments} (or any statistics) from the data and use them as additional constraints. The distribution that we wish to find is then the  \textbf{maximum entropy distribution}, let's call it $p_{ME}$. Let's now discuss the discrete case.\\ Suppose having a set of samples $X^*=\{x_i\},\, i=1..N$ and $M$ constraints (in addition to the fact that $\sum p_i=1$).
@@ -976,42 +984,8 @@ Both methods involve building a model for the posterior distributions. There are
     \item Posterior probabilities allows to compensate for heterogeneous class priors and to use balanced artificial datasets;
     \item The integration/combination of simpler models with the aim of obtaining more complex models is easier.
 \end{itemize}
-\section{ANOVA: Analysis of Variance}(TODO)
-The \textbf{ANOVA} method (ANalysis Of VAriance) is a collection of statistical models and their associated estimation procedures (such as the "variation" among and between groups) used to analyze the differences among \textbf{means}. The strenght of this method relies on the fact that it doesn't make any \textbf{strong} assumption about the data.\\
-It is usually used when there is a \textbf{comparison factor} for which is required to \textbf{test an hypothetical influence} on another variable (supposed) independent. ANOVA can be considered both a decision and an estimation method (since the true models/parameter are unknown).\\
-Thus, given $K$ groups of samples differing in the \textbf{comparison factor}, let's call them $X^*_j=\{x_i\},\;j=1...K,\,i=1...N_j$, we can start by enunciating the \textbf{null hypothesis} $H_0$:
-\begin{eqwbg}
-\begin{aligned}
-\textrm{\textit{"The g}}&\textrm{\textit{roup means are all equal":}}\\
-&H_0: \mu_1=\mu_2=...\mu_K
-\end{aligned}
-\end{eqwbg}
-Instead, the \textbf{alternative hypothesis} is $H_1$:
-\begin{eqwbg}
-\begin{aligned}
-\textrm{\textit{"The }}&\textrm{\textit{group means are \textbf{not} all equal":}}\\
-&H_1: \mu_p \not = \mu_q \textrm{ for some $p,q$}
-\end{aligned}
-\end{eqwbg}
-The simples method, the \textbf{one-way ANOVA}, depends on the \textbf{statistics} $F_\alpha$:
-\begin{eqwbg}
-F_\alpha:= \frac{\textrm{inter-groups variance}}{\textrm{intra-groups variance}}=todo      
-\end{eqwbg}
-\begin{figure}[H]
-                \centering
-                        \includegraphics[width=300px]{pics/anova1.png}
-                        \caption{Plot of $k$ groups differing in the \textbf{comparison factor},  with $k=4$. The groups are labeled with a capital letter.}
-\end{figure}
-\noindent The reliability of the hypotesis $H_0$ is described by a probability density function of the value of $F$.
-\begin{figure}[H]
-                \centering
-                        \includegraphics[width=300px]{pics/anova2.png}
-                        \caption{Plot of the probability density function that describe the reliability of the null hypothesis}
-\end{figure}
 
-
-
-\section{Non-parametric methods}
+\section{Non-parametric density modelling}
 \textbf{Parametric} approaches
 to density modelling involve probability distributions
 having specific functional forms governed by a \textbf{small} number of parameters whose
@@ -1087,7 +1061,7 @@ Therefore, the number of  $K$ points falling in $\mathcal{R}$ is:\begin{eqwbg}
 K=\sum_{n=1}^N \mathcal{K}\left(\frac{\ov{x}^*-\ov{x}_n}{h}\right), \,\, \ov{x}_n \in X_N
 \end{eqwbg}
 Where $X_N$ is the list of $N$ samples.
-\subsection{K-nearest neighbor}
+\subsection{K-nearest neighbor (TODO)}
 
 \section{Stochastic processes}
 A \textbf{stochastic process} $X(t)$ is \textbf{noncountable infinity} of random variables: for any given $t=t^*$, $X(t^*)$ is a random variable. It is a random variable which depends by an additional parameter (time, space etc).
@@ -1415,5 +1389,42 @@ by \textbf{three} fundamental problems\cite{slp3J}:
 \item \textbf{Learning}:\\ Given an \textbf{observation sequence} $\mathbf{S}$ and the \textbf{set of states} $\mathbf{H}$
 in the HMM, learn the HMM parameters $(\mathbf{P},\mathbf{B}, \ov{v}_0)$
 \end{itemize}
-\section{Game theory}
+\section{Game theory (TODO)}
+
+\section*{Examples and cases of study}
+\subsection*{ANOVA: Analysis of Variance}(TODO)
+The \textbf{ANOVA} method (ANalysis Of VAriance) is a collection of statistical models and their associated estimation procedures (such as the "variation" among and between groups) used to analyze the differences among \textbf{means}. The strenght of this method relies on the fact that it doesn't make any \textbf{strong} assumption about the data.\\
+It is usually used when there is a \textbf{comparison factor} for which is required to \textbf{test an hypothetical influence} on another variable (supposed) independent. ANOVA can be considered both a decision and an estimation method (since the true models/parameter are unknown).\\
+Thus, given $K$ groups of samples differing in the \textbf{comparison factor}, let's call them $X^*_j=\{x_i\},\;j=1...K,\,i=1...N_j$, we can start by enunciating the \textbf{null hypothesis} $H_0$:
+\begin{eqwbg}
+\begin{aligned}
+\textrm{\textit{"The g}}&\textrm{\textit{roup means are all equal":}}\\
+&H_0: \mu_1=\mu_2=...\mu_K
+\end{aligned}
+\end{eqwbg}
+Instead, the \textbf{alternative hypothesis} is $H_1$:
+\begin{eqwbg}
+\begin{aligned}
+\textrm{\textit{"The }}&\textrm{\textit{group means are \textbf{not} all equal":}}\\
+&H_1: \mu_p \not = \mu_q \textrm{ for some $p,q$}
+\end{aligned}
+\end{eqwbg}
+The simples method, the \textbf{one-way ANOVA}, depends on the \textbf{statistics} $F_\alpha$:
+\begin{eqwbg}
+F_\alpha:= \frac{\textrm{inter-groups variance}}{\textrm{intra-groups variance}}=todo      
+\end{eqwbg}
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=300px]{pics/anova1.png}
+                        \caption{Plot of $k$ groups differing in the \textbf{comparison factor},  with $k=4$. The groups are labeled with a capital letter.}
+\end{figure}
+\noindent The reliability of the hypotesis $H_0$ is described by a probability density function of the value of $F$.
+\begin{figure}[H]
+                \centering
+                        \includegraphics[width=300px]{pics/anova2.png}
+                        \caption{Plot of the probability density function that describe the reliability of the null hypothesis}
+\end{figure}
+\subsection*{Sample selection and biases: school ranking example(TODO)}
+
+
 
