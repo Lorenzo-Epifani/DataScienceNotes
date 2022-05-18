@@ -1097,6 +1097,12 @@ The resulting model can be written as follows:
 p(\overline{x})=\frac{1}{N}\sum_{n=1}^N \frac{1}{(2\pi h^2)^{D/2}}\, \mathtt{exp}\left\{-\frac{\nrm{\ov{x}-\ov{x}_n}^2}{2h^2}\right\}
 \end{eqwbg}
 Where the volume $V$ of the \ref{eqn:nonpar} has become the normalization constant $(2\pi h^2)^{D/2}$ containing the \textbf{standard deviation} ($h$) of the Gaussian. Indeed, it is reasonable that if we would consider the 'volume' of a Gaussian, this would be \textbf{proportional} to its \textbf{variance}.
+The parameter describing the "volume" acts as "\textbf{smoothing}" parameter. Any kernel function $\ov{k}(u)$ subject to the following constraints can be chosen:\begin{eqwbg}[Kernel function constraints]
+\begin{aligned}
+&\ov{k}(u) \geq 0,\,\, \forall\, \ov{u};\\
+&\int k(\ov{u})\,d\ov{u}=1
+\end{aligned}
+\end{eqwbg}
 \subsection{K-nearest neighbor (TODO)}
 
 \section{Stochastic processes}
