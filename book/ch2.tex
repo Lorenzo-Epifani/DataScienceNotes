@@ -1036,6 +1036,7 @@ P_r\simeq p(\ov{x})V
 \end{eqwbg}
 Where $V$ is the volume of $\mathcal{R}$.\\
 Combining these two last result, we get:\begin{eqwbg}
+\label{eqn:nonpar}
 p(\ov{x})= \frac{K}{NV}
 \end{eqwbg}
 Observe that this last result relies on \ref{eqn:c1} and \ref{eqn:c2}. These come from two \textbf{contradictory} assumptions, namely that $\mathcal{R}$ is \textbf{large} enough and \textbf{small} enough at the same time.
@@ -1044,7 +1045,7 @@ We can use this result in two ways:\begin{itemize}
     \item If we \textbf{fix} $V$ and we \textbf{determine} $K$ from the data, we are applying the \textbf{Kernel density estimation} method
 \end{itemize}
 Both methods converge to the true probability density for $N\longrightarrow\infty$ provided $V$ \textbf{shrinks} and $K$ \textbf{grows} suitably with $N$.
-\subsection{Kernel density estimation}
+\subsection{Kernel density estimation (KDE)}
 \begin{comment}
 
 In the context described above, assume that the region $\mathcal{R}$ is an \textbf{hypercube} centered in $\overline{x}^*$ with side $h$. In order to count the number of $K$ points falling in this region, we can start by defining the function $\mathcal{K}(\ov{u})$:\begin{eqwbg}[Example of kernel function]
@@ -1065,6 +1066,37 @@ K=\sum_{n=1}^N \mathcal{K}\left(\frac{\ov{x}^*-\ov{x}_n}{h}\right), \,\, \ov{x}_
 \end{eqwbg}
 Where $X_N$ is the list of $N$ samples.
 \end{comment}
+
+In the \textbf{KDE} method, the mathematical expedient used to fix the volume $V$ in the previous example is to define this volume by means of a function, e.g: \begin{eqwbg}
+\mathcal{K}(\ov{u}) = \begin{cases}
+1, \text{\phantom{aa}\textbf{if:}\phantom{aa}} |u_i| \leq \frac{1}{2}\,\,\, \forall i \in \{1...D\}\\
+0, \text{\phantom{aa}\textbf{otherwise}\phantom{aa}}
+\end{cases}
+\end{eqwbg}
+which represents an unit cube centered on the origin. For a generic point $\ov{x}^*$, the quantity:
+\begin{eqwbg}
+\mathcal{K}\left(\frac{\ov{x}-\ov{x}^*}{h}\right)
+\end{eqwbg}
+will be $1$ iif $\ov{x}^*$ lies in the hypercube of side $h$ centered in $\ov{x}$, $0$ otherwise. These functions are called \textbf{kernel functions}, and in this context are called \textbf{Parzen-Rosenblatt windows}.
+Assume now that $\mathcal{K}(\ov{x}_c-\ov{x})$ is a generic kernel function centered in $\ov{x}_c$. From $\ref{eqn:nonpar}$, we obtain:
+\begin{eqwbg}
+\label{eqn:KDE}
+p(\ov{x})=\frac{1}{NV_\mathcal{K}}\sum_{n=1}^N \mathcal{K}(\ov{x}_c-\ov{x}_n)
+\end{eqwbg}
+Where $K$ is obtained by applying the kernel function to \textbf{each point}, and the \textbf{volume} $V$ is replaced with the (shift invariant) volume defined by the kernel function \textbf{itself} (that is $V_\mathcal{K}$).
+Let us temporarily \textbf{ignore} the term to the left of the \ref{eqn:KDE}. ($p(\ov{x})$)
+We can interpret the right one in 2 ways: 
+\begin{itemize}
+\item A \textbf{scalar value}: the result is the sum of all the \textbf{contributions} of the kernel function centred in $\ov{x}_c$ \textbf{evaluated} at each point $\ov{x}_n,\,n \ in N$;
+\item \textbf{A function}: the result is the sum of $N$ \textbf{kernel functions} each one centred in $\ov{x}_n$, where $\ov{x}_c$ is intended as the \textbf{variable} of the function (\textbf{symmetry property}). 
+\end{itemize}
+In the \textbf{KDE} method, the \textbf{second} interpretation is made, so the final $p(\overline{x})$ will be the result of the contribution of $N$ \textbf{kernel functions}.
+A commonly used function as a parzen window is the \textbf{Gaussian}, as it smoothes the final resulting function.
+The resulting model can be written as follows:
+\begin{eqwbg}[KDE Gaussian model]
+p(\overline{x})=\frac{1}{N}\sum_{n=1}^N \frac{1}{(2\pi h^2)^{D/2}}\, \mathtt{exp}\left\{-\frac{\nrm{\ov{x}-\ov{x}_n}^2}{2h^2}\right\}
+\end{eqwbg}
+Where the volume $V$ of the \ref{eqn:nonpar} has become the normalization constant $(2\pi h^2)^{D/2}$ containing the \textbf{standard deviation} ($h$) of the Gaussian. Indeed, it is reasonable that if we would consider the 'volume' of a Gaussian, this would be \textbf{proportional} to its \textbf{variance}.
 \subsection{K-nearest neighbor (TODO)}
 
 \section{Stochastic processes}
@@ -1122,8 +1154,8 @@ R(t_1,t_2) = E[X(t_1)X(t_2)]=\int_{-\infty}^\infty\int_{-\infty}^\infty x_1\,x_2
 where $f(x_1,x_2,t_1,t_2)$ is the \textbf{second order density}.
 \end{customDef}
 These definitions can also extended for two different stochastic processes $X(t)$ and $Y(t)$. In this case we'll call them \textbf{cross correlation} $R_{xy}(t_1,t_2)$ and \textbf{cross covariance} $C_{XY}(t_1,t_2)$:
-\begin{eqwbg}
-\begin{aligned}[Cross correlation and Cross coviariance]
+\begin{eqwbg}[Cross correlation and Cross coviariance]
+\begin{aligned}
 &C_{XY}(t_1,t_2)=R_{XY}(t_1,t_2)-\eta_X(t_1)\eta^*_Y(t_2);\\
 &R_{XY}(t_1,t_2)=E[X(t_1)Y^*(t_2)]=R^*_{yx}(t_2,t_1)
 \end{aligned}
