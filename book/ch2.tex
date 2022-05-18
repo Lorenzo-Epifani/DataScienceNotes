@@ -262,24 +262,25 @@ Given a r.v. $X$ and its p.d.f. $p(x)$, we define it as $\sigma^4(X)$ (of Kur(X)
 In probability theory and statistics, kurtosis is a measure of the "tailedness" of the probability distribution
 \end{customDef}
  \subsection{The Gini index and the Lorentz curve}
-It's important to remember that  indicators (mean,variance,covariance etc) only describe some \textbf{specific properties} of distributions or data-sets.\\
-The Gini coefficient measures the \textbf{inequality} among values of a frequency distribution (for example, levels of income). A Gini coefficient of zero expresses perfect equality, where all values are the same (for example, where everyone has the same income). Before to see how to find it, it's required to introduce the \textbf{Lorentz curve}:
+It's important to remember that  \textbf{indicators} (mean,variance,covariance etc) only describe some \textbf{specific properties} of distributions or data-sets.\\
+The \textbf{Gini coefficient} is an indicator that measures the \textbf{inequality} among values of a frequency distribution (for example, levels of income). A \textbf{Gini coefficient} of zero expresses perfect equality, where all values are the same (for example, where everyone has the same income). Before to see how to find it, it's required to introduce the \textbf{Lorentz curve}:
 \begin{customDef}\textbf{Lorentz curve}\\
 For a random variable $X$ with probability density function \textbf{p(x)}, we define the \textbf{Lorentz curve} $L(x)$ as:\[
 L(t)=\frac{\displaystyle\int_{-\infty}^txp(x)\,dx}{\displaystyle\int_{-\infty}^\infty xp(x)\,dx}=\frac{\displaystyle\int_{-\infty}^txp(x)\,dx}{E(X)}
 \]
 \end{customDef}
-A concave curve represent an inhomogeneous distribution of X, since the curve represent the ratio between the expected value computed over a partial support (from $-\infty$ to $t$) and the expected value itself. A linear curve means that the distribution is uniform. The Gini index and the Lorentz curve are both used to determine the \textbf{relative degree of inequality} of a distribution. They're commonly used to represent the relative income inequality or wealth inequality within a nation or any other group of people. 
+A \textbf{concave} curve represent an \textbf{inhomogeneous} distribution of X, since the curve represent the ratio between the \textbf{expected value} computed over a \textbf{partial support} (from $-\infty$ to $t$) and the \textbf{expected value} on the whole support. A \textbf{linear} curve means that the distribution is \textbf{uniform}. The Gini index and the Lorentz curve are both used to determine the \textbf{relative degree of inequality} of a distribution. They're commonly used to represent the relative income inequality or wealth inequality within a nation or any other group of people. 
  \begin{figure}[H]
                 \centering
                         \includegraphics[width=\textwidth]{pics/Gini.png}
                         \caption{Derivation of the Lorenz curve and Gini coefficient for global income in 2011}
 \end{figure}
+\noindent
 As shown in figure, the Lorentz curve define the 2 areas \textbf{A} and \textbf{B}. The linear dashed function, represent the Lorenz curve for an hypothetical uniform distribution. We define the \textbf{Gini index} as:
 \begin{eqwbg}
 G=\frac{A}{A+B}
 \end{eqwbg}
-As we can see, $G\in[0,1]$, where $0$ represent the uniform distribution case.
+As we can see, $G\in[0,1]$, where $0$ represent the \textbf{uniform} distribution case.
 %\subsection{Operations with random variables}
 \subsection{Central Limit Theorem}
 \begin{customTheo}\textbf{Central Limit Theorem}\\
@@ -346,7 +347,7 @@ to each other, as well as the scale of these variables:\[
  
 
 \end{customDef}
- \noindent For the (2.22) independent variables have covariance $=0$, thus they re \textbf{uncorrelated}:
+ \noindent For the (2.22) \textbf{independent} variables have covariance $=0$, thus they re \textbf{uncorrelated}:
  \begin{eqwbg}
  X,Y \textrm{ independent} \implies X,Y \textrm{ uncorrelated}
  \end{eqwbg}
@@ -543,7 +544,7 @@ Now, consider a random variable $X$ with p.d.f $p(x)$. Suppose that we want to t
 \end{aligned}
 \]
 \end{customDef}
-Relative entropy is also known as the \textbf{Kullback-Leibler divergence}, and it can be seen as the degree of dissimilarity between $p(x)$ and $q(x)$. It has the following core properties:\begin{itemize}
+Relative entropy is also known as the \textbf{Kullback-Leibler divergence}, and it can be seen as the degree of \textbf{dissimilarity} between $p(x)$ and $q(x)$. It has the following core properties:\begin{itemize}
     \item \textbf{Asymmetry}: $\textrm{KL}(p||q) \not = \textrm{KL}(q||p)$,
     \item \textbf{Monotony}: $\textrm{KL}(p||q)\geq 0$, 
     \item $\textrm{KL}(p||q) =0 $ \textbf{iff} $p(x)=q(x)$ (sure? todo)
