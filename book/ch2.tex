@@ -1045,6 +1045,8 @@ We can use this result in two ways:\begin{itemize}
 \end{itemize}
 Both methods converge to the true probability density for $N\longrightarrow\infty$ provided $V$ \textbf{shrinks} and $K$ \textbf{grows} suitably with $N$.
 \subsection{Kernel density estimation}
+\begin{comment}
+
 In the context described above, assume that the region $\mathcal{R}$ is an \textbf{hypercube} centered in $\overline{x}^*$ with side $h$. In order to count the number of $K$ points falling in this region, we can start by defining the function $\mathcal{K}(\ov{u})$:\begin{eqwbg}[Example of kernel function]
 \mathcal{K}(\ov{u}) = \begin{cases}
 1, \text{\phantom{aa}\textbf{if:}\phantom{aa}} |u_i| \leq \frac{1}{2}\,\,\, \forall i \in \{1...D\}\\
@@ -1062,6 +1064,7 @@ Therefore, the number of  $K$ points falling in $\mathcal{R}$ is:\begin{eqwbg}
 K=\sum_{n=1}^N \mathcal{K}\left(\frac{\ov{x}^*-\ov{x}_n}{h}\right), \,\, \ov{x}_n \in X_N
 \end{eqwbg}
 Where $X_N$ is the list of $N$ samples.
+\end{comment}
 \subsection{K-nearest neighbor (TODO)}
 
 \section{Stochastic processes}
