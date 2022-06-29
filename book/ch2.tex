@@ -1067,7 +1067,7 @@ K=\sum_{n=1}^N \mathcal{K}\left(\frac{\ov{x}^*-\ov{x}_n}{h}\right), \,\, \ov{x}_
 Where $X_N$ is the list of $N$ samples.
 \end{comment}
 
-In the \textbf{KDE} method, the mathematical expedient used to fix the volume $V$ in the previous example is to define this volume by means of a function, e.g: \begin{eqwbg}
+In the \textbf{KDE} method, the mathematical expedient used to fix the volume $V$ of the previous example is to define this volume through a function, e.g: \begin{eqwbg}
 \mathcal{K}(\ov{u}) = \begin{cases}
 1, \text{\phantom{aa}\textbf{if:}\phantom{aa}} |u_i| \leq \frac{1}{2}\,\,\, \forall i \in \{1...D\}\\
 0, \text{\phantom{aa}\textbf{otherwise}\phantom{aa}}
@@ -1087,7 +1087,7 @@ Where $K$ is obtained by applying the kernel function to \textbf{each point}, an
 Let us temporarily \textbf{ignore} the term to the left of the \ref{eqn:KDE}. ($p(\ov{x})$)
 We can interpret the right one in 2 ways: 
 \begin{itemize}
-\item A \textbf{scalar value}: the result is the sum of all the \textbf{contributions} of the kernel function centred in $\ov{x}_c$ \textbf{evaluated} at each point $\ov{x}_n,\,n \ in N$;
+\item A \textbf{scalar value}: the result is the sum of all the \textbf{contributions} of the kernel function centred in $\ov{x}_c$ \textbf{evaluated} at each point $\ov{x}_n,\,n \in N$;
 \item \textbf{A function}: the result is the sum of $N$ \textbf{kernel functions} each one centred in $\ov{x}_n$, where $\ov{x}_c$ is intended as the \textbf{variable} of the function (\textbf{symmetry property}). 
 \end{itemize}
 In the \textbf{KDE} method, the \textbf{second} interpretation is made, so the final $p(\overline{x})$ will be the result of the contribution of $N$ \textbf{kernel functions}.
@@ -1099,12 +1099,42 @@ p(\overline{x})=\frac{1}{N}\sum_{n=1}^N \frac{1}{(2\pi h^2)^{D/2}}\, \mathtt{exp
 Where the volume $V$ of the \ref{eqn:nonpar} has become the normalization constant $(2\pi h^2)^{D/2}$ containing the \textbf{standard deviation} ($h$) of the Gaussian. Indeed, it is reasonable that if we would consider the 'volume' of a Gaussian, this would be \textbf{proportional} to its \textbf{variance}.
 The parameter describing the "volume" acts as "\textbf{smoothing}" parameter. Any kernel function $\ov{k}(u)$ subject to the following constraints can be chosen:\begin{eqwbg}[Kernel function constraints]
 \begin{aligned}
-&\ov{k}(u) \geq 0,\,\, \forall\, \ov{u};\\
+&k(\ov{u}) \geq 0,\,\, \forall\, \ov{u};\\
 &\int k(\ov{u})\,d\ov{u}=1
 \end{aligned}
 \end{eqwbg}
-\subsection{K-nearest neighbor (TODO)}
-
+\subsection{K-nearest neighbor}
+\textbf{K-nearest neighbor} (\textbf{KNN}) is a \textbf{non-parametric} density estimation method that, with respect to the \ref{eqn:nonpar}, focuses on fixing  $K$ and finding an appropriate value of $V$ from the data.
+Taking as an example the case of a distribution of points on a \textbf{two-dimensional} Euclidean space ($\mathcal{D}=2$), suppose we have $N$ samples. Once that we fix a $K=K^*$, we can evaluate a point $\ov{x}$ on the space: the value of $V$ will be the area of the smallest circle that collects the $K^*$ points closest to $\ov{x}$. It is intuitable that in this case $K$ acts as a \textbf{smoothing hyperparameter}. Having thus defined $V$ as function of $\overline{x}$ and $K^*$:
+\begin{eqwbg}
+V=f_V(K^*,\ov{x})
+\end{eqwbg}
+The general formula \ref{eqn:nonpar} become:\begin{eqwbg}
+p(\ov{x})=\frac{K}{NV} \underset{\text{KNN case}} {\xrightarrow{\hspace*{2cm}}} \frac{K^*}{Nf_V(K^*,\ov{x})}
+\end{eqwbg}
+\fastpic{pics/KNN.png}{Representation of the KNN method applied to a $\mathcal{D}=2$ dimensional euclidean space. As we can see, the volume $V$ (represented by the area of the red circle) is function of the evaluated point $\ov{x}$ and the smoothing hyperparameter $K$. In this example, as we can see, $K:=8$}{0.7}
+\noindent \textbf{KNN} technique can be easily extended to solve a $M$-class \textbf{classification} problem. \\
+Assuming $K_i$ and $N_i$ as the number of points (of $K$ and $N$ \textbf{respectively}) belonging to the class $C_i, \,i\in \{1,...,M\}$:
+\begin{eqwbg}
+\begin{aligned}
+&\sum_i K_i=K,\\
+&\sum_i N_i=N
+\end{aligned}
+\end{eqwbg}
+For the class $C_i,$ starting from  the \ref{eqn:nonpar} we obtain:
+\begin{eqwbg}
+\begin{aligned}
+&p(\ov{x}|C_i)= \frac{K_i}{N_iV},\\
+&p(C_i)=\frac{N_i}{N}
+\end{aligned}
+\end{eqwbg}
+We can now combine this result using Bayes’ theorem to obtain
+the \textbf{posterior} probability of \textbf{class membership} $p(C_i|\ov{x})$:
+\begin{eqwbg}
+p(C_i|\ov{x}) = \frac{p(\ov{x}|C_i)p(C_i)}{p(\ov{x})}= \frac{K_i}{K}
+\end{eqwbg}
+If we wish to \textbf{minimize} the probability of \textbf{misclassification}, this is done by assigning
+the test point $\ov{x}$ to the class having the \textbf{largest posterior probability}, that is the one with the \textbf{largest ratio} $\frac{K_i}{K}$.
 \section{Stochastic processes}
 A \textbf{stochastic process} $X(t)$ is \textbf{noncountable infinity} of random variables: for any given $t=t^*$, $X(t^*)$ is a random variable. It is a random variable which depends by an additional parameter (time, space etc).
 \begin{figure}[H]
