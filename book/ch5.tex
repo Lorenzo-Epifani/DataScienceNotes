@@ -15,6 +15,7 @@
             We can also choose to \textbf{aggregate} \textbf{heterogeneous} data as we see fit. In this type of task the only \textbf{constraint} is the data \textbf{coherence} between the various layers, which can be modelled as we like.
             
             \section{Convolutional Neural Networks}
+            
 \textbf{Convolutional neural networks} marked a \textbf{break} from the technologies considered state of the art at the time for many tasks. The incredible results provided by CNNs in image classification have driven research into new NN architectures. The turning point came with the presentation of the LeNet and AlexNet networks.
 \textbf{LeNet-5}, a 7-level convolutional network by LeCun et al. was developed in 1998. It was used to classify \textbf{digits}, and was applied by several banks to recognize hand-written numbers on checks (British English: cheques) digitized in 32x32 pixel images. The ability to process higher resolution images requires \textbf{larger} and \textbf{more} layers of convolutional neural networks, so this technique was constrained by the availability of \textbf{computing resources}.
 \textbf{AlexNet} has similar architecture but with more layers (it also implements \textbf{ReLu} instead of a \textbf{sigmoid} activation function) due to the availability of physical computing resources.
@@ -119,6 +120,7 @@ For the block to work properly, $a^{[l]}$ and $z^{[l+2]}$ must be \textbf{dimens
                         \caption{Performances and complexity of different architectures. Source: "\href{https://arxiv.org/abs/1605.07678}{An Analysis of Deep Neural Network Models for Practical Applications
 }" }
             \end{figure}
+            \section{U-Net: fully CNN for semantic segmentation (TODO)}
             \section{Recurrent Neural networks}
             A \textbf{recurrent neural network} (\textbf{RNN}) is an extension of a conventional feedforward neural network, which is able to handle a \textbf{variable-length} sequence input. Consider a generic input sequence $\ov{I}_x=\{\ov{x}_1,\ov{x}_2...\ov{x}_T\}$.
             An \textbf{RNN} consists of a recurring hidden state update \textbf{criterion}, $\ov{h}_t$:\[

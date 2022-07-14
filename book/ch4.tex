@@ -820,6 +820,7 @@ This technique is widely used (for example in \textbf{inception networks}) to st
                         \caption{
 Diagram representing the input and output \textbf{sizes} of a \textbf{resizing} convolution layer}
 \end{figure}
+\subsection{Transposed convolutional layer (TODO)}
 \subsection{Pooling layer}
 The \textbf{pooling layer} is a type of \textbf{layer} that \textbf{downsamples} the input. In addition to the intuitive \textbf{performance} advantages (the size of the input \textbf{decreases}), it makes \textbf{pattern detection} more robust. The pooling layers \textbf{do not} have trainable parameters, they have only the \textbf{hyper-parameters} $R$, $s$ and $p$, related respectively to the \textbf{dimension} of the observation window, the \textbf{stride} and the \textbf{padding} (\textbf{full padding} is a common choice). As we did for the \textbf{convolution}, for ease of notation, suppose the input is an \textbf{image}. Consider \textbf{each channel} of an image as a matrix of scalar $X$:\[
 X:=\begin{bmatrix}
